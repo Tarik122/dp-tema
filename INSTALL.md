@@ -39,8 +39,8 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 ## 6. Kako naslovnica bira članke
 
 - **Glavna priča:** najnoviji članak. **Vi birate drugu:** otvorite članak → desna kolona **Članak** → uključite **Postavi na vrh bloga** (u novijim verzijama piše **Sticky** ili **Zalijepi**) → **Ažuriraj**. Taj članak ostaje glavna priča dok ga ne isključite. Ako ih je uključeno više, gore je najnoviji od njih.
-- **Dva teksta lijevo od glavne priče i Najnovije desno:** sljedećih osam članaka, strogo od najnovijeg prema starijem.
-- **Rubrike (Vijesti, Sport, Kultura, Nauka):** najnoviji tekstovi iz svake rubrike koji već nisu gore (Vijesti četiri, ostale po tri). Rubrika bez dovoljno tekstova se ne prikazuje. Koje se rubrike prikazuju mijenja se u `functions.php` (`DP_HOME_SECTIONS`) i u šablonu naslovnice.
+- **Tri teksta ispod glavne priče i Najnovije:** sljedećih devet članaka, strogo od najnovijeg prema starijem.
+- **Rubrike (Vijesti, Sport, Umjetnost i kultura):** po tri najnovija teksta iz svake rubrike koji već nisu gore. Rubrika bez dovoljno tekstova se ne prikazuje. Koje se rubrike prikazuju mijenja se u `functions.php` (`DP_HOME_SECTIONS`) i u šablonu naslovnice.
 - **Mišljenje:** najnoviji tekstovi iz rubrike Mišljenje koji već nisu gore.
 - **Iz arhive:** jedan stariji tekst iz kategorije **Izdvojeno**, mijenja se svaki dan.
 
@@ -52,13 +52,13 @@ Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 
 ## 7a. Citat na naslovnici
 
-Naslovnica prikazuje jedan veliki citat ("Rečeno") na crnoj traci, iz najnovijeg članka koji ima **istaknuti citat**, pored crno-bijele naslovne fotografije tog članka. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
+Naslovnica prikazuje jedan veliki citat ("Rečeno") na navy traci, iz najnovijeg članka koji ima **istaknuti citat**, pored crno-bijele naslovne fotografije tog članka. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
 
 Dobar kandidat za prvi citat: tekst "Održan performans u Drugoj gimnaziji s porukom ljubavi i mira" počinje rečenicom „Ni jedna ljudska duša u sebi istinski ne može da nosi mržnju.“ Pretvorite taj prvi pasus u blok Pullquote.
 
 ## Igre (/igre)
 
-Stranica **/igre** je sada početna za sve igre: plava traka sa naslovom od pločica, a ispod kartica za svaku igru. Svaka igra je posebna stranica ispod stranice Igre (npr. `/igre/rijec/`).
+Stranica **/igre** je sada početna za sve igre, u stilu kockaste sveske: naslov od pločica sa slovima, a ispod kartica za svaku igru. Svaka igra je posebna stranica ispod stranice Igre (npr. `/igre/rijec/`).
 
 **Jednom, poslije instalacije teme: premjestite Wordle na njegovu stranicu**
 
@@ -82,18 +82,7 @@ Isto kao koraci 1 do 5: nova stranica, roditelj **Igre**, izvod, objavi. Tema je
 
 **Redoslijed i boje:** igre idu redom kojim su objavljene, pa nova igra ide na kraj. Kartice su redom plava, narandžasta, zelena i navy. Za drugi redoslijed koristite polje **Redoslijed** (Order) u postavkama stranice: manji broj ide prvi.
 
-## 8. Dvije perspektive
-
-Poseban dio naslovnice gdje dva teksta o istoj temi stoje jedan naspram drugog (plavi lijevo, narandžasti desno, "ili" u sredini). Kako ga uključiti:
-
-1. Otvorite prvi članak → desna kolona **Oznake** (Tags) → upišite **Dvije perspektive** → **Ažuriraj**.
-2. Isto uradite za drugi članak.
-
-Na naslovnici se prikazuju dva najnovija članka sa tom oznakom. Ako ih je manje od dva, ovaj dio se ne prikazuje. Kad želite novi par, dodajte oznaku dvama novim člancima; stari par se sam povlači.
-
-Ideje: dva mišljenja koja se ne slažu, učenik i profesor o istoj temi, prvi razred i četvrti razred o istoj stvari.
-
-## 9. Uređivanje izgleda
+## 8. Uređivanje izgleda
 
 **Izgled → Editor** (Site Editor). Tu se mijenjaju zaglavlje (meni), podnožje (tekst "O nama", linkovi) i rasporedi. Meni je u **Šabloni → Zaglavlje**.
 

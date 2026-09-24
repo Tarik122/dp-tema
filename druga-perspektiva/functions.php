@@ -23,7 +23,6 @@ const DP_QUERY_LATEST    = 3; // "Najnovije", lista naslova.
 const DP_QUERY_OPINION   = 4; // Blok "Mišljenje".
 const DP_QUERY_ARCHIVE   = 5; // "Iz arhive".
 const DP_QUERY_READ_MORE = 9; // "Pročitajte još" ispod članka.
-const DP_QUERY_DEBATE    = 10; // "Dvije perspektive".
 const DP_QUERY_GAMES     = 12; // Sve igre, na stranici /igre.
 const DP_QUERY_MORE_GAMES = 13; // "Više igara" ispod jedne igre.
 
@@ -34,22 +33,13 @@ const DP_QUERY_MORE_GAMES = 13; // "Više igara" ispod jedne igre.
 const DP_GAMES_SLUG = 'igre';
 
 /*
- * "Dvije perspektive": dva najnovija članka sa ovom oznakom (tag) stoje
- * jedan naspram drugog na naslovnici. Oznaka se dodaje u članku, desno
- * pod "Oznake".
- */
-const DP_DEBATE_TAG = 'dvije-perspektive';
-
-/*
- * Rubrike na naslovnici: queryId => array( slug kategorije, broj tekstova ).
- * Da promijenite koja se rubrika prikazuje, promijenite slug ovdje i
- * naslov/link u šablonu naslovnice.
+ * Rubrike na naslovnici: queryId => slug kategorije. Da promijenite koja se
+ * rubrika prikazuje, promijenite slug ovdje i naslov/link u šablonu naslovnice.
  */
 const DP_HOME_SECTIONS = array(
-	6  => array( 'vijesti', 4 ),
-	7  => array( 'sport', 3 ),
-	8  => array( 'kultura', 3 ),
-	11 => array( 'nauka', 3 ),
+	6 => 'vijesti',
+	7 => 'sport',
+	8 => 'kultura',
 );
 
 /*
@@ -527,8 +517,7 @@ function dp_post_ids( $args ) {
 /**
  * Raspored naslovnice, izračunat jednom po učitavanju:
  * - glavna priča: zalijepljeni (sticky) članak, inače najnoviji članak;
- * - dva teksta pored glavne priče i "Najnovije": sljedećih 2 + 6 članaka,
- *   strogo od najnovijeg;
+ * - izdvojeni i najnovije: sljedećih 3 + 6 članaka, strogo od najnovijeg;
  * - mišljenje: tri najnovija iz rubrike Mišljenje koja nisu već prikazana;
  * - iz arhive: jedan izdvojeni stariji od šest mjeseci, mijenja se svaki dan.
  */
@@ -557,15 +546,10 @@ function dp_home_layout() {
 		$shown[] = $lead;
 	}
 
-	// Dvije perspektive: dva najnovija teksta sa oznakom, samo ako ih ima oba.
-	$debate = dp_post_ids( array( 'tag' => DP_DEBATE_TAG, 'numberposts' => 2, 'post__not_in' => $shown ) );
-	$debate = 2 === count( $debate ) ? $debate : array();
-	$shown  = array_merge( $shown, $debate );
-
-	// Naslovnica: dva teksta lijevo i "Najnovije" desno, redom od najnovijeg.
-	$stream   = dp_post_ids( array( 'numberposts' => 8, 'post__not_in' => $shown ) );
-	$features = array_slice( $stream, 0, 2 );
-	$latest   = array_slice( $stream, 2, 6 );
+	// Izdvojeni i Najnovije: redom od najnovijeg, bez preskakanja.
+	$stream   = dp_post_ids( array( 'numberposts' => 9, 'post__not_in' => $shown ) );
+	$features = array_slice( $stream, 0, 3 );
+	$latest   = array_slice( $stream, 3, 6 );
 	$shown    = array_merge( $shown, $stream );
 
 	// Mišljenje: najnovije kolumne koje već nisu gore.
@@ -574,10 +558,9 @@ function dp_home_layout() {
 
 	// Rubrike: po tri teksta iz svake, bez onih koji su već gore.
 	$sections = array();
-	foreach ( DP_HOME_SECTIONS as $query_id => $section ) {
-		list( $slug, $count ) = $section;
+	foreach ( DP_HOME_SECTIONS as $query_id => $slug ) {
 		$term                  = get_term_by( 'slug', $slug, 'category' );
-		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => $count, 'post__not_in' => $shown ) ) : array();
+		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
 		$shown                 = array_merge( $shown, $sections[ $query_id ] );
 	}
 
@@ -599,7 +582,6 @@ function dp_home_layout() {
 		DP_QUERY_LATEST   => $latest,
 		DP_QUERY_OPINION  => $opinions,
 		DP_QUERY_ARCHIVE  => $archive,
-		DP_QUERY_DEBATE   => $debate,
 	) + $sections;
 
 	return $layout;
@@ -633,7 +615,7 @@ function dp_query_vars( $query, $block ) {
 	} elseif ( DP_QUERY_MORE_GAMES === $query_id ) {
 		$current = is_page() ? get_queried_object_id() : 0;
 		$ids     = $current ? dp_game_ids( wp_get_post_parent_id( $current ), 3, $current ) : array();
-	} elseif ( in_array( $query_id, array_merge( array( DP_QUERY_LEAD, DP_QUERY_FEATURES, DP_QUERY_LATEST, DP_QUERY_OPINION, DP_QUERY_ARCHIVE, DP_QUERY_DEBATE ), array_keys( DP_HOME_SECTIONS ) ), true ) ) {
+	} elseif ( in_array( $query_id, array_merge( array( DP_QUERY_LEAD, DP_QUERY_FEATURES, DP_QUERY_LATEST, DP_QUERY_OPINION, DP_QUERY_ARCHIVE ), array_keys( DP_HOME_SECTIONS ) ), true ) ) {
 		$layout = dp_home_layout();
 		$ids    = $layout[ $query_id ];
 	}
@@ -767,7 +749,7 @@ function dp_render_citat( $content, $block ) {
 		$image = $image ? sprintf( '<a class="dp-citat-photo" href="%s" tabindex="-1" aria-hidden="true">%s</a>', esc_url( get_permalink( $post ) ), $image ) : '';
 
 		return sprintf(
-			'<figure class="wp-block-group alignfull dp-citat%1$s"><div class="dp-citat-inner">%2$s<div class="dp-citat-body"><p class="dp-citat-label">Rečeno</p><blockquote><p class="dp-citat-text">%3$s</p></blockquote><figcaption>%4$s<p class="dp-citat-source">Iz teksta <a href="%5$s">%6$s</a></p></figcaption></div></div></figure>',
+			'<figure class="wp-block-group dp-citat%1$s">%2$s<div class="dp-citat-body"><p class="dp-citat-label">Rečeno</p><blockquote><p class="dp-citat-text">%3$s</p></blockquote><figcaption>%4$s<p class="dp-citat-source">Iz teksta <a href="%5$s">%6$s</a></p></figcaption></div></figure>',
 			$image ? ' has-photo' : '',
 			$image,
 			esc_html( trim( $quote['text'], " \t\n\"„“”" ) ),
@@ -913,10 +895,11 @@ function dp_tiles_title( $content, $block, $instance ) {
 	$level   = isset( $block['attrs']['level'] ) ? (int) $block['attrs']['level'] : 2;
 
 	return sprintf(
-		'<h%1$d class="wp-block-post-title dp-tiles-title"><span class="screen-reader-text">%2$s</span>%3$s</h%1$d>',
+		'<h%1$d class="%4$s"><span class="screen-reader-text">%2$s</span>%3$s</h%1$d>',
 		$level,
 		esc_html( $title ),
-		dp_letter_tiles( $title )
+		dp_letter_tiles( $title ),
+		esc_attr( trim( 'wp-block-post-title ' . $block['attrs']['className'] ) )
 	);
 }
 add_filter( 'render_block_core/post-title', 'dp_tiles_title', 10, 3 );

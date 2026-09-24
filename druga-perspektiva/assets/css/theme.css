@@ -1,28 +1,22 @@
 /*
  * Druga perspektiva: stilovi koje theme.json ne može sam opisati.
- *
  * Boje, fontovi i veličine su tokeni iz theme.json (--wp--preset--...).
- * Mobilni prikaz je osnovni; širi ekrani dolaze u @media blokovima na kraju.
- *
- * Sistem: oznaka rubrike (chip) sa Instagrama je osnova dizajna. Svaki
- * modul ima liniju u boji rubrike i naziv u obojenoj kutiji koja "visi"
- * sa te linije (klasa .dp-mod i .dp-module-heading).
+ * Mobilni prikaz je osnovni; širi ekrani dolaze u @media blokovima.
  */
 
 :root {
 	--dp-line: 1px solid var(--wp--preset--color--linija);
+	--dp-rule: 2px solid var(--wp--preset--color--tinta);
 	--dp-sans: var(--wp--preset--font-family--sans);
 	--dp-serif: var(--wp--preset--font-family--serif);
+	--dp-display: var(--wp--preset--font-family--display);
 	--dp-gutter: var(--wp--style--root--padding-left, 1rem);
 	--dp-ink: var(--wp--preset--color--tinta);
 	--dp-paper: var(--wp--preset--color--papir);
 	--dp-grey: var(--wp--preset--color--siva);
-	--dp-gap: clamp(3rem, 6vw, 4.5rem);
 }
 
-/* =========================================================================
-   1. Osnova
-   ========================================================================= */
+/* ---------- Osnova ---------- */
 
 body {
 	-webkit-font-smoothing: antialiased;
@@ -67,28 +61,42 @@ p {
 	}
 }
 
-.wp-block-post-template {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
 /* Naslovi koji su linkovi: podvučeni tek na hover. */
 .wp-block-post-title a:hover,
 .dp-module-heading a:hover {
-	color: inherit;
 	text-decoration: underline;
 	text-decoration-thickness: 2px;
 	text-underline-offset: 0.12em;
+	color: inherit;
 }
 
 .wp-block-post-author-name a:hover {
 	text-decoration: underline;
 }
 
-/* =========================================================================
-   2. Oznaka rubrike (chip), kao na Instagramu
-   ========================================================================= */
+.wp-block-post-template {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/*
+ * Naslovi su u običnoj (ne masnoj) težini, kao u magazinima. Bodoni Moda,
+ * u duhu DP loga, koristi se samo za nazive rubrika i modula, velikim slovima.
+ */
+.wp-block-post-title,
+.dp-article-title {
+	font-weight: 400;
+}
+
+.dp-list .wp-block-post-title,
+.dp-read-more-list .wp-block-post-title,
+.dp-archive .wp-block-post-title,
+.dp-river .wp-block-post-title {
+	font-weight: 500;
+}
+
+/* ---------- Oznaka rubrike (chip), kao na Instagramu ---------- */
 
 .dp-chip {
 	margin: 0;
@@ -97,24 +105,22 @@ p {
 
 .dp-chip a {
 	display: inline-block;
-	padding: 0.3em 0.55em 0.32em;
 	background: var(--dp-chip, var(--wp--preset--color--navy));
-	color: var(--dp-paper);
+	color: var(--wp--preset--color--papir);
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--small);
 	font-weight: 700;
 	line-height: 1.2;
+	padding: 0.3em 0.55em 0.32em;
 	text-decoration: none;
 }
 
 .dp-chip a:hover {
-	color: var(--dp-paper);
+	color: var(--wp--preset--color--papir);
 	text-decoration: underline;
 }
 
-/* =========================================================================
-   3. Autor, datum, vrijeme čitanja
-   ========================================================================= */
+/* ---------- Meta: autor, datum, vrijeme čitanja ---------- */
 
 .wp-block-post-author-name {
 	margin: 0;
@@ -125,40 +131,42 @@ p {
 	margin: 0;
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--small);
-	color: var(--dp-grey);
+	color: var(--wp--preset--color--siva);
 }
 
 .dp-list-meta {
 	align-items: baseline;
 }
 
-.dp-list-meta .wp-block-post-author-name,
-.dp-list-author {
+.dp-list-meta .wp-block-post-author-name {
 	font-size: var(--wp--preset--font-size--small);
 }
 
-/* =========================================================================
-   4. Zaglavlje
-   ========================================================================= */
+/* ---------- Zaglavlje ---------- */
 
 .dp-header {
 	position: relative;
 	z-index: 20;
-	background: var(--dp-paper);
+	background: var(--wp--preset--color--papir);
 }
 
 .dp-logo img {
 	display: block;
-	width: auto;
 	height: 52px;
+	width: auto;
 }
 
 .dp-nav .wp-block-navigation-item__content {
+	color: var(--wp--preset--color--tinta);
 	padding: 0.25rem 0;
-	color: var(--dp-ink);
 }
 
-.dp-nav .wp-block-navigation-item__content:hover,
+.dp-nav .wp-block-navigation-item__content:hover {
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.3em;
+}
+
 .dp-nav .current-menu-item > .wp-block-navigation-item__content,
 .dp-nav .wp-block-navigation-item__content[aria-current="page"] {
 	text-decoration: underline;
@@ -169,10 +177,10 @@ p {
 .dp-nav-igre .wp-block-navigation-item__label::after {
 	content: "beta";
 	display: inline-block;
+	font-family: var(--dp-sans);
 	margin-left: 0.4em;
 	padding: 0.1em 0.35em;
 	border: 1px solid currentColor;
-	font-family: var(--dp-sans);
 	font-size: 0.6875rem;
 	font-weight: 700;
 	line-height: 1.2;
@@ -181,11 +189,11 @@ p {
 
 /* Dugme "Rubrike" na telefonu. */
 .dp-nav .wp-block-navigation__responsive-container-open {
-	padding: 0.35rem 0;
-	color: var(--dp-ink);
 	font-family: var(--dp-sans);
-	font-size: var(--wp--preset--font-size--ui);
 	font-weight: 700;
+	font-size: var(--wp--preset--font-size--ui);
+	color: var(--wp--preset--color--tinta);
+	padding: 0.35rem 0;
 	text-decoration: underline;
 	text-underline-offset: 0.3em;
 }
@@ -219,11 +227,11 @@ p {
 }
 
 .dp-header-search .wp-block-search__button {
-	margin: 0;
-	padding: 0.35rem;
-	border: 0;
 	background: transparent;
-	color: var(--dp-ink);
+	color: var(--wp--preset--color--tinta);
+	padding: 0.35rem;
+	margin: 0;
+	border: 0;
 }
 
 .dp-header-search .wp-block-search__button svg {
@@ -242,413 +250,41 @@ p {
 	border: 0;
 }
 
-/* =========================================================================
-   5. Moduli: linija u boji rubrike i naziv u obojenoj kutiji
-   ========================================================================= */
-
-.dp-mod {
-	--dp-c: var(--dp-ink);
-	border-top: 3px solid var(--dp-c);
+@media (max-width: 599px) {
+	/* Otvoreno polje pretrage ide preko cijelog zaglavlja. */
+	.dp-header-search:not(.wp-block-search__searchfield-hidden) {
+		position: absolute;
+		inset: 0 0.5rem;
+		background: var(--wp--preset--color--papir);
+		display: flex;
+		align-items: center;
+		z-index: 5;
+	}
+	.dp-header-search:not(.wp-block-search__searchfield-hidden) .wp-block-search__inside-wrapper {
+		width: 100% !important;
+	}
 }
 
-.dp-mod--plava { --dp-c: var(--wp--preset--color--plava-chip); }
-.dp-mod--narandza { --dp-c: var(--wp--preset--color--narandza-chip); }
-.dp-mod--zelena { --dp-c: var(--wp--preset--color--zelena); }
-.dp-mod--navy { --dp-c: var(--wp--preset--color--navy); }
-
-.dp-module-heading {
-	display: inline-block;
-	margin: 0 0 1.5rem;
-	padding: 0.4rem 0.7rem 0.45rem;
-	background: var(--dp-c, var(--dp-ink));
-	color: var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: 1.0625rem;
-	font-weight: 700;
-	line-height: 1.15;
-	letter-spacing: 0;
-}
-
-.dp-module-heading a,
-.dp-module-heading a:hover {
-	color: inherit;
-	text-decoration: none;
-}
-
-.dp-module-heading a:hover {
-	text-decoration: underline;
-	text-decoration-thickness: 2px;
-}
-
-/* Naziv lijevo, link "Sve…" desno. */
-.dp-modhead {
-	margin: 0 0 1.5rem;
-	gap: 1rem;
-}
-
-.dp-modhead > * {
-	margin: 0 !important;
-}
-
-.dp-more {
-	padding-top: 0.55rem;
-	font-family: var(--dp-sans);
-	font-size: var(--wp--preset--font-size--ui);
-	font-weight: 700;
-	white-space: nowrap;
-}
-
-.dp-more a {
-	color: var(--dp-c, var(--dp-ink));
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 0.25em;
-}
-
-.dp-more a:hover {
-	text-decoration-thickness: 2px;
-}
-
-.dp-mod > .wp-block-post-template,
-.dp-mod > .dp-rubrike {
-	margin-top: 0;
-}
-
-/* =========================================================================
-   6. Naslovnica: razmaci
-   ========================================================================= */
-
-.dp-home > * + * {
-	margin-top: var(--dp-gap);
-}
-
-.dp-home > .screen-reader-text + * {
-	margin-top: 0;
-}
-
-/* =========================================================================
-   7. Naslovnica: glavna priča, dva teksta, Najnovije
-   ========================================================================= */
-
-.dp-front {
-	display: grid;
-	gap: 2.5rem;
-}
-
-.dp-front > * {
-	margin: 0 !important;
-}
-
-/* Glavna priča */
-.dp-front-lead-list > li {
-	margin: 0;
-	text-align: center;
-}
-
-.dp-front-lead-image {
-	margin: 0 calc(-1 * var(--dp-gutter)) 1.25rem;
-}
-
-.dp-front-lead-title {
-	margin: 0.75rem 0 0.8rem;
-	font-size: clamp(2.125rem, 1.4rem + 2vw, 3rem) !important;
-	font-weight: 700;
-	line-height: 1.06;
-	letter-spacing: -0.02em;
-}
-
-.dp-front-lead-dek {
-	margin: 0 auto;
-	max-width: 36rem;
-	font-size: var(--wp--preset--font-size--dek);
-}
-
-.dp-front-lead-author {
-	margin-top: 0.9rem;
-	font-size: 1rem;
-}
-
-/* Dva teksta pored glavne priče */
-.dp-front-side-list > li {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) 104px;
-	column-gap: 1rem;
-	align-items: start;
-	margin: 0;
-	padding: 1.1rem 0;
-	border-top: var(--dp-line);
-}
-
-.dp-front-side-image {
-	grid-column: 2;
-	grid-row: 1;
-	margin: 0;
-}
-
-.dp-front-side-image img {
-	aspect-ratio: 1 !important;
-	object-fit: cover;
-}
-
-.dp-front-side-text {
-	grid-column: 1;
-	grid-row: 1;
-}
-
-.dp-front-side-text > * {
-	margin: 0;
-}
-
-.dp-front-side .wp-block-post-title {
-	line-height: 1.18;
-}
-
-.dp-front-side-list > li:not(:has(.dp-front-side-image)) {
-	grid-template-columns: minmax(0, 1fr);
-}
-
-/* Najnovije: datum, naslov, autor */
-.dp-timeline > li {
-	margin: 0;
-	padding: 0.85rem 0 0.95rem;
-	border-bottom: var(--dp-line);
-}
-
-.dp-timeline > li:first-child {
-	padding-top: 0;
-}
-
-.dp-timeline > li:last-child {
-	border-bottom: 0;
-}
-
-.dp-timeline-date {
-	color: var(--wp--preset--color--narandza-chip);
-	font-weight: 700;
-}
-
-.dp-timeline-title {
-	margin: 0.3rem 0 0.35rem;
-	font-size: 1.125rem;
-	font-weight: 600;
-	line-height: 1.22;
-}
-
-/* =========================================================================
-   8. Igre: široka plava traka
-   ========================================================================= */
-
-.dp-igre-tile {
-	position: relative;
-	display: grid !important;
-	gap: 1rem;
-	margin-inline: calc(-1 * var(--dp-gutter));
-	padding: 1.75rem var(--dp-gutter) !important;
-}
-
-.dp-igre-title {
-	margin: 0;
-	color: var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem);
-	font-weight: 700;
-	line-height: 1;
-	letter-spacing: -0.01em;
-}
-
-.dp-igre-title a {
-	color: inherit;
-	text-decoration: none;
-}
-
-/* Cijela traka je link na igru. */
-.dp-igre-title a::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-}
-
-.dp-igre-tile:hover .dp-igre-cta,
-.dp-igre-tile:focus-within .dp-igre-cta {
-	background: var(--dp-paper);
-	color: var(--wp--preset--color--plava-chip);
-}
-
-.dp-beta {
-	display: inline-block;
-	margin-left: 0.4em;
-	padding: 0.2em 0.45em;
-	border: 1px solid rgba(255, 255, 255, 0.85);
-	font-family: var(--dp-sans);
-	font-size: 0.8125rem;
-	font-weight: 700;
-	line-height: 1.2;
-	letter-spacing: 0;
-	vertical-align: 0.5em;
-}
-
-.dp-igre-tiles {
-	display: flex;
-	gap: 6px;
-}
-
-.dp-igre-tiles span {
-	display: grid;
-	place-items: center;
-	width: 48px;
-	height: 48px;
-	border: 2px solid rgba(255, 255, 255, 0.7);
-	color: var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: 1.5rem;
-	font-weight: 700;
-}
-
-.dp-igre-tiles .is-hit {
-	border-color: var(--wp--preset--color--narandza);
-	background: var(--wp--preset--color--narandza);
-}
-
-.dp-igre-tiles .is-near {
-	border-color: var(--dp-paper);
-	background: var(--dp-paper);
-	color: var(--wp--preset--color--plava-chip);
-}
-
-.dp-igre-tile p {
-	margin: 0;
-}
-
-.dp-igre-text {
-	max-width: 30rem;
-	font-size: 1.0625rem;
-	line-height: 1.5;
-}
-
-/* Igre nabrojane na traci: iznad linka cijele trake, da se mogu kliknuti. */
-.dp-igre-links {
-	position: relative;
-	z-index: 2;
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-}
-
-.dp-igre-links a {
-	padding: 0.3rem 0.65rem 0.35rem;
-	border: 2px solid rgba(255, 255, 255, 0.85);
-	color: var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: 0.9375rem;
-	font-weight: 700;
-	text-decoration: none;
-}
-
-.dp-igre-links a:hover,
-.dp-igre-links a:focus-visible {
-	background: var(--dp-paper);
-	color: var(--wp--preset--color--plava-chip);
-}
-
-.dp-igre-cta {
-	justify-self: start;
-	padding: 0.55rem 1.1rem;
-	border: 2px solid var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: var(--wp--preset--font-size--ui);
-	font-weight: 700;
-}
-
-/* =========================================================================
-   9. Vijesti: jedna velika priča i lista
-   ========================================================================= */
-
-.dp-sectionfront-list > li {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr) 104px;
-	column-gap: 1rem;
-	row-gap: 0.35rem;
-	align-content: start;
-	margin: 0;
-	padding: 1rem 0;
-	border-top: var(--dp-line);
-}
-
-.dp-sectionfront-list > li > * {
-	grid-column: 1;
-	margin: 0;
-}
-
-.dp-sectionfront-list .dp-sectionfront-image {
-	grid-column: 2;
-	grid-row: 1 / span 3;
-}
-
-.dp-sectionfront-list .dp-sectionfront-image img {
-	aspect-ratio: 1 !important;
-	object-fit: cover;
-}
-
-.dp-sectionfront-list .wp-block-post-title {
-	line-height: 1.2;
-}
-
-.dp-sectionfront-dek {
-	display: none;
-}
-
-.dp-sectionfront-list > li:not(:has(.dp-sectionfront-image)) > * {
-	grid-column: 1 / -1;
-}
-
-/* Prva priča je velika. */
-.dp-sectionfront-list > li:first-child {
-	display: block;
-	padding-top: 0;
-	border-top: 0;
-}
-
-.dp-sectionfront-list > li:first-child .dp-sectionfront-image {
-	margin: 0 0 1rem;
-}
-
-.dp-sectionfront-list > li:first-child .dp-sectionfront-image img {
-	aspect-ratio: 3 / 2 !important;
-}
-
-.dp-sectionfront-list > li:first-child .wp-block-post-title {
-	margin-bottom: 0.6rem;
-	font-size: var(--wp--preset--font-size--naslov-m) !important;
-	font-weight: 700;
-	line-height: 1.1;
-}
-
-.dp-sectionfront-list > li:first-child .dp-sectionfront-dek {
-	display: block;
-	margin-bottom: 0.6rem;
-	font-style: normal;
-	color: #333;
-}
-
-/* =========================================================================
-   10. Rečeno: citat na crnoj traci
-   ========================================================================= */
-
+/* ---------- Citat ("Rečeno") ---------- */
+
+/*
+ * Rečeno je jedini tamni trenutak na naslovnici: navy ploha od ruba do ruba
+ * ekrana (box-shadow + clip-path, bez horizontalnog skrolanja).
+ */
 .dp-citat {
-	padding: var(--wp--preset--spacing--50) var(--dp-gutter) var(--wp--preset--spacing--60);
-	background: var(--dp-ink);
-	color: var(--dp-paper);
-}
-
-.dp-citat-inner {
 	display: grid;
-	gap: 2rem;
-	max-width: 1240px;
-	margin: 0 auto;
+	gap: 1.75rem;
+	margin: 0;
+	padding: var(--wp--preset--spacing--60) 0;
+	background: var(--wp--preset--color--navy);
+	box-shadow: 0 0 0 100vmax var(--wp--preset--color--navy);
+	clip-path: inset(0 -100vmax);
+	color: var(--dp-paper);
 }
 
 .dp-citat-photo {
 	display: block;
+	margin-inline: calc(-1 * var(--dp-gutter));
 }
 
 /* Crno-bijela fotografija, da citat bude u prvom planu. */
@@ -666,15 +302,15 @@ p {
 }
 
 .dp-citat-label {
-	display: inline-block;
-	margin: 0 0 1.5rem;
-	padding: 0.4rem 0.7rem 0.45rem;
-	background: var(--wp--preset--color--narandza-chip);
+	margin: 0 0 1.25rem;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-size: 1.375rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
 	color: var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: 1.0625rem;
-	font-weight: 700;
-	line-height: 1.15;
 }
 
 .dp-citat blockquote {
@@ -686,14 +322,24 @@ p {
 	margin: 0;
 	color: var(--dp-paper);
 	font-family: var(--dp-serif);
-	font-size: clamp(1.75rem, 1.2rem + 2.3vw, 3rem);
-	line-height: 1.14;
+	font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.875rem);
+	line-height: 1.16;
 	letter-spacing: -0.01em;
 	text-wrap: balance;
 }
 
+/* Veliki narandžasti navodnik koji visi lijevo od teksta. */
 .dp-citat-text::before {
 	content: "„";
+	position: absolute;
+	right: 100%;
+	top: -0.42em;
+	margin-right: 0.06em;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-size: 2.2em;
+	line-height: 1;
 	color: var(--wp--preset--color--narandza);
 }
 
@@ -702,7 +348,7 @@ p {
 }
 
 .dp-citat figcaption {
-	margin-top: 1.5rem;
+	margin-top: 1.25rem;
 	font-family: var(--dp-sans);
 }
 
@@ -711,32 +357,268 @@ p {
 }
 
 .dp-citat-who {
-	font-size: 1rem;
 	font-weight: 700;
+	font-size: 1rem;
 }
 
 .dp-citat-source {
-	margin-top: 0.35rem !important;
+	margin-top: 0.3rem !important;
 	font-size: var(--wp--preset--font-size--small);
-	color: rgba(255, 255, 255, 0.75);
+	color: rgba(255, 255, 255, 0.78);
 }
 
-.dp-citat-source a {
-	color: var(--dp-paper);
-}
-
+.dp-citat-source a,
 .dp-citat-source a:hover {
 	color: var(--dp-paper);
+}
+
+@media (max-width: 781px) {
+	/* Na telefonu nema mjesta lijevo, pa je navodnik običan, u redu s tekstom. */
+	.dp-citat-text::before {
+		position: static;
+		margin: 0;
+		font-family: inherit;
+		font-size: 1em;
+		line-height: inherit;
+	}
+}
+
+@media (min-width: 782px) {
+	.dp-citat.has-photo {
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		column-gap: 4.5rem;
+	}
+
+	.dp-citat:not(.has-photo) .dp-citat-body {
+		max-width: 52rem;
+		margin-inline: auto;
+		padding-left: 3rem;
+	}
+
+	.dp-citat-photo {
+		margin: 0;
+	}
+
+	.dp-citat-img {
+		aspect-ratio: 4 / 5;
+	}
+}
+
+/* ---------- Naslovi modula ---------- */
+
+.dp-module-heading {
+	border-top: var(--dp-line);
+	padding-top: 1.25rem;
+	margin: 0 0 1.5rem;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 500;
+	font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem);
+	line-height: 1.1;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.dp-module-heading a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* ---------- Naslovnica: glavna priča ---------- */
+
+.dp-home > * + * {
+	margin-top: var(--wp--preset--spacing--50);
+}
+
+.dp-home > .screen-reader-text + * {
+	margin-top: 0;
+}
+
+@media (max-width: 599px) {
+	.dp-home {
+		padding-top: 0 !important;
+	}
+}
+
+.dp-lead-list > li {
+	margin: 0;
+}
+
+.dp-lead-card {
+	display: grid;
+	gap: 1.25rem;
+	padding-bottom: var(--wp--preset--spacing--40);
+	border-bottom: var(--dp-line);
+}
+
+.dp-lead-image {
+	margin: 0 calc(-1 * var(--dp-gutter));
+}
+
+.dp-lead-text {
+	align-items: center !important;
+	text-align: center;
+	max-width: 36rem;
+	margin-inline: auto;
+}
+
+.dp-lead-text > * {
+	margin: 0;
+}
+
+.dp-lead-title {
+	font-size: clamp(2rem, 1.4rem + 2.4vw, 3.375rem) !important;
+	line-height: 1.08;
+	letter-spacing: -0.01em;
+}
+
+.dp-lead-title a:hover {
+	text-decoration: underline;
 	text-decoration-thickness: 2px;
 }
 
-/* =========================================================================
-   11. Rubrike na naslovnici: Sport, Kultura, Nauka
-   ========================================================================= */
+.dp-lead-dek {
+	font-size: var(--wp--preset--font-size--dek);
+}
+
+.dp-lead-author {
+	font-size: 1rem;
+}
+
+/* ---------- Naslovnica: tri izdvojena teksta ---------- */
+
+.dp-features-list {
+	display: grid;
+	gap: 0;
+}
+
+.dp-features-list > li {
+	margin: 0;
+	padding: var(--wp--preset--spacing--40) 0;
+	border-bottom: var(--dp-line);
+}
+
+.dp-features-list > li:first-child {
+	padding-top: 0;
+}
+
+.dp-feature-image {
+	margin: 0 0 1rem;
+}
+
+.dp-feature-title {
+	margin: 0;
+}
+
+.dp-feature-dek,
+.dp-opinion .dp-standfirst {
+	margin: 0;
+	font-style: normal;
+	color: #333;
+}
+
+/* Drugi tekst: bez fotografije, veći naslov. */
+.dp-features-list > li:nth-child(2) .dp-feature-image {
+	display: none;
+}
+
+.dp-features-list > li:nth-child(2) .dp-feature-title {
+	font-size: var(--wp--preset--font-size--naslov-l) !important;
+}
+
+/* Treći tekst: mala kvadratna fotografija desno. */
+.dp-features-list > li:nth-child(3) {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 104px;
+	gap: 1rem;
+	align-items: start;
+}
+
+.dp-features-list > li:nth-child(3) .dp-feature-image {
+	grid-column: 2;
+	grid-row: 1;
+	margin: 0;
+	aspect-ratio: 1;
+}
+
+.dp-features-list > li:nth-child(3) .dp-feature-image img {
+	aspect-ratio: 1 !important;
+	height: 100%;
+}
+
+.dp-features-list > li:nth-child(3) .dp-feature-text {
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.dp-features-list > li:nth-child(3) .dp-feature-title {
+	font-size: var(--wp--preset--font-size--naslov-s) !important;
+}
+
+.dp-features-list > li:nth-child(3) .dp-feature-dek {
+	font-size: 1rem !important;
+}
+
+/* ---------- Liste naslova (Najnovije, rubrike, pretraga) ---------- */
+
+.dp-list > li {
+	margin: 0;
+	padding: 0.9rem 0 1rem;
+	border-bottom: var(--dp-line);
+}
+
+.dp-list > li:first-child {
+	border-top: 0;
+}
+
+.dp-list .wp-block-post-title {
+	margin: 0 0 0.4rem;
+	line-height: 1.2;
+}
+
+/* Najnovije sa malim fotografijama desno. */
+.dp-list--thumbs > li {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 88px;
+	column-gap: 1rem;
+	row-gap: 0.35rem;
+	align-content: start;
+}
+
+.dp-list--thumbs > li > * {
+	grid-column: 1;
+	margin: 0;
+}
+
+.dp-list--thumbs .dp-list-thumb {
+	grid-column: 2;
+	grid-row: 1 / span 3;
+	margin: 0;
+}
+
+.dp-list--thumbs .dp-list-thumb {
+	width: 88px;
+	overflow: hidden;
+}
+
+.dp-list--thumbs .dp-list-thumb img {
+	width: 100% !important;
+	height: 88px !important;
+	aspect-ratio: 1 !important;
+	object-fit: cover;
+}
+
+.dp-list--thumbs > li:not(:has(.dp-list-thumb)) > * {
+	grid-column: 1 / -1;
+}
+
+/* ---------- Rubrike na naslovnici ---------- */
 
 .dp-sections {
 	display: grid;
-	gap: var(--dp-gap);
+	gap: var(--wp--preset--spacing--50);
 }
 
 .dp-sections > * {
@@ -747,145 +629,251 @@ p {
 	display: none;
 }
 
+.dp-section {
+	--dp-section-color: var(--wp--preset--color--navy);
+	border-top: 3px solid var(--dp-section-color);
+	padding-top: 0.75rem;
+}
+
+.dp-section--plava {
+	--dp-section-color: var(--wp--preset--color--plava-chip);
+}
+
+.dp-section--narandza {
+	--dp-section-color: var(--wp--preset--color--narandza-chip);
+}
+
+.dp-section-heading {
+	margin: 0 0 1rem;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 500;
+	font-size: 1.375rem;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.dp-section-heading a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.dp-section-heading a:hover {
+	color: var(--dp-section-color);
+}
+
 .dp-section-list > li {
 	margin: 0;
-	padding: 0.85rem 0;
-	border-top: var(--dp-line);
+	padding: 0.8rem 0;
+	border-bottom: var(--dp-line);
 }
 
 .dp-section-list > li:first-child {
 	padding-top: 0;
-	border-top: 0;
+}
+
+.dp-section-list > li:last-child {
+	border-bottom: 0;
 }
 
 .dp-section-list .wp-block-post-title {
 	margin: 0 0 0.3rem;
-	font-size: 1.125rem !important;
-	line-height: 1.22;
+	font-weight: 500;
+	line-height: 1.2;
 }
 
-.dp-section-list > li:first-child .wp-block-post-title {
-	font-size: var(--wp--preset--font-size--naslov-s) !important;
-	font-weight: 700;
-	line-height: 1.16;
-}
-
-.dp-section-image {
-	margin: 0 0 0.9rem;
+.dp-section-list .dp-section-image {
+	margin: 0 0 0.75rem;
 }
 
 .dp-section-list > li:not(:first-child) .dp-section-image {
 	display: none;
 }
 
-/* =========================================================================
-   12. Dvije perspektive
-   ========================================================================= */
-
-.dp-debate-intro {
-	max-width: 28rem;
-	padding-top: 0.45rem;
-	font-family: var(--dp-sans);
-	font-size: 1rem;
-	color: var(--dp-grey);
+.dp-section-list > li:first-child .wp-block-post-title {
+	font-size: 1.5rem !important;
 }
 
-.dp-debate-list {
-	position: relative;
-	display: grid;
-	gap: 3.25rem;
+.dp-list-author {
+	font-size: var(--wp--preset--font-size--small);
 }
 
-.dp-debate-list > li {
-	--dp-side: var(--wp--preset--color--plava-chip);
-	margin: 0;
-	padding-top: 1.25rem;
-	border-top: 6px solid var(--dp-side);
-}
+/* ---------- Mišljenje: kolumne, ime autora prvo ---------- */
 
-.dp-debate-list > li:nth-child(2) {
-	--dp-side: var(--wp--preset--color--narandza-chip);
+.dp-opinion {
+	padding: 0 var(--dp-gutter);
 }
-
-.dp-debate-author {
-	margin: 0 0 0.6rem;
-	color: var(--dp-side);
-	font-size: 1.0625rem;
-}
-
-.dp-debate-list .wp-block-post-title {
-	margin: 0 0 0.75rem;
-	font-weight: 700;
-	line-height: 1.12;
-}
-
-.dp-debate-dek {
-	margin: 0;
-	font-style: normal;
-	color: #333;
-}
-
-/* "ili" između dva teksta (na telefonu ispod prvog, na desktopu u sredini). */
-.dp-debate-list > li:first-child::after {
-	content: "ili";
-	display: grid;
-	place-items: center;
-	width: 3.2rem;
-	height: 3.2rem;
-	margin: 1.75rem auto -1.6rem;
-	border-radius: 50%;
-	background: var(--dp-ink);
-	color: var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: 1.125rem;
-	font-weight: 700;
-	line-height: 1;
-}
-
-/* =========================================================================
-   13. Mišljenje: ime autora prvo
-   ========================================================================= */
 
 .dp-opinion-list > li {
 	margin: 0;
 	padding: 1.25rem 0;
-	border-top: var(--dp-line);
+	border-bottom: var(--dp-line);
 }
 
-.dp-opinion-list > li:first-child {
-	padding-top: 0;
-	border-top: 0;
+.dp-opinion-list > li:last-child {
+	border-bottom: 0;
 }
 
 .dp-opinion-author {
-	margin-bottom: 0.4rem;
 	font-size: 1.0625rem;
+	margin-bottom: 0.4rem;
 }
 
 .dp-opinion .wp-block-post-title {
 	margin: 0;
-	font-weight: 400;
 }
 
 .dp-opinion .dp-standfirst {
 	margin-top: 0.6rem;
 	font-size: 1.0625rem !important;
-	font-style: normal;
-	color: #333;
 }
 
-/* =========================================================================
-   14. Donji red: Iz arhive, Rubrike
-   ========================================================================= */
+/* ---------- Donji red: Igre, Iz arhive, Rubrike ---------- */
 
 .dp-bottom {
 	display: grid;
-	gap: var(--dp-gap);
-	margin-bottom: var(--dp-gap);
+	gap: var(--wp--preset--spacing--50);
+	margin-bottom: var(--wp--preset--spacing--60);
 }
 
 .dp-bottom > * {
 	margin: 0 !important;
+}
+
+/* Igre: široka plava traka odmah ispod izdvojenih tekstova. */
+.dp-igre-tile {
+	position: relative;
+	display: grid !important;
+	gap: 1rem;
+	padding: 1.75rem var(--dp-gutter) !important;
+	margin-inline: calc(-1 * var(--dp-gutter));
+}
+
+.dp-igre-title {
+	margin: 0;
+	color: var(--wp--preset--color--papir);
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 500;
+	font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	line-height: 1;
+}
+
+.dp-igre-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* Cijela traka je link na igru. */
+.dp-igre-title a::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+}
+
+.dp-igre-tile:hover .dp-igre-cta,
+.dp-igre-tile:focus-within /* Igre nabrojane na traci: iznad linka cijele trake, da se mogu kliknuti. */
+.dp-igre-links {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.dp-igre-links a {
+	padding: 0.3rem 0.65rem 0.35rem;
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	border-radius: 6px;
+	color: var(--dp-paper);
+	font-family: var(--dp-sans);
+	font-size: 0.9375rem;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.dp-igre-links a:hover,
+.dp-igre-links a:focus-visible {
+	background: var(--dp-paper);
+	color: var(--wp--preset--color--plava-chip);
+}
+
+/* Traka ima kockice kao stranica sa igrama. */
+.dp-igre-tile {
+	background-image:
+		linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+	background-size: 26px 26px;
+}
+
+.dp-igre-cta {
+	background: var(--wp--preset--color--papir);
+	color: var(--wp--preset--color--plava-chip);
+}
+
+.dp-beta {
+	display: inline-block;
+	margin-left: 0.4em;
+	padding: 0.2em 0.45em;
+	border: 1px solid rgba(255, 255, 255, 0.85);
+	font-family: var(--dp-sans);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	letter-spacing: 0;
+	text-transform: none;
+	line-height: 1.2;
+	vertical-align: 0.6em;
+}
+
+.dp-igre-tiles {
+	display: flex;
+	gap: 6px;
+}
+
+.dp-igre-tiles span {
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	border: 2px solid rgba(255, 255, 255, 0.7);
+	font-family: var(--dp-sans);
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: var(--wp--preset--color--papir);
+}
+
+.dp-igre-tiles .is-hit {
+	background: var(--wp--preset--color--narandza);
+	border-color: var(--wp--preset--color--narandza);
+}
+
+.dp-igre-tiles .is-near {
+	background: var(--wp--preset--color--papir);
+	border-color: var(--wp--preset--color--papir);
+	color: var(--wp--preset--color--plava-chip);
+}
+
+.dp-igre-tile p {
+	margin: 0;
+}
+
+.dp-igre-text {
+	max-width: 30rem;
+	font-size: 1.0625rem;
+	line-height: 1.5;
+}
+
+.dp-igre-cta {
+	justify-self: start;
+	padding: 0.55rem 1.1rem;
+	border: 2px solid var(--wp--preset--color--papir);
+	font-family: var(--dp-sans);
+	font-weight: 700;
+	font-size: var(--wp--preset--font-size--ui);
 }
 
 .dp-archive-list > li {
@@ -893,15 +881,15 @@ p {
 	grid-template-columns: 96px minmax(0, 1fr);
 	gap: 1rem;
 	align-items: start;
-	margin: 0;
-}
-
-.dp-archive-list > li:not(:has(.dp-archive-image)) {
-	grid-template-columns: minmax(0, 1fr);
+	margin: 0.75rem 0 0;
 }
 
 .dp-archive-image {
 	margin: 0;
+}
+
+.dp-archive-list > li:not(:has(.dp-archive-image)) {
+	grid-template-columns: 1fr;
 }
 
 .dp-archive .wp-block-post-title {
@@ -909,10 +897,11 @@ p {
 	line-height: 1.2;
 }
 
+/* Rubrike: obična lista sa linijama, bez brojeva. */
 .dp-rubrike {
+	list-style: none;
 	margin: 0;
 	padding: 0;
-	list-style: none;
 }
 
 .dp-rubrike li {
@@ -922,19 +911,21 @@ p {
 .dp-rubrike a {
 	display: block;
 	padding: 0.7rem 0;
-	color: var(--dp-ink);
+	color: var(--wp--preset--color--tinta);
 	text-decoration: none;
 }
 
 .dp-rubrike a:hover {
+	color: var(--wp--preset--color--plava-chip);
 	text-decoration: underline;
 }
 
-/* Na naslovnici: rubrike kao oznake u svojoj boji, legenda boja sajta. */
+/* Na naslovnici su rubrike jedan kratak red linkova. */
 .dp-rubrike-module .dp-rubrike {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	justify-content: center;
+	gap: 0.25rem 1.5rem;
 }
 
 .dp-rubrike-module .dp-rubrike li {
@@ -942,19 +933,16 @@ p {
 }
 
 .dp-rubrike-module .dp-rubrike a {
-	padding: 0.45rem 0.7rem 0.5rem;
-	background: var(--dp-chip, var(--wp--preset--color--navy));
-	color: var(--dp-paper);
-	font-size: 1rem;
+	padding: 0.2rem 0;
+	font-family: var(--dp-serif);
+	font-weight: 400;
+	font-size: 1.1875rem;
+	text-decoration: underline;
+	text-decoration-color: var(--wp--preset--color--linija);
+	text-underline-offset: 0.25em;
 }
 
-.dp-rubrike-module .dp-rubrike a:hover {
-	color: var(--dp-paper);
-}
-
-/* =========================================================================
-   15. Podnožje
-   ========================================================================= */
+/* ---------- Podnožje ---------- */
 
 .dp-footer .dp-logo--inverse img {
 	height: 72px;
@@ -967,11 +955,10 @@ p {
 }
 
 .dp-footer-heading {
-	margin: 0 0 0.5rem;
-	color: rgba(255, 255, 255, 0.75);
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--ui);
-	font-weight: 700;
+	color: rgba(255, 255, 255, 0.75);
+	margin: 0 0 0.5rem;
 }
 
 .dp-footer .dp-rubrike li {
@@ -979,14 +966,14 @@ p {
 }
 
 .dp-footer .dp-rubrike a {
+	color: var(--wp--preset--color--papir);
 	padding: 0.55rem 0;
-	color: var(--dp-paper);
 }
 
 .dp-footer-links {
+	list-style: none;
 	margin: 0;
 	padding: 0;
-	list-style: none;
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--ui);
 }
@@ -1001,34 +988,66 @@ p {
 }
 
 .dp-footer a:hover {
-	color: var(--dp-paper);
 	text-decoration: underline;
+	color: var(--wp--preset--color--papir);
 }
 
 .dp-footer-small {
 	margin-top: var(--wp--preset--spacing--50);
 	padding-top: 1rem;
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
-	color: rgba(255, 255, 255, 0.75);
 	font-family: var(--dp-sans);
+	color: rgba(255, 255, 255, 0.75);
 }
 
-/* =========================================================================
-   16. Članak
-   ========================================================================= */
-
-.dp-article-head {
-	text-align: center;
-}
+/* ---------- Članak ---------- */
 
 .dp-article-head > * {
 	margin-block: 0;
 }
 
+.dp-article-head {
+	text-align: center;
+}
+
+.dp-article-head .dp-byline {
+	align-items: center !important;
+}
+
+.dp-article-head .dp-byline-details {
+	justify-content: center;
+}
+
+.dp-article-dek p {
+	margin-inline: auto;
+}
+
+/* Veliko početno slovo prvog pasusa. */
+.dp-dropcap {
+	float: left;
+	margin: 0.08em 0.1em 0 0;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 600;
+	font-size: 4.1em;
+	line-height: 0.8;
+	color: var(--wp--preset--color--tinta);
+}
+
+/* Znak kraja teksta: mali DP logo. */
+.dp-endmark {
+	display: inline-block;
+	width: 1.5em;
+	height: 1.1em;
+	margin-left: 0.4em;
+	vertical-align: -0.12em;
+	background: url(../images/logo-dp.png) center / contain no-repeat;
+}
+
 .dp-article-title {
-	font-weight: 700;
-	line-height: 1.06;
-	letter-spacing: -0.02em;
+	line-height: 1.05;
+	letter-spacing: -0.015em;
 }
 
 .dp-article-head > .dp-article-dek {
@@ -1038,19 +1057,10 @@ p {
 
 .dp-article-dek p {
 	max-width: 40rem;
-	margin-inline: auto;
 }
 
 .dp-byline {
 	margin-top: 0.5rem !important;
-}
-
-.dp-article-head .dp-byline {
-	align-items: center !important;
-}
-
-.dp-article-head .dp-byline-details {
-	justify-content: center;
 }
 
 .dp-byline .wp-block-post-author-name {
@@ -1076,11 +1086,12 @@ p {
 .dp-article-body figcaption,
 .dp-article-body .wp-element-caption {
 	margin-top: 0.6rem;
-	color: var(--dp-grey);
+	text-align: left;
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--small);
-	text-align: left;
+	color: var(--wp--preset--color--siva);
 }
+
 
 .dp-article-body {
 	font-size: var(--wp--preset--font-size--body);
@@ -1110,32 +1121,13 @@ p {
 	text-decoration-thickness: 2px;
 }
 
-/* Veliko početno slovo prvog pasusa. */
-.dp-dropcap {
-	float: left;
-	margin: 0.06em 0.09em 0 0;
-	color: var(--dp-ink);
-	font-family: var(--dp-serif);
-	font-size: 4.2em;
-	font-weight: 700;
-	line-height: 0.8;
-}
-
-/* Znak kraja teksta: mali DP logo. */
-.dp-endmark {
-	display: inline-block;
-	width: 1.5em;
-	height: 1.1em;
-	margin-left: 0.4em;
-	vertical-align: -0.12em;
-	background: url(../images/logo-dp.png) center / contain no-repeat;
-}
-
 .dp-article-body .wp-block-image,
 .dp-article-body .wp-block-gallery,
-.dp-article-body .wp-block-embed,
-.dp-article-body .wp-block-quote,
-.dp-article-body .wp-block-table {
+.dp-article-body .wp-block-embed {
+	margin-block: 2em;
+}
+
+.dp-article-body .wp-block-quote {
 	margin-block: 2em;
 }
 
@@ -1148,11 +1140,11 @@ p {
 .dp-article-body .wp-block-pullquote cite {
 	display: block;
 	margin-top: 0.6rem;
-	color: var(--dp-grey);
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--small);
 	font-style: normal;
 	font-weight: 700;
+	color: var(--wp--preset--color--siva);
 }
 
 .dp-article-body .wp-block-pullquote {
@@ -1181,11 +1173,15 @@ p {
 	margin-top: 0.4em;
 }
 
+.dp-article-body .wp-block-table {
+	margin-block: 2em;
+}
+
 .dp-article-body .wp-block-table td,
 .dp-article-body .wp-block-table th {
-	padding: 0.6rem 0.5rem 0.6rem 0;
 	border: 0;
 	border-bottom: var(--dp-line);
+	padding: 0.6rem 0.5rem 0.6rem 0;
 	text-align: left;
 }
 
@@ -1197,11 +1193,11 @@ p {
 
 /* Intervju: pitanje. */
 .is-style-pitanje {
-	margin-top: 2em !important;
 	font-family: var(--dp-sans);
-	font-size: 1.0625rem;
 	font-weight: 700;
+	font-size: 1.0625rem;
 	line-height: 1.45;
+	margin-top: 2em !important;
 }
 
 .is-style-siroka-fotografija {
@@ -1209,8 +1205,8 @@ p {
 }
 
 .dp-author-box {
+	border-top: var(--dp-rule);
 	padding-top: 1rem;
-	border-top: 2px solid var(--dp-ink);
 }
 
 .dp-author-box > * {
@@ -1218,8 +1214,8 @@ p {
 }
 
 .dp-author-label {
-	color: var(--dp-grey);
 	font-family: var(--dp-sans);
+	color: var(--wp--preset--color--siva);
 }
 
 .dp-author-name {
@@ -1228,14 +1224,12 @@ p {
 }
 
 .dp-author-box .wp-block-post-author-biography {
-	max-width: 38rem;
-	color: #333;
 	font-family: var(--dp-sans);
+	color: #333;
+	max-width: 38rem;
 }
 
-/* =========================================================================
-   17. Pročitajte još
-   ========================================================================= */
+/* ---------- Pročitajte još ---------- */
 
 .dp-read-more {
 	margin-top: var(--wp--preset--spacing--60);
@@ -1250,12 +1244,7 @@ p {
 	row-gap: 0.4rem;
 	margin: 0;
 	padding: 1rem 0;
-	border-top: var(--dp-line);
-}
-
-.dp-read-more-list > li:first-child {
-	padding-top: 0;
-	border-top: 0;
+	border-bottom: var(--dp-line);
 }
 
 .dp-read-more-list > li > * {
@@ -1270,8 +1259,8 @@ p {
 }
 
 .dp-read-more-list .dp-read-more-image img {
-	height: 100%;
 	aspect-ratio: 1 !important;
+	height: 100%;
 }
 
 .dp-read-more-list .wp-block-post-title {
@@ -1282,9 +1271,7 @@ p {
 	font-size: var(--wp--preset--font-size--small);
 }
 
-/* =========================================================================
-   18. Rubrika, autor, pretraga, 404
-   ========================================================================= */
+/* ---------- Rubrika, autor, pretraga ---------- */
 
 .dp-archive-head {
 	margin-bottom: var(--wp--preset--spacing--40);
@@ -1292,31 +1279,25 @@ p {
 
 .dp-archive-title {
 	margin: 0;
-	font-weight: 700;
-	line-height: 1.08;
-	letter-spacing: -0.015em;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
 }
 
-/* Na stranici rubrike naziv je velika oznaka u boji rubrike, kao na Instagramu. */
 .category .dp-archive-head {
-	border-top: 3px solid var(--dp-rubrika, var(--dp-ink));
-}
-
-.category .dp-archive-title {
-	display: inline-block;
-	padding: 0.3em 0.55em 0.35em;
-	background: var(--dp-rubrika, var(--dp-ink));
-	color: var(--dp-paper);
-	font-family: var(--dp-sans);
-	font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem) !important;
-	letter-spacing: -0.01em;
+	text-align: center;
+	border-top: 4px solid var(--dp-rubrika, var(--wp--preset--color--tinta));
+	padding-top: var(--wp--preset--spacing--40);
 }
 
 .dp-archive-head .wp-block-term-description {
-	max-width: 40rem;
 	margin-top: 0.75rem;
-	color: #333;
+	max-width: 40rem;
 	font-style: italic;
+	color: #333;
 }
 
 .dp-archive-head .wp-block-term-description p {
@@ -1358,7 +1339,6 @@ body:not(.paged) .dp-river--first-big > li:first-child .dp-standfirst {
 
 body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	font-size: var(--wp--preset--font-size--naslov-l) !important;
-	font-weight: 700;
 	line-height: 1.1;
 }
 
@@ -1381,9 +1361,9 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 .dp-search-form .wp-block-search__input {
-	padding: 0.7rem 0.9rem;
-	border: 2px solid var(--dp-ink);
+	border: 2px solid var(--wp--preset--color--tinta);
 	border-radius: 0;
+	padding: 0.7rem 0.9rem;
 	font-family: var(--dp-sans);
 	font-size: 1.0625rem;
 }
@@ -1397,9 +1377,35 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	max-width: 40rem;
 }
 
-/* =========================================================================
-   19. Igre: početna (/igre), kartice igara i stranica jedne igre
-   ========================================================================= */
+/* ---------- Igre: kockasta sveska ---------- */
+
+/*
+ * Igre imaju svoj, razigraniji izgled: stranica je list iz kockaste sveske
+ * (kockice i crvena margina), igre su kartice zalijepljene selotejpom, a
+ * naslovi su složeni od pločica sa slovima.
+ */
+body:has(.dp-igre-hub, .dp-igra-page) {
+	--dp-kocka: #d9e0fb;
+	background-color: #fff;
+	background-image:
+		linear-gradient(var(--dp-kocka) 1px, transparent 1px),
+		linear-gradient(90deg, var(--dp-kocka) 1px, transparent 1px);
+	background-size: 26px 26px;
+	background-position: -1px -1px;
+}
+
+@media (min-width: 782px) {
+	/* Crvena margina kao u svesci. */
+	body:has(.dp-igre-hub, .dp-igra-page) .wp-site-blocks {
+		background-image: linear-gradient(90deg, transparent 71px, #f2a19a 71px, #f2a19a 73px, transparent 73px);
+	}
+}
+
+.dp-igre-hub,
+.dp-igra-page {
+	--dp-card: var(--wp--preset--color--plava-chip);
+	overflow-x: clip;
+}
 
 .dp-beta-chip {
 	margin: 0;
@@ -1412,23 +1418,29 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	line-height: 1.2;
 }
 
-.dp-beta-chip--light {
-	border: 2px solid rgba(255, 255, 255, 0.85);
-	background: transparent;
+/* Pečat "beta". */
+.dp-stamp {
+	margin: 0;
+	padding: 0.2em 0.55em 0.25em;
+	border: 3px solid var(--wp--preset--color--narandza-chip);
+	border-radius: 6px;
+	color: var(--wp--preset--color--narandza-chip);
+	font-family: var(--dp-sans);
+	font-size: 1.125rem;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	transform: rotate(-8deg);
+	background: rgba(255, 255, 255, 0.85);
 }
 
-.dp-beta-chip--outline {
-	border: 1px solid var(--dp-ink);
-	background: transparent;
-	color: var(--dp-ink);
-}
-
-/* Pločice sa slovima, kao u igri. Boje se mijenjaju preko --dp-hit. */
+/* Pločice sa slovima: bijela, narandžasta (pogođeno) i plava (blizu). */
 .dp-tiles {
 	--dp-tile: 3rem;
 	display: flex;
 	flex-wrap: nowrap;
-	gap: calc(var(--dp-tile) * 0.12);
+	gap: calc(var(--dp-tile) * 0.14);
 }
 
 .dp-tiles span {
@@ -1437,36 +1449,44 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	flex: 0 0 auto;
 	width: var(--dp-tile);
 	height: var(--dp-tile);
-	border: max(2px, calc(var(--dp-tile) * 0.05)) solid rgba(255, 255, 255, 0.75);
-	color: var(--dp-paper);
+	border: max(2px, calc(var(--dp-tile) * 0.045)) solid var(--dp-ink);
+	border-radius: calc(var(--dp-tile) * 0.14);
+	background: #fff;
+	box-shadow: 0 calc(var(--dp-tile) * 0.07) 0 var(--dp-ink);
+	color: var(--dp-ink);
 	font-family: var(--dp-sans);
-	font-size: calc(var(--dp-tile) * 0.52);
+	font-size: calc(var(--dp-tile) * 0.5);
 	font-weight: 700;
 	line-height: 1;
+	transform: rotate(-3deg);
+}
+
+.dp-tiles span:nth-child(even) {
+	transform: rotate(2.5deg) translateY(4%);
+}
+
+.dp-tiles span:nth-child(3n) {
+	transform: rotate(-1deg) translateY(-3%);
 }
 
 .dp-tiles .is-hit {
-	border-color: var(--dp-hit, var(--wp--preset--color--narandza));
-	background: var(--dp-hit, var(--wp--preset--color--narandza));
+	background: var(--wp--preset--color--narandza);
 }
 
 .dp-tiles .is-near {
-	border-color: var(--dp-paper);
-	background: var(--dp-paper);
-	color: var(--dp-card, var(--wp--preset--color--plava-chip));
+	background: var(--wp--preset--color--plava);
+	color: #fff;
 }
 
-/* Početna za igre: plava traka sa naslovom od pločica. */
-.dp-igre-hero {
-	margin-bottom: var(--wp--preset--spacing--50);
-}
-
-.dp-igre-hero-inner > * {
-	margin-block: 0;
+/* Naslov stranice od pločica. */
+.dp-igre-hero,
+.dp-igra-head {
+	text-align: center;
 }
 
 .dp-igre-hero-row {
-	margin-bottom: 1.25rem !important;
+	justify-content: center;
+	gap: 1.25rem 1.5rem !important;
 }
 
 .dp-tiles-title {
@@ -1474,79 +1494,107 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 .dp-tiles-title .dp-tiles {
-	--dp-tile: clamp(3.25rem, 2rem + 5vw, 5.5rem);
+	--dp-tile: clamp(3.25rem, 2rem + 5vw, 5.75rem);
+}
+
+.dp-tiles-title--game .dp-tiles {
+	--dp-tile: clamp(2.75rem, 1.8rem + 4vw, 4.5rem);
 }
 
 .dp-igre-hero-text {
-	max-width: 36rem;
+	max-width: 34rem;
+	margin: 1.75rem auto 0;
 	font-size: var(--wp--preset--font-size--dek);
+	font-style: italic;
 	line-height: 1.4;
 }
 
-/* Sadržaj stranice /igre (kratak uvod ili, prije premještanja, sama igra). */
 .dp-igre-content:not(:empty) {
-	margin-bottom: var(--wp--preset--spacing--50);
+	margin-top: var(--wp--preset--spacing--50);
 }
 
 .dp-igre-content > :first-child {
 	margin-top: 0;
 }
 
-/* Kartice igara: svaka u svojoj boji; široka kartica postaje vodoravna. */
+/* Kartice: papir zalijepljen selotejpom, sa sjenom u boji igre. */
+.dp-igre-games {
+	margin-top: var(--wp--preset--spacing--60);
+}
+
 .dp-igre-cards {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-	gap: 1.5rem;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+	gap: 3rem 2.5rem;
 }
 
 .dp-igre-cards > li {
-	--dp-card: var(--wp--preset--color--plava-chip);
-	--dp-hit: var(--wp--preset--color--narandza);
 	margin: 0;
 	container-type: inline-size;
 }
 
-.dp-igre-cards > li:nth-child(4n+2) {
-	--dp-card: var(--wp--preset--color--narandza-chip);
-	--dp-hit: var(--wp--preset--color--navy);
-}
-
-.dp-igre-cards > li:nth-child(4n+3) {
-	--dp-card: var(--wp--preset--color--zelena);
-}
-
-.dp-igre-cards > li:nth-child(4n+4) {
-	--dp-card: var(--wp--preset--color--navy);
-}
+.dp-igre-cards > li:nth-child(4n+2) { --dp-card: var(--wp--preset--color--narandza-chip); }
+.dp-igre-cards > li:nth-child(4n+3) { --dp-card: var(--wp--preset--color--zelena); }
+.dp-igre-cards > li:nth-child(4n+4) { --dp-card: var(--wp--preset--color--navy); }
 
 .dp-igra-card {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	background: var(--dp-card);
-	color: var(--dp-paper);
+	border: 2px solid var(--dp-ink);
+	border-radius: 6px;
+	background: #fff;
+	box-shadow: 8px 8px 0 var(--dp-card);
+	transform: rotate(-1deg);
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dp-igre-cards > li:nth-child(even) .dp-igra-card {
+	transform: rotate(1.2deg);
+}
+
+/* Traka selotejpa na vrhu kartice. */
+.dp-igra-card::before {
+	content: "";
+	position: absolute;
+	top: -14px;
+	left: 50%;
+	z-index: 3;
+	width: 96px;
+	height: 26px;
+	background: rgba(238, 128, 49, 0.45);
+	transform: translateX(-50%) rotate(-3deg);
+	pointer-events: none;
+}
+
+.dp-igre-cards > li:nth-child(even) .dp-igra-card::before {
+	background: rgba(82, 113, 254, 0.35);
+	transform: translateX(-50%) rotate(4deg);
+}
+
+.dp-igra-card:hover,
+.dp-igra-card:focus-within {
+	box-shadow: 12px 12px 0 var(--dp-card);
+	transform: rotate(0deg) translateY(-3px) !important;
+}
+
+.dp-igra-card:focus-within {
+	outline: 3px solid var(--wp--preset--color--plava);
+	outline-offset: 4px;
 }
 
 .dp-igra-card > * {
 	margin: 0 !important;
 }
 
-.dp-igra-card:hover .dp-igra-cta,
-.dp-igra-card:focus-within .dp-igra-cta {
-	background: var(--dp-ink);
-	color: var(--dp-paper);
-}
-
-.dp-igra-card:focus-within {
-	outline: 3px solid var(--wp--preset--color--plava);
-	outline-offset: 3px;
-}
-
 .dp-igra-visual {
 	margin: 0;
 	aspect-ratio: 16 / 10;
 	overflow: hidden;
+	border-bottom: 2px dashed var(--dp-ink);
+	border-radius: 4px 4px 0 0;
+	background: color-mix(in srgb, var(--dp-card) 12%, #fff);
 }
 
 .dp-igra-visual img {
@@ -1558,25 +1606,30 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 .dp-igra-visual--tiles {
 	display: grid;
 	place-items: center;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .dp-igra-visual--tiles .dp-tiles {
-	--dp-tile: clamp(2.25rem, 12cqi, 4rem);
+	--dp-tile: clamp(2.25rem, 11cqi, 3.75rem);
 }
 
+/* Naljepnica "Novo!". */
 .dp-igra-novo {
 	position: absolute;
-	top: 1rem;
-	left: 1rem;
-	z-index: 2;
-	padding: 0.25rem 0.55rem;
-	background: var(--dp-paper);
-	color: var(--dp-card);
+	top: -12px;
+	right: -6px;
+	z-index: 4;
+	display: grid;
+	place-items: center;
+	width: 4.25rem;
+	height: 4.25rem;
+	border: 2px solid var(--dp-ink);
+	border-radius: 50%;
+	background: var(--wp--preset--color--narandza);
+	color: var(--dp-ink);
 	font-family: var(--dp-sans);
-	font-size: var(--wp--preset--font-size--small);
+	font-size: 0.9375rem;
 	font-weight: 700;
-	line-height: 1.2;
+	transform: rotate(12deg);
 	pointer-events: none;
 }
 
@@ -1585,8 +1638,9 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	flex: 1;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 0.6rem;
+	gap: 0.55rem;
 	padding: 1.25rem 1.5rem 1.5rem;
+	text-align: left;
 }
 
 .dp-igra-text > * {
@@ -1594,7 +1648,6 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 .dp-igra-title {
-	color: var(--dp-paper);
 	font-family: var(--dp-sans);
 	font-size: clamp(1.625rem, 1.3rem + 1vw, 2rem) !important;
 	font-weight: 700;
@@ -1603,7 +1656,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 
 .dp-igra-title a,
 .dp-igra-title a:hover {
-	color: var(--dp-paper);
+	color: var(--dp-ink);
 	text-decoration: none;
 }
 
@@ -1612,11 +1665,11 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	content: "";
 	position: absolute;
 	inset: 0;
-	z-index: 1;
+	z-index: 2;
 }
 
 .dp-igra-opis {
-	color: rgba(255, 255, 255, 0.92);
+	color: #333;
 	font-size: 1.0625rem;
 	font-style: normal;
 	line-height: 1.45;
@@ -1624,9 +1677,12 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 
 .dp-igra-cta {
 	margin-top: auto !important;
-	padding: 0.55rem 1.2rem;
-	background: var(--dp-paper);
-	color: var(--dp-card);
+	padding: 0.5rem 1.15rem;
+	border: 2px solid var(--dp-ink);
+	border-radius: 6px;
+	background: var(--dp-card);
+	box-shadow: 3px 3px 0 var(--dp-ink);
+	color: #fff;
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--ui);
 	font-weight: 700;
@@ -1634,21 +1690,22 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 
 .dp-igra-opis + .dp-igra-cta,
 .dp-igra-title + .dp-igra-cta {
-	margin-top: 0.6rem !important;
+	margin-top: 0.75rem !important;
 }
 
 /* Široka kartica (npr. kad postoji samo jedna igra): slika lijevo, tekst desno. */
-@container (min-width: 720px) {
+@container (min-width: 700px) {
 	.dp-igra-card {
 		flex-direction: row;
-		min-height: 22rem;
+		min-height: 20rem;
 	}
 
 	.dp-igra-visual {
 		flex: 0 0 55%;
 		aspect-ratio: auto;
-		border-right: 1px solid rgba(255, 255, 255, 0.25);
+		border-right: 2px dashed var(--dp-ink);
 		border-bottom: 0;
+		border-radius: 4px 0 0 4px;
 	}
 
 	.dp-igra-visual--tiles .dp-tiles {
@@ -1665,58 +1722,80 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	}
 
 	.dp-igra-cta {
-		margin-top: 0.6rem !important;
+		margin-top: 0.75rem !important;
 	}
 }
 
+/* Poruka na dnu: žuti papirić. */
 .dp-igre-ideja {
-	margin-top: var(--wp--preset--spacing--50) !important;
-	color: var(--dp-grey);
+	width: fit-content;
+	max-width: 100%;
+	margin: var(--wp--preset--spacing--60) auto 0 !important;
+	padding: 1rem 1.25rem;
+	background: #fff3b0;
+	box-shadow: 0 6px 14px rgba(20, 20, 20, 0.12);
 	font-family: var(--dp-sans);
 	font-size: 1rem;
 	text-align: center;
+	transform: rotate(-1.5deg);
 }
 
 .dp-igre-ideja a {
 	color: var(--dp-ink);
+	font-weight: 700;
 }
 
 /* Stranica jedne igre. */
-.dp-igra-head {
-	text-align: center;
-}
-
-.dp-igra-head > * {
-	margin-block: 0;
-}
-
-.dp-igra-head > * + * {
-	margin-top: 1rem !important;
-}
-
-.dp-igra-head > .dp-igra-page-opis {
-	margin-top: 0.6rem !important;
-}
-
-.dp-chip--igre {
-	--dp-chip: var(--wp--preset--color--plava-chip);
-}
-
-.dp-igra-page-title {
+.dp-igra-back {
+	margin: 0 0 1.75rem;
 	font-family: var(--dp-sans);
-	font-size: clamp(2.5rem, 1.8rem + 3vw, 4rem) !important;
+	font-size: var(--wp--preset--font-size--ui);
 	font-weight: 700;
-	line-height: 1;
-	letter-spacing: -0.02em;
+}
+
+.dp-igra-back a {
+	display: inline-block;
+	padding: 0.35rem 0.85rem;
+	border: 2px solid var(--dp-ink);
+	border-radius: 999px;
+	background: #fff;
+	color: var(--dp-ink);
+	text-decoration: none;
+}
+
+.dp-igra-back a:hover {
+	background: var(--dp-ink);
+	color: #fff;
 }
 
 .dp-igra-page-opis {
+	max-width: 32rem;
+	margin: 1.5rem auto 0 !important;
 	font-size: var(--wp--preset--font-size--dek);
 }
 
+/* Igra stoji na listu papira. */
 .dp-igre-game {
-	margin-top: var(--wp--preset--spacing--40) !important;
+	position: relative;
+	max-width: 640px;
+	margin: var(--wp--preset--spacing--50) auto 0 !important;
+	padding: clamp(1.25rem, 4vw, 2.25rem);
+	border: 2px solid var(--dp-ink);
+	border-radius: 6px;
+	background: #fff;
+	box-shadow: 8px 8px 0 var(--wp--preset--color--plava-chip);
 	font-family: var(--dp-sans);
+}
+
+.dp-igre-game::before {
+	content: "";
+	position: absolute;
+	top: -14px;
+	left: 50%;
+	width: 110px;
+	height: 26px;
+	background: rgba(238, 128, 49, 0.45);
+	transform: translateX(-50%) rotate(-2deg);
 }
 
 .dp-igre-game :is(button, input) {
@@ -1724,42 +1803,39 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 .dp-igre-more {
-	margin-top: var(--dp-gap) !important;
+	margin-top: var(--wp--preset--spacing--60);
 }
 
-/* Manje kartice ispod igre: uvijek vodoravne, pločice lijevo. */
-.dp-igre-cards--small .dp-igra-card {
-	flex-direction: row;
-	min-height: 8.5rem;
+.dp-igre-more-title {
+	margin: 0 0 2rem;
+	font-family: var(--dp-sans);
+	font-size: var(--wp--preset--font-size--naslov-m);
+	font-weight: 700;
+	text-align: center;
 }
 
 .dp-igre-cards--small .dp-igra-visual {
-	flex: 0 0 40%;
-	aspect-ratio: auto;
-	border-right: 1px solid rgba(255, 255, 255, 0.25);
-	border-bottom: 0;
+	aspect-ratio: 2 / 1;
 }
 
 .dp-igre-cards--small .dp-igra-visual--tiles .dp-tiles {
-	--dp-tile: clamp(1.25rem, 6.5cqi, 2.25rem);
-}
-
-.dp-igre-cards--small .dp-igra-text {
-	justify-content: center;
-	padding: 1rem 1.25rem;
+	--dp-tile: clamp(1.75rem, 8cqi, 2.75rem);
 }
 
 .dp-igre-cards--small .dp-igra-title {
 	font-size: 1.5rem !important;
 }
 
-.dp-igre-cards--small .dp-igra-opis {
-	font-size: 1rem;
+@media (prefers-reduced-motion: reduce) {
+	.dp-igra-card,
+	.dp-igra-card:hover,
+	.dp-igra-card:focus-within {
+		transition: none;
+		transform: none !important;
+	}
 }
 
-/* =========================================================================
-   20. Uzorci (patterns)
-   ========================================================================= */
+/* ---------- Uzorci (patterns) ---------- */
 
 .dp-fact-box,
 .dp-note {
@@ -1772,20 +1848,14 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 
 .dp-fact-box h3,
 .dp-note-label {
-	margin: 0;
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--ui);
 	font-weight: 700;
+	margin: 0;
 }
 
 .dp-fact-box ul {
 	margin-top: 0.6rem;
-	font-family: var(--dp-sans);
-	font-size: 1rem;
-	line-height: 1.5;
-}
-
-.dp-note {
 	font-family: var(--dp-sans);
 	font-size: 1rem;
 	line-height: 1.5;
@@ -1803,57 +1873,31 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	margin-top: 0.4rem;
 }
 
+.dp-note {
+	font-family: var(--dp-sans);
+	font-size: 1rem;
+	line-height: 1.5;
+}
+
 .dp-gallery figcaption.blocks-gallery-caption {
-	color: var(--dp-grey);
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--siva);
 	text-align: left;
 }
 
-/* =========================================================================
-   21. Telefon: posebni slučajevi
-   ========================================================================= */
-
-@media (max-width: 599px) {
-	/* Otvoreno polje pretrage ide preko cijelog zaglavlja. */
-	.dp-header-search:not(.wp-block-search__searchfield-hidden) {
-		position: absolute;
-		inset: 0 0.5rem;
-		z-index: 5;
-		display: flex;
-		align-items: center;
-		background: var(--dp-paper);
-	}
-
-	.dp-header-search:not(.wp-block-search__searchfield-hidden) .wp-block-search__inside-wrapper {
-		width: 100% !important;
-	}
-
-	/* Fotografija glavne priče ide od ruba do ruba, odmah ispod zaglavlja. */
-	.dp-home {
-		padding-top: 0 !important;
-	}
-
-	.dp-citat-photo {
-		margin-inline: calc(-1 * var(--dp-gutter));
-	}
-}
-
-/* =========================================================================
-   22. Tablet i desktop
-   ========================================================================= */
+/* ---------- Tablet i desktop ---------- */
 
 @media (min-width: 600px) {
+
 	.dp-logo img {
 		height: 60px;
 	}
 
-	.dp-front-lead-image {
-		margin-inline: 0;
-	}
+
 
 	.dp-bottom {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-columns: 1fr 1fr;
 		column-gap: 3rem;
 	}
 
@@ -1863,45 +1907,12 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 @media (min-width: 782px) {
-	/* Naslovnica na tabletu: glavna priča preko cijele širine, ispod dvije kolone. */
-	.dp-front {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		grid-template-areas:
-			"lead lead"
-			"side latest";
-		column-gap: 2.5rem;
-	}
-
-	.dp-front-lead { grid-area: lead; }
-	.dp-front-side { grid-area: side; }
-	.dp-front-latest { grid-area: latest; }
-
-	.dp-front-side-list > li {
-		display: block;
-		padding: 1.25rem 0;
-	}
-
-	.dp-front-side-list > li:first-child {
-		padding-top: 0;
-		border-top: 0;
-	}
-
-	.dp-front-side-image {
-		margin-bottom: 0.9rem;
-	}
-
-	.dp-front-side-image img {
-		aspect-ratio: 3 / 2 !important;
-	}
-
 	.dp-igre-tile {
+		margin-inline: 0;
 		grid-template-columns: auto 1fr auto;
-		grid-template-areas:
-			"title text cta"
-			"tiles links cta";
+		grid-template-areas: "title text cta" "tiles links cta";
 		column-gap: 3rem;
 		align-items: center;
-		margin-inline: 0;
 		padding: 2rem 2.5rem !important;
 	}
 
@@ -1911,88 +1922,74 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	.dp-igre-links { grid-area: links; align-self: start; }
 	.dp-igre-cta { grid-area: cta; }
 
-	/* Vijesti: velika priča lijevo, lista desno (priče desno stoje jedna ispod druge). */
-	.dp-sectionfront-list {
-		display: flow-root;
+	.dp-lead-card {
+		grid-template-columns: 1fr 1fr;
+		gap: 3rem;
+		align-items: center;
 	}
 
-	.dp-sectionfront-list > li:first-child {
-		float: left;
-		width: calc(58% - 1.25rem);
-		padding-bottom: 0;
+	.dp-lead-image {
+		grid-column: 2;
+		grid-row: 1;
+		margin: 0;
 	}
 
-	.dp-sectionfront-list > li:not(:first-child) {
-		margin-left: calc(58% + 1.25rem);
+	.dp-lead-text {
+		grid-column: 1;
+		grid-row: 1;
 	}
 
-	.dp-sectionfront-list > li:nth-child(2) {
-		padding-top: 0;
-		border-top: 0;
+
+	/* Tri izdvojena teksta u jednom redu: 5 / 4 / 3. */
+	.dp-features-list {
+		grid-template-columns: 5fr 3.5fr 4fr;
+		column-gap: 0;
 	}
 
-	.dp-citat {
-		padding-top: var(--wp--preset--spacing--60);
+	.dp-features-list > li {
+		padding: 0 2rem;
+		border-bottom: 0;
+		border-left: var(--dp-line);
 	}
 
-	.dp-citat.has-photo .dp-citat-inner {
-		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-		column-gap: 4.5rem;
+	.dp-features-list > li:first-child {
+		padding-left: 0;
+		border-left: 0;
 	}
 
-	.dp-citat-img {
-		aspect-ratio: 4 / 5;
+	.dp-features-list > li:last-child {
+		padding-right: 0;
 	}
 
-	/* Veliki navodnik visi lijevo od teksta. */
-	.dp-citat-text::before {
-		position: absolute;
-		right: 100%;
-		margin-right: 0.04em;
+	.dp-features-list > li:nth-child(3) {
+		grid-template-columns: minmax(0, 1fr) 88px;
 	}
 
-	.dp-sections {
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+	.dp-list {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		column-gap: 3rem;
+	}
+
+	.dp-list--thumbs {
+		grid-template-columns: repeat(3, 1fr);
 		column-gap: 2.5rem;
 	}
 
-	.dp-debate .dp-modhead {
-		flex-wrap: nowrap !important;
-	}
-
-	.dp-debate-intro {
-		text-align: right;
-	}
-
-	.dp-debate-list {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		column-gap: 6rem;
-	}
-
-	.dp-debate-list > li:first-child::after {
-		position: absolute;
-		top: 3.25rem;
-		left: 50%;
-		margin: 0;
-		transform: translateX(-50%);
-	}
-
-	.dp-debate-list > li:nth-child(2) {
-		text-align: right;
-	}
-
-	.dp-debate-list > li:nth-child(2) .dp-debate-dek p {
-		margin-left: auto;
+	.dp-sections {
+		grid-template-columns: repeat(3, 1fr);
+		column-gap: 2.5rem;
 	}
 
 	.dp-opinion-list {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(3, 1fr);
+		column-gap: 0;
 	}
 
 	.dp-opinion-list > li {
-		padding: 0 2rem;
-		border-top: 0;
+		padding: 0.5rem 2rem 0;
+		border-bottom: 0;
 		border-left: var(--dp-line);
 	}
 
@@ -2003,17 +2000,16 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 
 	.dp-read-more-list {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(3, 1fr);
 		column-gap: 2.5rem;
 	}
 
 	.dp-read-more-list > li {
-		align-content: start;
-		padding-top: 0;
 		border-top: 0;
+		align-content: start;
 	}
 
-	/* Rubrika, pretraga, autor: jedan red po članku, datum lijevo, fotografija desno. */
+	/* Rubrika, pretraga, autor: jedan red po članku, datum lijevo, fotografija desno, strogo od najnovijeg. */
 	.dp-river > li {
 		display: grid;
 		grid-template-columns: 8.5rem minmax(0, 1fr) 132px;
@@ -2057,6 +2053,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 		margin-top: 0;
 	}
 
+	/* Prvi (najnoviji) članak na prvoj stranici rubrike ostaje velik. */
 	body:not(.paged) .dp-river--first-big > li:first-child {
 		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
 		column-gap: 2.5rem;
@@ -2086,28 +2083,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	}
 }
 
-@media (min-width: 1100px) {
-	/* Naslovnica na desktopu: dva teksta | glavna priča | Najnovije. */
-	.dp-front {
-		grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr);
-		grid-template-areas: "side lead latest";
-		column-gap: 0;
-	}
-
-	.dp-front-lead {
-		padding: 0 2.25rem;
-		border-right: var(--dp-line);
-		border-left: var(--dp-line);
-	}
-
-	.dp-front-side {
-		padding-right: 2.25rem;
-	}
-
-	.dp-front-latest {
-		align-self: start;
-		margin-left: 2.25rem !important;
-	}
+@media (min-width: 1000px) {
 
 	.dp-article-body .wp-block-pullquote {
 		margin-left: -3rem;
