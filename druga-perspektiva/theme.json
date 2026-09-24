@@ -111,7 +111,7 @@
 				":focus": { "outline": { "color": "var:preset|color|plava", "offset": "2px", "style": "solid", "width": "3px" } }
 			},
 			"heading": {
-				"typography": { "fontFamily": "var:preset|font-family|serif", "fontWeight": "700", "lineHeight": "1.12", "letterSpacing": "-0.01em" },
+				"typography": { "fontFamily": "var:preset|font-family|serif", "fontWeight": "400", "lineHeight": "1.15", "letterSpacing": "-0.005em" },
 				"color": { "text": "var:preset|color|tinta" }
 			},
 			"h1": { "typography": { "fontSize": "var:preset|font-size|naslov-l" } },
@@ -133,7 +133,7 @@
 		},
 		"blocks": {
 			"core/post-title": {
-				"typography": { "fontWeight": "700", "lineHeight": "1.1" },
+				"typography": { "fontWeight": "400", "lineHeight": "1.15" },
 				"elements": { "link": { "typography": { "textDecoration": "none" }, "color": { "text": "var:preset|color|tinta" } } }
 			},
 			"core/post-excerpt": {

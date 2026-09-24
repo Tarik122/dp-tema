@@ -30,7 +30,7 @@ Sampled from your Instagram posts, then adjusted where small white text would be
 
 ## 2. Typefaces
 
-> **Update after the first build:** the first version looked too much like The Confluence (serif headlines, a big navy block, thick black rules). Big headlines now use **Bodoni Moda**, a high-contrast serif in the spirit of the DP logo. Section titles are large Bodoni italics over a thin rule. Mišljenje sits on a light panel with author names in orange Bodoni italics. Navy appears only in the footer and the Mišljenje chip. Smaller headlines and article text stay in Source Serif 4, and labels stay in Lato.
+> **Update after feedback (v1.2):** version 1 looked like a copy of The Confluence, and the Bodoni italic version looked AI-made. After studying the real New Yorker site, the theme now uses **regular-weight** Source Serif headlines (no bold), roman (not italic) section titles in Bodoni Moda capitals, centered over a thin rule, a lead with centered text beside the photo instead of text on the photo, no colored panels on the homepage, and author names in plain bold sans. Navy is used only in the footer. The Instagram chips and the Igre tile stay as the brand link.
 
 | Role | Font | Why |
 |---|---|---|

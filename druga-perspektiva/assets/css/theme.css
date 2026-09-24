@@ -78,32 +78,22 @@ p {
 }
 
 /*
- * Veliki naslovi u Bodoni Modi, istom duhu kao DP logo. Manji naslovi
- * ostaju u Source Serifu, jer Bodoni tanke linije gubi na malim veličinama.
+ * Naslovi su u običnoj (ne masnoj) težini, kao u magazinima. Bodoni Moda,
+ * u duhu DP loga, koristi se samo za nazive rubrika i modula, velikim slovima.
  */
-.dp-lead-title,
-.dp-article-title,
-.dp-archive-title,
-.dp-igre-title,
-.dp-features-list > li:nth-child(2) .dp-feature-title,
-body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
-	font-family: var(--dp-display);
-	font-weight: 600;
-	letter-spacing: -0.005em;
-	font-variant-numeric: lining-nums;
-	/* Manja optička veličina = deblje tanke linije, čitljivije na ekranu. */
-	font-optical-sizing: none;
-	font-variation-settings: "opsz" 20;
+.wp-block-post-title,
+.dp-article-title {
+	font-weight: 400;
 }
 
-.dp-module-heading,
-.dp-opinion-author,
-.dp-author-name {
-	font-optical-sizing: none;
-	font-variation-settings: "opsz" 16;
+.dp-list .wp-block-post-title,
+.dp-read-more-list .wp-block-post-title,
+.dp-archive .wp-block-post-title,
+.dp-river .wp-block-post-title {
+	font-weight: 500;
 }
 
-/* ---------- Oznaka rubrike (chip), kao na Instagramu ---------- */
+/* ---------- Oznaka rubrike (chip)/* ---------- Oznaka rubrike (chip), kao na Instagramu ---------- */
 
 .dp-chip {
 	margin: 0;
@@ -275,15 +265,18 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 /* ---------- Naslovi modula ---------- */
 
 .dp-module-heading {
-	border-top: 1px solid var(--wp--preset--color--tinta);
-	padding-top: 0.6rem;
-	margin: 0 0 0.75rem;
+	border-top: var(--dp-line);
+	padding-top: var(--wp--preset--spacing--40);
+	margin: 0 0 var(--wp--preset--spacing--40);
 	font-family: var(--dp-display);
-	font-style: italic;
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
 	font-weight: 500;
-	font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
-	line-height: 1.05;
-	letter-spacing: -0.01em;
+	font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem);
+	line-height: 1.1;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	text-align: center;
 }
 
 .dp-module-heading a {
@@ -311,81 +304,45 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	margin: 0;
 }
 
-.dp-lead-cover {
-	position: relative;
-	min-height: 0 !important;
-	aspect-ratio: 4 / 5;
-	margin-inline: calc(-1 * var(--dp-gutter));
-	padding: 1.25rem var(--dp-gutter) !important;
-	align-items: flex-end;
-	overflow: hidden;
-	background: var(--wp--preset--color--navy);
+.dp-lead-card {
+	display: grid;
+	gap: 1.25rem;
+	padding-bottom: var(--wp--preset--spacing--50);
+	border-bottom: var(--dp-line);
 }
 
-/* Tamni prelaz samo na donjoj trećini, da ostatak fotografije ostane čist. */
-.dp-lead-cover .wp-block-cover__background {
-	opacity: 1 !important;
-	background-color: transparent !important;
-	background-image: linear-gradient(to top, rgba(9, 13, 38, 0.86) 0%, rgba(9, 13, 38, 0.6) 30%, rgba(9, 13, 38, 0) 62%);
+.dp-lead-image {
+	margin: 0 calc(-1 * var(--dp-gutter));
 }
 
-.dp-lead-cover .wp-block-cover__inner-container {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 0.75rem;
+.dp-lead-text {
+	align-items: center !important;
+	text-align: center;
+	max-width: 36rem;
+	margin-inline: auto;
+}
+
+.dp-lead-text > * {
+	margin: 0;
 }
 
 .dp-lead-title {
-	margin: 0;
-	color: var(--wp--preset--color--papir);
-	line-height: 1.04;
-	letter-spacing: -0.015em;
-	max-width: 20ch;
-}
-
-.dp-lead-title a {
-	color: var(--wp--preset--color--papir);
+	font-size: clamp(2rem, 1.4rem + 2.4vw, 3.375rem) !important;
+	line-height: 1.08;
+	letter-spacing: -0.01em;
 }
 
 .dp-lead-title a:hover {
-	color: var(--wp--preset--color--papir);
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
 }
 
-/* Cijela fotografija je link na članak. */
-.dp-lead-title a::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 1;
-}
-
-.dp-lead-cover .dp-chip {
-	position: relative;
-	z-index: 2;
-}
-
-.dp-lead-cover .dp-chip a {
-	font-size: 0.9375rem;
-}
-
-.dp-lead-below {
-	margin-top: 1rem;
-	padding-bottom: var(--wp--preset--spacing--40);
-	border-bottom: var(--dp-line);
-	gap: 0.75rem 3rem;
-}
-
-.dp-lead-below .dp-standfirst {
-	flex: 1 1 32rem;
-	max-width: 44rem;
-	margin: 0;
+.dp-lead-dek {
 	font-size: var(--wp--preset--font-size--dek);
 }
 
-.dp-lead-below .wp-block-post-author-name {
-	flex: 0 0 auto;
+.dp-lead-author {
+	font-size: 1rem;
 }
 
 /* ---------- Naslovnica: tri izdvojena teksta ---------- */
@@ -413,8 +370,11 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	margin: 0;
 }
 
-.dp-feature-dek {
+.dp-feature-dek,
+.dp-opinion .dp-standfirst {
 	margin: 0;
+	font-style: normal;
+	color: #333;
 }
 
 /* Drugi tekst: bez fotografije, veći naslov. */
@@ -479,12 +439,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 /* ---------- Mišljenje: kolumne, ime autora prvo ---------- */
 
 .dp-opinion {
-	background: var(--wp--preset--color--papir-2);
-	padding: var(--wp--preset--spacing--50) var(--dp-gutter) var(--wp--preset--spacing--60);
-}
-
-.dp-opinion .dp-module-heading a:hover {
-	color: var(--wp--preset--color--narandza-chip);
+	padding: 0 var(--dp-gutter);
 }
 
 .dp-opinion-list > li {
@@ -498,13 +453,8 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 .dp-opinion-author {
-	font-family: var(--dp-display);
-	font-style: italic;
-	font-weight: 500;
-	font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
-	line-height: 1.1;
-	color: var(--wp--preset--color--narandza-chip);
-	margin-bottom: 0.5rem;
+	font-size: 1.0625rem;
+	margin-bottom: 0.4rem;
 }
 
 .dp-opinion .wp-block-post-title {
@@ -644,27 +594,10 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	text-decoration: underline;
 }
 
-/* Na naslovnici: rubrike kao oznake u boji, kao na Instagramu. */
-.dp-rubrike-module .dp-rubrike {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-	margin-top: 1rem;
-}
-
-.dp-rubrike-module .dp-rubrike li {
-	border: 0;
-}
-
 .dp-rubrike-module .dp-rubrike a {
-	padding: 0.45rem 0.7rem 0.5rem;
-	background: var(--dp-chip, var(--wp--preset--color--navy));
-	color: var(--wp--preset--color--papir);
-	font-size: 1rem;
-}
-
-.dp-rubrike-module .dp-rubrike a:hover {
-	color: var(--wp--preset--color--papir);
+	font-family: var(--dp-serif);
+	font-weight: 400;
+	font-size: 1.1875rem;
 }
 
 /* ---------- Podnožje ---------- */
@@ -905,9 +838,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 .dp-author-name {
-	font-family: var(--dp-display);
-	font-style: italic;
-	font-weight: 500;
+	font-family: var(--dp-serif);
 	font-size: var(--wp--preset--font-size--naslov-s);
 }
 
@@ -966,10 +897,19 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 .dp-archive-title {
-	display: inline-block;
 	margin: 0;
-	padding-bottom: 0.2rem;
-	border-bottom: 5px solid var(--dp-rubrika, var(--wp--preset--color--tinta));
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.category .dp-archive-head {
+	text-align: center;
+	border-top: 4px solid var(--dp-rubrika, var(--wp--preset--color--tinta));
+	padding-top: var(--wp--preset--spacing--40);
 }
 
 .dp-archive-head .wp-block-term-description {
@@ -1132,23 +1072,12 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 /* ---------- Tablet i desktop ---------- */
 
 @media (min-width: 600px) {
-	.dp-lead-cover {
-		aspect-ratio: 16 / 10;
-		margin-inline: 0;
-		padding: 2rem !important;
-	}
-
-	.dp-lead-title {
-		max-width: min(66%, 24ch);
-	}
 
 	.dp-logo img {
 		height: 60px;
 	}
 
-	.dp-lead-cover .dp-chip a {
-		font-size: 1.0625rem;
-	}
+
 
 	.dp-bottom {
 		grid-template-columns: 1fr 1fr;
@@ -1164,10 +1093,23 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 @media (min-width: 782px) {
-	.dp-lead-cover {
-		aspect-ratio: 16 / 9;
-		padding: 2.5rem 3rem !important;
+	.dp-lead-card {
+		grid-template-columns: 1fr 1fr;
+		gap: 3rem;
+		align-items: center;
 	}
+
+	.dp-lead-image {
+		grid-column: 2;
+		grid-row: 1;
+		margin: 0;
+	}
+
+	.dp-lead-text {
+		grid-column: 1;
+		grid-row: 1;
+	}
+
 
 	/* Tri izdvojena teksta u jednom redu: 5 / 4 / 3. */
 	.dp-features-list {
