@@ -1,4 +1,4 @@
-<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+<!-- wp:template-part {"slug":"masthead","area":"header","tagName":"header"} /-->
 
 <!-- wp:group {"tagName":"main","className":"dp-home","style":{"spacing":{"padding":{"top":"var:preset|spacing|40"},"blockGap":"0"}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
 <main class="wp-block-group dp-home" style="padding-top:var(--wp--preset--spacing--40)">
@@ -65,6 +65,14 @@
 		<!-- /wp:post-template -->
 	</div>
 	<!-- /wp:query -->
+
+	<!-- wp:group {"className":"dp-citat","metadata":{"name":"Citat (iz najnovijeg izdvojenog citata u člancima)"},"layout":{"type":"constrained","contentSize":"900px"}} -->
+	<div class="wp-block-group dp-citat">
+		<!-- wp:paragraph -->
+		<p>Ovdje se automatski prikazuje najnoviji istaknuti citat (blok "Pullquote") iz nekog članka. Ako nijedan članak nema istaknuti citat, ovaj dio se ne prikazuje.</p>
+		<!-- /wp:paragraph -->
+	</div>
+	<!-- /wp:group -->
 
 	<!-- wp:group {"className":"dp-sections","layout":{"type":"default"}} -->
 	<div class="wp-block-group dp-sections">

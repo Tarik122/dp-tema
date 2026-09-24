@@ -47,10 +47,18 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 
 Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 
-## 7. Uređivanje izgleda
+## 7. Citat na naslovnici
+
+Naslovnica prikazuje jedan veliki citat iz najnovijeg članka koji ima **istaknuti citat**. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
+
+Dobar kandidat za prvi citat: tekst "Održan performans u Drugoj gimnaziji s porukom ljubavi i mira" počinje rečenicom „Ni jedna ljudska duša u sebi istinski ne može da nosi mržnju.“ Pretvorite taj prvi pasus u blok Pullquote.
+
+## 8. Uređivanje izgleda
 
 **Izgled → Editor** (Site Editor). Tu se mijenjaju zaglavlje (meni), podnožje (tekst "O nama", linkovi) i rasporedi. Meni je u **Šabloni → Zaglavlje**.
 
 Korisni blokovi za pisanje su u editoru članka pod **Uzorci → Druga perspektiva**: info okvir, intervju, foto galerija, ispravka, napomena redakcije.
+
+Naslovnica ima svoje veliko zaglavlje (**Zaglavlje naslovnice**), a ostale stranice manje (**Zaglavlje**). Meni se mijenja u oba.
 
 Ako nešto pođe po zlu u Site Editoru: otvorite šablon → tri tačke → **Resetuj** i vraća se originalni izgled teme.

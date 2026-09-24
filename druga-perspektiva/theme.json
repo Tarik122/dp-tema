@@ -10,31 +10,113 @@
 			"defaultDuotone": false,
 			"custom": true,
 			"palette": [
-				{ "slug": "papir", "name": "Papir (bijela)", "color": "#FFFFFF" },
-				{ "slug": "papir-2", "name": "Papir 2 (okviri)", "color": "#F4F4F1" },
-				{ "slug": "tinta", "name": "Tinta (tekst)", "color": "#141414" },
-				{ "slug": "siva", "name": "Siva (datumi, potpisi)", "color": "#5E5E5E" },
-				{ "slug": "linija", "name": "Linija", "color": "#D9D9D6" },
-				{ "slug": "navy", "name": "Navy", "color": "#16215C" },
-				{ "slug": "plava", "name": "Plava (Instagram)", "color": "#5271FE" },
-				{ "slug": "plava-chip", "name": "Plava (oznake)", "color": "#3B57E8" },
-				{ "slug": "narandza", "name": "Narandžasta (Instagram)", "color": "#EE8031" },
-				{ "slug": "narandza-chip", "name": "Narandžasta (oznake)", "color": "#B34E0F" },
-				{ "slug": "zelena", "name": "Zelena (Nauka)", "color": "#1F6B4F" }
+				{
+					"slug": "papir",
+					"name": "Papir (bijela)",
+					"color": "#FFFFFF"
+				},
+				{
+					"slug": "papir-2",
+					"name": "Papir 2 (okviri)",
+					"color": "#F4F4F1"
+				},
+				{
+					"slug": "tinta",
+					"name": "Tinta (tekst)",
+					"color": "#141414"
+				},
+				{
+					"slug": "siva",
+					"name": "Siva (datumi, potpisi)",
+					"color": "#5E5E5E"
+				},
+				{
+					"slug": "linija",
+					"name": "Linija",
+					"color": "#D9D9D6"
+				},
+				{
+					"slug": "navy",
+					"name": "Navy",
+					"color": "#16215C"
+				},
+				{
+					"slug": "plava",
+					"name": "Plava (Instagram)",
+					"color": "#5271FE"
+				},
+				{
+					"slug": "plava-chip",
+					"name": "Plava (oznake)",
+					"color": "#3B57E8"
+				},
+				{
+					"slug": "narandza",
+					"name": "Narandžasta (Instagram)",
+					"color": "#EE8031"
+				},
+				{
+					"slug": "narandza-chip",
+					"name": "Narandžasta (oznake)",
+					"color": "#B34E0F"
+				},
+				{
+					"slug": "zelena",
+					"name": "Zelena (Nauka)",
+					"color": "#1F6B4F"
+				}
 			]
 		},
-		"layout": { "contentSize": "680px", "wideSize": "1240px" },
+		"layout": {
+			"contentSize": "680px",
+			"wideSize": "1240px"
+		},
 		"spacing": {
 			"defaultSpacingSizes": false,
-			"units": [ "px", "rem", "em", "%", "vw", "vh" ],
+			"units": [
+				"px",
+				"rem",
+				"em",
+				"%",
+				"vw",
+				"vh"
+			],
 			"spacingSizes": [
-				{ "slug": "10", "name": "XXS", "size": "0.25rem" },
-				{ "slug": "20", "name": "XS", "size": "0.5rem" },
-				{ "slug": "30", "name": "S", "size": "1rem" },
-				{ "slug": "40", "name": "M", "size": "clamp(1.25rem, 2vw, 1.5rem)" },
-				{ "slug": "50", "name": "L", "size": "clamp(2rem, 4vw, 3rem)" },
-				{ "slug": "60", "name": "XL", "size": "clamp(3rem, 6vw, 4.5rem)" },
-				{ "slug": "70", "name": "XXL", "size": "clamp(4rem, 9vw, 7rem)" }
+				{
+					"slug": "10",
+					"name": "XXS",
+					"size": "0.25rem"
+				},
+				{
+					"slug": "20",
+					"name": "XS",
+					"size": "0.5rem"
+				},
+				{
+					"slug": "30",
+					"name": "S",
+					"size": "1rem"
+				},
+				{
+					"slug": "40",
+					"name": "M",
+					"size": "clamp(1.25rem, 2vw, 1.5rem)"
+				},
+				{
+					"slug": "50",
+					"name": "L",
+					"size": "clamp(2rem, 4vw, 3rem)"
+				},
+				{
+					"slug": "60",
+					"name": "XL",
+					"size": "clamp(3rem, 6vw, 4.5rem)"
+				},
+				{
+					"slug": "70",
+					"name": "XXL",
+					"size": "clamp(4rem, 9vw, 7rem)"
+				}
 			]
 		},
 		"typography": {
@@ -47,8 +129,24 @@
 					"name": "Source Serif 4",
 					"fontFamily": "\"Source Serif 4\", Georgia, \"Times New Roman\", serif",
 					"fontFace": [
-						{ "fontFamily": "Source Serif 4", "fontStyle": "normal", "fontWeight": "400 700", "fontDisplay": "swap", "src": [ "file:./assets/fonts/source-serif-4.woff2" ] },
-						{ "fontFamily": "Source Serif 4", "fontStyle": "italic", "fontWeight": "400 700", "fontDisplay": "swap", "src": [ "file:./assets/fonts/source-serif-4-italic.woff2" ] }
+						{
+							"fontFamily": "Source Serif 4",
+							"fontStyle": "normal",
+							"fontWeight": "400 700",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/source-serif-4.woff2"
+							]
+						},
+						{
+							"fontFamily": "Source Serif 4",
+							"fontStyle": "italic",
+							"fontWeight": "400 700",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/source-serif-4-italic.woff2"
+							]
+						}
 					]
 				},
 				{
@@ -56,8 +154,24 @@
 					"name": "Bodoni Moda (veliki naslovi)",
 					"fontFamily": "\"Bodoni Moda\", \"Source Serif 4\", Georgia, serif",
 					"fontFace": [
-						{ "fontFamily": "Bodoni Moda", "fontStyle": "normal", "fontWeight": "500 800", "fontDisplay": "swap", "src": [ "file:./assets/fonts/bodoni-moda.woff2" ] },
-						{ "fontFamily": "Bodoni Moda", "fontStyle": "italic", "fontWeight": "400 700", "fontDisplay": "swap", "src": [ "file:./assets/fonts/bodoni-moda-italic.woff2" ] }
+						{
+							"fontFamily": "Bodoni Moda",
+							"fontStyle": "normal",
+							"fontWeight": "500 800",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/bodoni-moda.woff2"
+							]
+						},
+						{
+							"fontFamily": "Bodoni Moda",
+							"fontStyle": "italic",
+							"fontWeight": "400 700",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/bodoni-moda-italic.woff2"
+							]
+						}
 					]
 				},
 				{
@@ -65,21 +179,103 @@
 					"name": "Lato",
 					"fontFamily": "Lato, \"Helvetica Neue\", Arial, sans-serif",
 					"fontFace": [
-						{ "fontFamily": "Lato", "fontStyle": "normal", "fontWeight": "400", "fontDisplay": "swap", "src": [ "file:./assets/fonts/lato-400.woff2" ] },
-						{ "fontFamily": "Lato", "fontStyle": "italic", "fontWeight": "400", "fontDisplay": "swap", "src": [ "file:./assets/fonts/lato-400-italic.woff2" ] },
-						{ "fontFamily": "Lato", "fontStyle": "normal", "fontWeight": "700", "fontDisplay": "swap", "src": [ "file:./assets/fonts/lato-700.woff2" ] }
+						{
+							"fontFamily": "Lato",
+							"fontStyle": "normal",
+							"fontWeight": "400",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/lato-400.woff2"
+							]
+						},
+						{
+							"fontFamily": "Lato",
+							"fontStyle": "italic",
+							"fontWeight": "400",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/lato-400-italic.woff2"
+							]
+						},
+						{
+							"fontFamily": "Lato",
+							"fontStyle": "normal",
+							"fontWeight": "700",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/lato-700.woff2"
+							]
+						}
 					]
 				}
 			],
 			"fontSizes": [
-				{ "slug": "small", "name": "Sitno", "size": "0.8125rem", "fluid": false },
-				{ "slug": "ui", "name": "Oznake", "size": "0.9375rem", "fluid": false },
-				{ "slug": "body", "name": "Tekst", "size": "1.125rem", "fluid": { "min": "1.125rem", "max": "1.25rem" } },
-				{ "slug": "dek", "name": "Podnaslov", "size": "1.25rem", "fluid": { "min": "1.1875rem", "max": "1.375rem" } },
-				{ "slug": "naslov-s", "name": "Naslov S", "size": "1.375rem", "fluid": { "min": "1.25rem", "max": "1.375rem" } },
-				{ "slug": "naslov-m", "name": "Naslov M", "size": "1.875rem", "fluid": { "min": "1.5rem", "max": "1.875rem" } },
-				{ "slug": "naslov-l", "name": "Naslov L", "size": "2.75rem", "fluid": { "min": "1.875rem", "max": "2.75rem" } },
-				{ "slug": "display", "name": "Veliki naslov", "size": "4rem", "fluid": { "min": "2.25rem", "max": "4rem" } }
+				{
+					"slug": "small",
+					"name": "Sitno",
+					"size": "0.8125rem",
+					"fluid": false
+				},
+				{
+					"slug": "ui",
+					"name": "Oznake",
+					"size": "0.9375rem",
+					"fluid": false
+				},
+				{
+					"slug": "body",
+					"name": "Tekst",
+					"size": "1.125rem",
+					"fluid": {
+						"min": "1.125rem",
+						"max": "1.25rem"
+					}
+				},
+				{
+					"slug": "dek",
+					"name": "Podnaslov",
+					"size": "1.25rem",
+					"fluid": {
+						"min": "1.1875rem",
+						"max": "1.375rem"
+					}
+				},
+				{
+					"slug": "naslov-s",
+					"name": "Naslov S",
+					"size": "1.375rem",
+					"fluid": {
+						"min": "1.25rem",
+						"max": "1.375rem"
+					}
+				},
+				{
+					"slug": "naslov-m",
+					"name": "Naslov M",
+					"size": "1.875rem",
+					"fluid": {
+						"min": "1.5rem",
+						"max": "1.875rem"
+					}
+				},
+				{
+					"slug": "naslov-l",
+					"name": "Naslov L",
+					"size": "2.75rem",
+					"fluid": {
+						"min": "1.875rem",
+						"max": "2.75rem"
+					}
+				},
+				{
+					"slug": "display",
+					"name": "Veliki naslov",
+					"size": "4rem",
+					"fluid": {
+						"min": "2.25rem",
+						"max": "4rem"
+					}
+				}
 			]
 		},
 		"custom": {
@@ -87,15 +283,29 @@
 			"focus": "3px solid var(--wp--preset--color--plava)"
 		},
 		"blocks": {
-			"core/button": { "border": { "radius": false } },
-			"core/image": { "lightbox": { "allowEditing": true } }
+			"core/button": {
+				"border": {
+					"radius": false
+				}
+			},
+			"core/image": {
+				"lightbox": {
+					"allowEditing": true
+				}
+			}
 		}
 	},
 	"styles": {
-		"color": { "background": "var:preset|color|papir", "text": "var:preset|color|tinta" },
+		"color": {
+			"background": "var:preset|color|papir",
+			"text": "var:preset|color|tinta"
+		},
 		"spacing": {
 			"blockGap": "1.5rem",
-			"padding": { "left": "1rem", "right": "1rem" }
+			"padding": {
+				"left": "1rem",
+				"right": "1rem"
+			}
 		},
 		"typography": {
 			"fontFamily": "var:preset|font-family|serif",
@@ -105,87 +315,275 @@
 		},
 		"elements": {
 			"link": {
-				"color": { "text": "currentColor" },
-				"typography": { "textDecoration": "underline" },
-				":hover": { "typography": { "textDecoration": "underline" }, "color": { "text": "var:preset|color|plava-chip" } },
-				":focus": { "outline": { "color": "var:preset|color|plava", "offset": "2px", "style": "solid", "width": "3px" } }
+				"color": {
+					"text": "currentColor"
+				},
+				"typography": {
+					"textDecoration": "underline"
+				},
+				":hover": {
+					"typography": {
+						"textDecoration": "underline"
+					},
+					"color": {
+						"text": "var:preset|color|plava-chip"
+					}
+				},
+				":focus": {
+					"outline": {
+						"color": "var:preset|color|plava",
+						"offset": "2px",
+						"style": "solid",
+						"width": "3px"
+					}
+				}
 			},
 			"heading": {
-				"typography": { "fontFamily": "var:preset|font-family|serif", "fontWeight": "400", "lineHeight": "1.15", "letterSpacing": "-0.005em" },
-				"color": { "text": "var:preset|color|tinta" }
+				"typography": {
+					"fontFamily": "var:preset|font-family|serif",
+					"fontWeight": "400",
+					"lineHeight": "1.15",
+					"letterSpacing": "-0.005em"
+				},
+				"color": {
+					"text": "var:preset|color|tinta"
+				}
 			},
-			"h1": { "typography": { "fontSize": "var:preset|font-size|naslov-l" } },
-			"h2": { "typography": { "fontSize": "var:preset|font-size|naslov-m" } },
-			"h3": { "typography": { "fontSize": "var:preset|font-size|naslov-s" } },
-			"h4": { "typography": { "fontSize": "var:preset|font-size|dek" } },
+			"h1": {
+				"typography": {
+					"fontSize": "var:preset|font-size|naslov-l"
+				}
+			},
+			"h2": {
+				"typography": {
+					"fontSize": "var:preset|font-size|naslov-m"
+				}
+			},
+			"h3": {
+				"typography": {
+					"fontSize": "var:preset|font-size|naslov-s"
+				}
+			},
+			"h4": {
+				"typography": {
+					"fontSize": "var:preset|font-size|dek"
+				}
+			},
 			"button": {
-				"color": { "background": "var:preset|color|navy", "text": "var:preset|color|papir" },
-				"border": { "radius": "0" },
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontWeight": "700", "fontSize": "var:preset|font-size|ui" },
-				"spacing": { "padding": { "top": "0.7rem", "bottom": "0.7rem", "left": "1.2rem", "right": "1.2rem" } },
-				":hover": { "color": { "background": "var:preset|color|plava-chip" } },
-				":focus": { "outline": { "color": "var:preset|color|plava", "offset": "2px", "style": "solid", "width": "3px" } }
+				"color": {
+					"background": "var:preset|color|navy",
+					"text": "var:preset|color|papir"
+				},
+				"border": {
+					"radius": "0"
+				},
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontWeight": "700",
+					"fontSize": "var:preset|font-size|ui"
+				},
+				"spacing": {
+					"padding": {
+						"top": "0.7rem",
+						"bottom": "0.7rem",
+						"left": "1.2rem",
+						"right": "1.2rem"
+					}
+				},
+				":hover": {
+					"color": {
+						"background": "var:preset|color|plava-chip"
+					}
+				},
+				":focus": {
+					"outline": {
+						"color": "var:preset|color|plava",
+						"offset": "2px",
+						"style": "solid",
+						"width": "3px"
+					}
+				}
 			},
 			"caption": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontSize": "var:preset|font-size|small", "lineHeight": "1.45" },
-				"color": { "text": "var:preset|color|siva" }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontSize": "var:preset|font-size|small",
+					"lineHeight": "1.45"
+				},
+				"color": {
+					"text": "var:preset|color|siva"
+				}
 			}
 		},
 		"blocks": {
 			"core/post-title": {
-				"typography": { "fontWeight": "400", "lineHeight": "1.15" },
-				"elements": { "link": { "typography": { "textDecoration": "none" }, "color": { "text": "var:preset|color|tinta" } } }
+				"typography": {
+					"fontWeight": "400",
+					"lineHeight": "1.15"
+				},
+				"elements": {
+					"link": {
+						"typography": {
+							"textDecoration": "none"
+						},
+						"color": {
+							"text": "var:preset|color|tinta"
+						}
+					}
+				}
 			},
 			"core/post-excerpt": {
-				"typography": { "fontStyle": "italic", "fontSize": "var:preset|font-size|dek", "lineHeight": "1.4" },
-				"color": { "text": "#2A2A2A" }
+				"typography": {
+					"fontStyle": "italic",
+					"fontSize": "var:preset|font-size|dek",
+					"lineHeight": "1.4"
+				},
+				"color": {
+					"text": "#2A2A2A"
+				}
 			},
 			"core/post-author-name": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontWeight": "700", "fontSize": "var:preset|font-size|ui" },
-				"elements": { "link": { "typography": { "textDecoration": "none" } } }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontWeight": "700",
+					"fontSize": "var:preset|font-size|ui"
+				},
+				"elements": {
+					"link": {
+						"typography": {
+							"textDecoration": "none"
+						}
+					}
+				}
 			},
 			"core/post-date": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontSize": "var:preset|font-size|small" },
-				"color": { "text": "var:preset|color|siva" }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontSize": "var:preset|font-size|small"
+				},
+				"color": {
+					"text": "var:preset|color|siva"
+				}
 			},
 			"core/query-pagination": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontWeight": "700", "fontSize": "var:preset|font-size|ui" }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontWeight": "700",
+					"fontSize": "var:preset|font-size|ui"
+				}
 			},
 			"core/navigation": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontWeight": "700", "fontSize": "var:preset|font-size|ui" },
-				"elements": { "link": { "typography": { "textDecoration": "none" } } }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontWeight": "700",
+					"fontSize": "var:preset|font-size|ui"
+				},
+				"elements": {
+					"link": {
+						"typography": {
+							"textDecoration": "none"
+						}
+					}
+				}
 			},
 			"core/search": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontSize": "var:preset|font-size|ui" }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontSize": "var:preset|font-size|ui"
+				}
 			},
 			"core/separator": {
-				"color": { "text": "var:preset|color|linija" },
-				"border": { "width": "0 0 1px 0" }
+				"color": {
+					"text": "var:preset|color|linija"
+				},
+				"border": {
+					"width": "0 0 1px 0"
+				}
 			},
 			"core/quote": {
-				"border": { "left": { "color": "var:preset|color|navy", "width": "3px", "style": "solid" } },
-				"spacing": { "padding": { "left": "1.25rem" } },
-				"typography": { "fontStyle": "normal" }
+				"border": {
+					"left": {
+						"color": "var:preset|color|navy",
+						"width": "3px",
+						"style": "solid"
+					}
+				},
+				"spacing": {
+					"padding": {
+						"left": "1.25rem"
+					}
+				},
+				"typography": {
+					"fontStyle": "normal"
+				}
 			},
 			"core/pullquote": {
-				"typography": { "fontSize": "var:preset|font-size|naslov-m", "fontStyle": "italic", "lineHeight": "1.25", "fontWeight": "400" },
-				"border": { "top": { "width": "0" }, "bottom": { "width": "0" } }
+				"typography": {
+					"fontSize": "var:preset|font-size|naslov-m",
+					"fontStyle": "italic",
+					"lineHeight": "1.25",
+					"fontWeight": "400"
+				},
+				"border": {
+					"top": {
+						"width": "0"
+					},
+					"bottom": {
+						"width": "0"
+					}
+				}
 			},
 			"core/table": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontSize": "var:preset|font-size|ui" }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontSize": "var:preset|font-size|ui"
+				}
 			},
 			"core/categories": {
-				"typography": { "fontFamily": "var:preset|font-family|sans", "fontWeight": "700", "fontSize": "var:preset|font-size|ui" }
+				"typography": {
+					"fontFamily": "var:preset|font-family|sans",
+					"fontWeight": "700",
+					"fontSize": "var:preset|font-size|ui"
+				}
 			}
 		}
 	},
 	"templateParts": [
-		{ "name": "header", "title": "Zaglavlje", "area": "header" },
-		{ "name": "footer", "title": "Podnožje", "area": "footer" },
-		{ "name": "post-meta", "title": "Potpis i datum", "area": "uncategorized" }
+		{
+			"name": "header",
+			"title": "Zaglavlje",
+			"area": "header"
+		},
+		{
+			"name": "masthead",
+			"title": "Zaglavlje naslovnice (veliki logo)",
+			"area": "header"
+		},
+		{
+			"name": "footer",
+			"title": "Podnožje",
+			"area": "footer"
+		},
+		{
+			"name": "post-meta",
+			"title": "Potpis i datum",
+			"area": "uncategorized"
+		}
 	],
 	"customTemplates": [
-		{ "name": "page-igre", "title": "Igre (bez potpisa, široko)", "postTypes": [ "page" ] },
-		{ "name": "page-no-title", "title": "Stranica bez naslova", "postTypes": [ "page" ] }
+		{
+			"name": "page-igre",
+			"title": "Igre (bez potpisa, široko)",
+			"postTypes": [
+				"page"
+			]
+		},
+		{
+			"name": "page-no-title",
+			"title": "Stranica bez naslova",
+			"postTypes": [
+				"page"
+			]
+		}
 	]
 }

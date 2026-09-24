@@ -663,6 +663,130 @@ function dp_search_title( $content, $block ) {
 add_filter( 'render_block_core/query-title', 'dp_search_title', 10, 2 );
 
 /* -------------------------------------------------------------------------
+ * Naslovnica: datum u zaglavlju i citat
+ * ---------------------------------------------------------------------- */
+
+/** Paragraf sa klasom "dp-danas" prikazuje današnji datum, npr. "Četvrtak, 24. septembar 2026.". */
+function dp_today( $content, $block ) {
+	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-danas' ) ) {
+		return $content;
+	}
+	$date = wp_date( 'l, j. F Y.' );
+	return sprintf( '<p class="dp-danas"><time datetime="%s">%s</time></p>', esc_attr( wp_date( 'Y-m-d' ) ), esc_html( mb_strtoupper( mb_substr( $date, 0, 1 ) ) . mb_substr( $date, 1 ) ) );
+}
+add_filter( 'render_block_core/paragraph', 'dp_today', 10, 2 );
+
+/** Traži prvi blok "Pullquote" sa tekstom (i unutar grupa i kolona). */
+function dp_find_pullquote( $blocks ) {
+	foreach ( $blocks as $block ) {
+		if ( 'core/pullquote' === $block['blockName'] ) {
+			$html = $block['innerHTML'];
+			$cite = '';
+			if ( preg_match( '#<cite[^>]*>(.*?)</cite>#s', $html, $m ) ) {
+				$cite = trim( wp_strip_all_tags( $m[1] ) );
+				$html = str_replace( $m[0], '', $html );
+			}
+			$text = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $html ) ) );
+			if ( mb_strlen( $text ) >= 20 && mb_strlen( $text ) <= 320 ) {
+				return array( 'text' => $text, 'cite' => $cite );
+			}
+		}
+		if ( ! empty( $block['innerBlocks'] ) ) {
+			$found = dp_find_pullquote( $block['innerBlocks'] );
+			if ( $found ) {
+				return $found;
+			}
+		}
+	}
+	return null;
+}
+
+/**
+ * Grupa sa klasom "dp-citat" prikazuje najnoviji istaknuti citat (Pullquote)
+ * iz objavljenih članaka, sa imenom i linkom na članak. Bez citata je nema.
+ */
+function dp_render_citat( $content, $block ) {
+	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-citat' ) ) {
+		return $content;
+	}
+
+	foreach ( get_posts( array( 'numberposts' => 30, 'no_found_rows' => true ) ) as $post ) {
+		if ( ! has_block( 'core/pullquote', $post ) ) {
+			continue;
+		}
+		$quote = dp_find_pullquote( parse_blocks( $post->post_content ) );
+		if ( ! $quote ) {
+			continue;
+		}
+
+		$cite = $quote['cite'] ? sprintf( '<p class="dp-citat-who">%s</p>', esc_html( $quote['cite'] ) ) : '';
+
+		return sprintf(
+			'<figure class="wp-block-group dp-citat"><blockquote><p class="dp-citat-text">%1$s</p></blockquote><figcaption>%2$s<p class="dp-citat-source">Iz teksta <a href="%3$s">%4$s</a></p></figcaption></figure>',
+			esc_html( trim( $quote['text'], " \t\n\"„“”" ) ),
+			$cite,
+			esc_url( get_permalink( $post ) ),
+			esc_html( get_the_title( $post ) )
+		);
+	}
+
+	return '';
+}
+add_filter( 'render_block_core/group', 'dp_render_citat', 10, 2 );
+
+/* -------------------------------------------------------------------------
+ * Članak: znak kraja teksta
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Veliko početno slovo: samo ako prvi pasus teksta počinje slovom (ne
+ * navodnikom ili slikom) i dovoljno je dug da slovo ima smisla.
+ */
+function dp_drop_cap( $content, $m ) {
+	if ( 0 !== strpos( ltrim( $content ), '<p' ) && ! preg_match( '#^\\s*<div[^>]*>\\s*<p#', $content ) ) {
+		return $content;
+	}
+
+	$inner = $m[1][0][0];
+	if ( mb_strlen( wp_strip_all_tags( $inner ) ) < 200 ) {
+		return $content;
+	}
+
+	if ( ! preg_match( '/^(?:\\s|\\x{200B}|&nbsp;)*(\\p{Lu})/u', $inner, $letter, PREG_OFFSET_CAPTURE ) ) {
+		return $content;
+	}
+
+	$start = $m[1][0][1] + $letter[1][1];
+	$len   = strlen( $letter[1][0] );
+
+	return substr_replace( $content, '<span class="dp-dropcap">' . $letter[1][0] . '</span>', $start, $len );
+}
+
+/** Mali DP znak na kraju posljednjeg pasusa članka, kao u magazinima. */
+function dp_end_mark( $content, $block ) {
+	if ( ! is_singular( 'post' ) || false === strpos( $block['attrs']['className'] ?? '', 'dp-article-body' ) ) {
+		return $content;
+	}
+
+	if ( ! preg_match_all( '#<p(?:\s[^>]*)?>(.*?)</p>#s', $content, $m, PREG_OFFSET_CAPTURE ) ) {
+		return $content;
+	}
+
+	$content = dp_drop_cap( $content, $m );
+	preg_match_all( '#<p(?:\s[^>]*)?>(.*?)</p>#s', $content, $m, PREG_OFFSET_CAPTURE );
+
+	for ( $i = count( $m[0] ) - 1; $i >= 0; $i-- ) {
+		if ( '' !== trim( wp_strip_all_tags( $m[1][ $i ][0] ), " \t\n\r\0\x0B\xC2\xA0" ) ) {
+			$end = $m[0][ $i ][1] + strlen( $m[0][ $i ][0] ) - 4;
+			return substr_replace( $content, '<span class="dp-endmark" aria-hidden="true"></span>', $end, 0 );
+		}
+	}
+
+	return $content;
+}
+add_filter( 'render_block_core/post-content', 'dp_end_mark', 10, 2 );
+
+/* -------------------------------------------------------------------------
  * Sitnice
  * ---------------------------------------------------------------------- */
 
