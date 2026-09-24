@@ -1,0 +1,301 @@
+/* Druga perspektiva: stilovi koje theme.json ne može izraziti. */
+
+:root {
+	--dp-rule: 3px solid var(--wp--preset--color--tinta);
+	--dp-hairline: 1px solid var(--wp--preset--color--linija);
+}
+
+/* Pristupačnost */
+.screen-reader-text {
+	border: 0;
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute !important;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+	outline: 3px solid var(--wp--preset--color--ultramarin);
+	outline-offset: 2px;
+}
+
+/* ---------- Zaglavlje ---------- */
+
+.dp-topline {
+	padding-bottom: var(--wp--preset--spacing--30);
+}
+
+.dp-topline .wp-block-search__button {
+	color: var(--wp--preset--color--tinta);
+	background: transparent;
+	border: 0;
+}
+
+.dp-header .wp-block-site-title {
+	margin-top: var(--wp--preset--spacing--30);
+	margin-bottom: var(--wp--preset--spacing--40);
+}
+
+/*
+ * Stil "Druga perspektiva": ispod naziva stoji njegova obrubljena kopija,
+ * pomjerena gore-desno, kao isti naslov viđen iz drugog ugla.
+ */
+.wp-block-site-title.is-style-second-view {
+	position: relative;
+	isolation: isolate;
+	width: fit-content;
+	margin-left: 0 !important;
+	padding-top: 0.06em;
+	padding-right: 0.06em;
+}
+
+.wp-block-site-title.is-style-second-view[data-text]::after {
+	content: attr(data-text);
+	content: attr(data-text) / "";
+	position: absolute;
+	inset: 0.06em 0.06em 0 0;
+	transform: translate(0.055em, -0.055em);
+	color: transparent;
+	-webkit-text-stroke: max(1px, 0.018em) var(--wp--preset--color--ultramarin);
+	z-index: -1;
+	pointer-events: none;
+}
+
+nav.dp-sections {
+	border-top: var(--dp-rule);
+	border-bottom: var(--dp-hairline);
+	padding-block: 0.75rem;
+	column-gap: 1.5rem;
+}
+
+.dp-sections .wp-block-navigation-item__content {
+	color: var(--wp--preset--color--tinta);
+}
+
+.dp-sections .current-menu-item > .wp-block-navigation-item__content,
+.dp-sections .wp-block-navigation-item__content[aria-current="page"] {
+	color: var(--wp--preset--color--ultramarin);
+}
+
+/* ---------- Naslovnica i liste ---------- */
+
+.dp-kicker {
+	margin-bottom: 0;
+}
+
+.dp-lead-title {
+	text-wrap: balance;
+}
+
+.dp-lead-excerpt,
+.dp-card-excerpt {
+	color: var(--wp--preset--color--magla);
+}
+
+.dp-lead-excerpt p,
+.dp-card-excerpt p {
+	margin: 0;
+}
+
+.dp-section-heading {
+	border-top: var(--dp-rule);
+	padding-top: 0.75rem;
+	letter-spacing: -0.01em;
+}
+
+.dp-grid .wp-block-post-title {
+	text-wrap: balance;
+}
+
+.wp-block-post-title a:hover,
+.wp-block-post-title a:focus-visible {
+	text-decoration: underline;
+	text-decoration-thickness: 0.06em;
+	text-underline-offset: 0.12em;
+}
+
+.wp-block-post-featured-image a:focus-visible {
+	outline-offset: 4px;
+}
+
+.dp-meta {
+	align-items: baseline;
+}
+
+.dp-meta > * {
+	margin: 0;
+}
+
+.dp-reading-time {
+	font-family: var(--wp--preset--font-family--grotesk);
+	font-size: var(--wp--preset--font-size--xs);
+	color: var(--wp--preset--color--magla);
+}
+
+.wp-block-query-pagination {
+	border-top: var(--dp-hairline);
+	padding-top: var(--wp--preset--spacing--30);
+}
+
+.wp-block-query-pagination-numbers .current {
+	color: var(--wp--preset--color--ultramarin);
+}
+
+/* ---------- Arhiva ---------- */
+
+.dp-archive-head .wp-block-query-title {
+	margin-bottom: 0.5rem;
+}
+
+.dp-archive-head .wp-block-term-description p {
+	margin: 0;
+}
+
+/* ---------- Članak ---------- */
+
+.dp-standfirst {
+	font-style: italic;
+	color: var(--wp--preset--color--magla);
+	margin-top: 0.75rem;
+}
+
+.dp-standfirst p {
+	margin: 0;
+}
+
+.dp-article-head .dp-meta {
+	margin-top: var(--wp--preset--spacing--30);
+	padding-top: var(--wp--preset--spacing--30);
+	border-top: var(--dp-hairline);
+}
+
+.dp-article-image figcaption,
+.dp-article-body .wp-element-caption {
+	margin-top: 0.5rem;
+}
+
+.dp-article-body > h2 {
+	font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem);
+	margin-top: 2.25em;
+}
+
+.dp-article-body > h3 {
+	margin-top: 2em;
+}
+
+.dp-article-body a {
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.15em;
+}
+
+.dp-article-body .wp-block-pullquote {
+	text-align: left;
+	border-top: var(--dp-rule);
+	border-bottom: var(--dp-hairline);
+	margin-block: var(--wp--preset--spacing--50);
+}
+
+.dp-article-body .wp-block-pullquote blockquote {
+	margin: 0;
+}
+
+.dp-article-body .wp-block-pullquote cite {
+	display: block;
+	margin-top: 0.75rem;
+	font-size: var(--wp--preset--font-size--s);
+	font-weight: 600;
+	color: var(--wp--preset--color--tinta);
+	letter-spacing: 0;
+}
+
+/* Intervju: paragraf sa stilom "Pitanje" */
+.is-style-pitanje {
+	font-family: var(--wp--preset--font-family--grotesk);
+	font-weight: 700;
+	font-size: 1.0625rem;
+	line-height: 1.4;
+	margin-top: 2em !important;
+}
+
+.is-style-pitanje + p {
+	margin-top: 0.5rem;
+}
+
+.dp-fact-box h3 {
+	margin: 0;
+}
+
+.dp-fact-box ul {
+	margin: 0;
+	font-family: var(--wp--preset--font-family--grotesk);
+}
+
+.dp-article-foot {
+	border-top: var(--dp-hairline);
+	padding-top: var(--wp--preset--spacing--40);
+}
+
+.dp-tags {
+	font-weight: 500;
+}
+
+.dp-author-box {
+	margin-top: var(--wp--preset--spacing--40);
+	align-items: flex-start;
+}
+
+.dp-author-box .wp-block-post-author__avatar img {
+	border-radius: 50%;
+}
+
+.dp-author-box .wp-block-post-author__byline {
+	color: var(--wp--preset--color--magla);
+	font-size: var(--wp--preset--font-size--xs);
+}
+
+.dp-author-box .wp-block-post-author__name {
+	font-weight: 700;
+}
+
+.dp-author-box .wp-block-post-author__bio {
+	margin-top: 0.25rem;
+	font-family: var(--wp--preset--font-family--literata);
+	color: var(--wp--preset--color--magla);
+}
+
+/* ---------- Podnožje ---------- */
+
+.dp-footer .wp-block-site-title a {
+	color: var(--wp--preset--color--papir);
+}
+
+.dp-footer p {
+	opacity: 0.85;
+	max-width: 36ch;
+}
+
+.dp-footer-nav .wp-block-navigation-item__content {
+	color: var(--wp--preset--color--papir);
+}
+
+/* ---------- Manji ekrani ---------- */
+
+@media (max-width: 781px) {
+	.dp-lead .wp-block-columns {
+		gap: var(--wp--preset--spacing--30);
+	}
+
+	.dp-grid .wp-block-post-template.is-layout-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (min-width: 600px) and (max-width: 781px) {
+	.dp-grid .wp-block-post-template.is-layout-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
