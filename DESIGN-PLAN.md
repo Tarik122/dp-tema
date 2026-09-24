@@ -84,116 +84,121 @@ With your 39 real articles, every module fills. With 12 it still looks complete.
 
 ## 5. Homepage
 
+**One design, two widths.** Phone and desktop have the same modules, in the same order, with the same treatment for each. The only thing that changes is how many columns sit side by side. A reader who sees the site on their phone in the morning and on a laptop in the afternoon should recognise every piece.
+
 ### Phone (390px)
 
 ```
 ┌───────────────────────────────┐
-│ ≡        [DP logo]          ⌕ │  header: menu, logo centered, search
+│ [DP logo]         Rubrike  ⌕  │  header: logo left, menu + search right
 ├───────────────────────────────┤
 │ ┌───────────────────────────┐ │
-│ │                           │ │  LEAD: full-bleed photo (4:5),
-│ │          PHOTO            │ │  Instagram cover treatment:
-│ │                           │ │  gradient only at the bottom third,
-│ │ [Vijesti]                 │ │  so the rest of the photo stays clean
-│ │ Zbog visokih temperatura  │ │  big bold headline, white
-│ │ skraćeni časovi           │ │
+│ │                           │ │  LEAD: Instagram cover treatment
+│ │          PHOTO            │ │  (same on desktop). Photo 4:5,
+│ │                           │ │  soft gradient only on the bottom
+│ │ [Vijesti o školi]         │ │  third, chip + big white bold
+│ │ Uz performans Dramobrazbe │ │  headline sitting on it
+│ │ započeo Dan otvorenih…    │ │
 │ └───────────────────────────┘ │
-│ Italic dek below the photo,   │  dek + byline OUTSIDE the photo
-│ on white. Nadin Janjoš        │  (readable, no muddy overlay)
-│                               │
+│ Italic dek below the photo,   │  dek + author on white, under
+│ on white.                     │  the photo (same on desktop)
+│ Nadin Janjoš                  │
 │ ───────────────────────────── │
-│ FEATURE A  (image on top)     │  3 features, each different:
-│ [Sport]                       │  A: 3:2 photo, H2 headline, dek
+│ FEATURE A  (photo on top)     │  3 features, each different:
+│ ┌───────────────────────────┐ │  A: 3:2 photo, chip, H2, author
+│ └───────────────────────────┘ │
+│ [Sport]                       │
 │ Headline in serif H2          │
-│ Dek…  Autor                   │
-│                               │
-│ FEATURE B  (text only, big)   │  B: no photo, big H1 serif
-│ [Mišljenje]                   │     headline, blue left rule
-│ Big serif headline without    │
-│ a photo, for opinion/essays   │
 │ Autor                         │
-│                               │
+│ ───────────────────────────── │
+│ FEATURE B  (text only, big)   │  B: no photo, big serif headline,
+│ [Mišljenje]                   │     italic dek
+│ Big serif headline without    │
+│ a photo                       │
+│ Dek… Autor                    │
+│ ───────────────────────────── │
 │ FEATURE C  (small photo right)│  C: headline left, square photo right
 │ [Kultura]          ┌─────┐    │
 │ Headline           │ img │    │
 │ Autor              └─────┘    │
 │                               │
-│ Najnovije ─────────────────── │  text list, Confluence-style
+│ Najnovije                     │  text list, Confluence-style
+│ ───────────────────────────── │
 │ Headline one                  │
-│ Autor, 3. decembar 2025.     │
+│ Autor, 3. decembar 2025.      │
 │ ───────────────────────────── │  hairlines between items
 │ Headline two                  │
-│ Autor, 22. novembar 2025.    │
-│ ─────────────────────────────  │
+│ Autor, 22. novembar 2025.     │
 ├───────────────────────────────┤
-│▓▓▓▓▓▓▓ NAVY BLOCK ▓▓▓▓▓▓▓▓▓▓▓▓│  Mišljenje: the one full-width navy
-│ Mišljenje                     │  block, author names FIRST
-│                               │
-│ Sema Čeljo                    │  author (Lato bold, orange-light)
-│ Kako odabrati budući fakultet?│  title (serif, white)
-│ ─────────                     │
+│▓▓▓▓▓▓▓ NAVY BLOCK ▓▓▓▓▓▓▓▓▓▓▓▓│  Mišljenje: author name first,
+│ Mišljenje                     │  then title
+│ Sema Čeljo                    │
+│ Kako odabrati budući fakultet?│
+│ ───────────                   │
 │ Sarah Kadić                   │
 │ Da li su ocjene zaista…       │
-│▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│
 ├───────────────────────────────┤
-│ ┌───────────────────────────┐ │  IGRE tile (Instagram blue):
-│ │ Igre  beta                │ │  a mini Wordle-style row of
-│ │ ▢▢▢▢▢  Nova riječ svaki   │ │  5 letter squares + one line
-│ │        dan. Igraj ›       │ │
+│ ┌── IGRE (blue) ────────────┐ │  Igre tile
+│ │ Igre  beta     ▢▢▢▢▢      │ │
+│ │ Nova riječ svaki dan.     │ │
 │ └───────────────────────────┘ │
-│                               │
-│ Iz arhive                     │  one older piece, small photo,
-│ [img] Headline  (2024.)       │  year shown so it's honest
-│                               │
-│ Rubrike                       │  plain list, hairlines,
-│ Vijesti o školi               │  no counts
-│ Mišljenje                     │
-│ Sport …                       │
+│ Iz arhive                     │  one older piece, square photo left
+│ [img] Headline                │
+│       Autor, 2025.            │
+│ Rubrike                       │  list with hairlines, no counts
+│ ───────────────────────────── │
+│ Vijesti o školi               │
+│ ───────────────────────────── │
+│ Mišljenje …                   │
 ├───────────────────────────────┤
-│▓▓▓▓▓▓ NAVY FOOTER ▓▓▓▓▓▓▓▓▓▓▓▓│  white logo, about, Instagram,
-└───────────────────────────────┘  sections, contact
+│▓▓▓▓▓▓ NAVY FOOTER ▓▓▓▓▓▓▓▓▓▓▓▓│  white logo, about, sections,
+└───────────────────────────────┘  Instagram, contact (stacked)
 ```
 
 ### Desktop (1440px, content max 1240px)
 
+The same pieces, now side by side:
+
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ [DP logo]   Vijesti  Mišljenje  Sport  Kultura  Nauka  Igre beta   ⌕ │
+│ [DP logo]   Vijesti  Mišljenje  Sport  Kultura  Nauka  Igre beta   ⌕ │  same header; the menu
+├──────────────────────────────────────────────────────────────────────┤  items are visible
+│ ┌──────────────────────────────────────────────────────────────────┐ │
+│ │                                                                  │ │  LEAD: same Instagram
+│ │                          PHOTO (16:9)                            │ │  cover treatment. The
+│ │                                                                  │ │  headline stays in the
+│ │ [Vijesti o školi]                                                │ │  bottom-left, max ~60%
+│ │ Uz performans Dramobrazbe započeo                                │ │  of the width, so lines
+│ │ je Dan otvorenih vrata                                           │ │  stay short and legible
+│ └──────────────────────────────────────────────────────────────────┘ │
+│ Italic dek below the photo, on white.            Nadin Janjoš       │  dek + author under
+├──────────────────────────────────────────────────────────────────────┤  the photo, as on phone
+│ FEATURE A              │ FEATURE B                │ FEATURE C          │  the same 3 features,
+│ ┌──────────────────┐   │ [Mišljenje]              │ [Kultura]  ┌────┐  │  in one row
+│ │      3:2         │   │ Big serif headline       │ Headline   │img │  │
+│ └──────────────────┘   │ without a photo          │ Autor      └────┘  │
+│ [Sport]                │ Dek… Autor               │                    │
+│ H2 headline, Autor     │                          │                    │
 ├──────────────────────────────────────────────────────────────────────┤
-│ ┌──────────────────────────────────────┐  [Vijesti o školi]          │
-│ │                                      │                              │
-│ │              LEAD PHOTO              │  Uz performans Dramobrazbe   │  LEAD: New Yorker style.
-│ │               (3:2)                  │  započeo je Dan otvorenih    │  Big photo left 2/3,
-│ │                                      │  vrata                       │  serif display headline right,
-│ │                                      │                              │  italic dek, author.
-│ │                                      │  Italic dek, two or three    │  No text on the photo
-│ └──────────────────────────────────────┘  lines…                      │  on desktop.
-│  caption / credit                          Nadin Janjoš               │
+│ Najnovije                                                            │  same text list,
+│ ─────────────────────────────────  ───────────────────────────────── │  in 2 columns
+│ Headline one                       Headline two                      │
+│ Autor, datum                       Autor, datum                      │
 ├──────────────────────────────────────────────────────────────────────┤
-│ FEATURE A (photo top)  │ FEATURE B (text only)    │ Najnovije          │  3 columns of different
-│ ┌──────────────────┐   │ [Mišljenje]              │ ────────────────── │  widths: 5 / 4 / 3
-│ │      3:2         │   │ Big serif headline with  │ Headline           │
-│ └──────────────────┘   │ no photo, H1 size        │ Autor, datum       │
-│ [Sport]                │ Italic dek               │ ────────────────── │
-│ H2 headline            │ Autor                    │ Headline           │
-│ Autor                  │ ──────────────────────── │ ────────────────── │
-│                        │ FEATURE C small img right│ Headline           │
-├──────────────────────────────────────────────────────────────────────┤
-│▓▓ Mišljenje ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  navy, 3 columns,
-│▓▓ Sema Čeljo        ▓ Sarah Kadić         ▓ Lejla Bučo           ▓▓▓│  author first
+│▓▓ Mišljenje ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│  same navy block,
+│▓▓ Sema Čeljo        ▓ Sarah Kadić         ▓ Lejla Bučo           ▓▓▓│  3 columns
 │▓▓ Kako odabrati…    ▓ Da li su ocjene…    ▓ Zašto učenici sve…   ▓▓▓│
 ├──────────────────────────────────────────────────────────────────────┤
-│ ┌── IGRE (blue) ──────────────┐   Iz arhive                          │
-│ │ Igre beta   ▢▢▢▢▢           │   [img] Kako je Zlatno doba islama…  │
-│ │ Nova riječ svaki dan. Igraj │   Nejra Kovačević, 2025.             │
-│ └─────────────────────────────┘                                      │
-│ Rubrike:  Vijesti o školi   Ostale vijesti   Mišljenje   Sport  …     │
+│ ┌── IGRE (blue) ─────────┐  Iz arhive               Rubrike          │  Igre, Iz arhive and
+│ │ Igre beta   ▢▢▢▢▢      │  [img] Kako je Zlatno    ──────────────── │  Rubrike in one row,
+│ │ Nova riječ svaki dan.  │        doba islama…      Vijesti o školi  │  each looking exactly
+│ └────────────────────────┘        Autor, 2025.      ──────────────── │  as on the phone
+│                                                     Mišljenje …      │
 ├──────────────────────────────────────────────────────────────────────┤
-│▓▓ FOOTER navy: logo (white) │ O nama │ Rubrike │ Instagram, kontakt ▓│
+│▓▓ FOOTER navy: logo (white) │ O nama │ Rubrike │ Instagram, kontakt ▓│  same content, in columns
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Lead on phone vs desktop:** on the phone the lead uses your Instagram cover look (photo, chip, big white headline), because readers coming from Instagram will recognise it instantly. The gradient covers only the bottom part, so the photo stays clean. On desktop the headline moves beside the photo, New Yorker style, because text across a wide photo is harder to read.
 
 ---
 
@@ -203,7 +208,7 @@ With your 39 real articles, every module fills. With 12 it still looks complete.
 
 ```
 ┌───────────────────────────────┐
-│ ≡        [DP logo]          ⌕ │
+│ [DP logo]         Rubrike  ⌕  │
 ├───────────────────────────────┤
 │ [Sport]                       │  chip
 │ Bračković i Kadribegović      │  Display serif headline
@@ -241,7 +246,7 @@ With your 39 real articles, every module fills. With 12 it still looks complete.
 
 ### Desktop
 
-The same order, centered. The headline block sits in a wider 860px column, the photo spans 1080px, and the text runs in a 680px column. Pull quotes can stick out slightly into the left margin. "Pročitajte još" uses 3 columns.
+Exactly the same order and treatments as the phone, centered. The headline block sits in a wider 860px column, the photo spans 1080px, and the text runs in a 680px column. Pull quotes can stick out slightly into the left margin. "Pročitajte još" uses 3 columns.
 
 ---
 
