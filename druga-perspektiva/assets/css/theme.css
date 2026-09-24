@@ -779,10 +779,19 @@ p {
 	font-size: var(--wp--preset--font-size--small);
 }
 
-/* ---------- Mišljenje: kolumne, ime autora prvo ---------- */
+/* ---------- Mišljenje: svijetlo siva ploha, ime autora prvo ---------- */
 
 .dp-opinion {
-	padding: 0 var(--dp-gutter);
+	background: var(--wp--preset--color--papir-2);
+	padding: var(--wp--preset--spacing--50) var(--dp-gutter) var(--wp--preset--spacing--60);
+}
+
+.dp-opinion .dp-module-heading {
+	border-top-color: var(--wp--preset--color--tinta);
+}
+
+.dp-opinion .dp-module-heading a:hover {
+	color: var(--wp--preset--color--narandza-chip);
 }
 
 .dp-opinion-list > li {
@@ -796,12 +805,21 @@ p {
 }
 
 .dp-opinion-author {
-	font-size: 1.0625rem;
-	margin-bottom: 0.4rem;
+	margin-bottom: 0.5rem;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 16;
+	font-style: italic;
+	font-weight: 500;
+	font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+	line-height: 1.1;
+	color: var(--wp--preset--color--narandza-chip);
 }
 
 .dp-opinion .wp-block-post-title {
 	margin: 0;
+	font-weight: 600;
+	line-height: 1.2;
 }
 
 .dp-opinion .dp-standfirst {

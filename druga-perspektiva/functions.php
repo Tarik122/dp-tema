@@ -488,10 +488,8 @@ function dp_post_ids( $args ) {
 
 /**
  * Raspored naslovnice, izračunat jednom po učitavanju:
- * - glavna priča: zalijepljeni (sticky) članak, inače najnoviji "Izdvojeno",
- *   inače najnoviji članak;
- * - izdvojeni: sljedeća tri "Izdvojeno", dopunjeno najnovijim;
- * - najnovije: pet najnovijih koji nisu već prikazani;
+ * - glavna priča: zalijepljeni (sticky) članak, inače najnoviji članak;
+ * - izdvojeni i najnovije: sljedećih 3 + 6 članaka, strogo od najnovijeg;
  * - mišljenje: tri najnovija iz rubrike Mišljenje koja nisu već prikazana;
  * - iz arhive: jedan izdvojeni stariji od šest mjeseci, mijenja se svaki dan.
  */
@@ -512,10 +510,6 @@ function dp_home_layout() {
 		$ids  = dp_post_ids( array( 'post__in' => $sticky, 'numberposts' => 1 ) );
 		$lead = $ids ? $ids[0] : 0;
 	}
-	if ( ! $lead && $featured ) {
-		$ids  = dp_post_ids( array( 'cat' => $featured->term_id, 'numberposts' => 1 ) );
-		$lead = $ids ? $ids[0] : 0;
-	}
 	if ( ! $lead ) {
 		$ids  = dp_post_ids( array( 'numberposts' => 1 ) );
 		$lead = $ids ? $ids[0] : 0;
@@ -529,20 +523,15 @@ function dp_home_layout() {
 	$debate = 2 === count( $debate ) ? $debate : array();
 	$shown  = array_merge( $shown, $debate );
 
-	// Izdvojeni.
-	$features = $featured ? dp_post_ids( array( 'cat' => $featured->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
-	if ( count( $features ) < 3 ) {
-		$features = array_merge( $features, dp_post_ids( array( 'numberposts' => 3 - count( $features ), 'post__not_in' => array_merge( $shown, $features ) ) ) );
-	}
-	$shown = array_merge( $shown, $features );
+	// Izdvojeni i Najnovije: redom od najnovijeg, bez preskakanja.
+	$stream   = dp_post_ids( array( 'numberposts' => 9, 'post__not_in' => $shown ) );
+	$features = array_slice( $stream, 0, 3 );
+	$latest   = array_slice( $stream, 3, 6 );
+	$shown    = array_merge( $shown, $stream );
 
-	// Mišljenje (prije liste najnovijih, da kolumne ostanu u svom bloku).
+	// Mišljenje: najnovije kolumne koje već nisu gore.
 	$opinions = $opinion ? dp_post_ids( array( 'cat' => $opinion->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
 	$shown    = array_merge( $shown, $opinions );
-
-	// Najnovije.
-	$latest = dp_post_ids( array( 'numberposts' => 6, 'post__not_in' => $shown ) );
-	$shown  = array_merge( $shown, $latest );
 
 	// Rubrike: po tri teksta iz svake, bez onih koji su već gore.
 	$sections = array();
@@ -819,10 +808,12 @@ add_filter(
 	}
 );
 
-/** Pretraga traži samo članke, ne stranice i priloge. */
+/** Pretraga traži samo članke (ne stranice i priloge), od najnovijeg. */
 function dp_search_posts_only( $query ) {
 	if ( ! is_admin() && $query->is_main_query() && $query->is_search() ) {
 		$query->set( 'post_type', 'post' );
+		$query->set( 'orderby', 'date' );
+		$query->set( 'order', 'DESC' );
 	}
 }
 add_action( 'pre_get_posts', 'dp_search_posts_only' );

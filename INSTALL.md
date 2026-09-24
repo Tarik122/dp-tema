@@ -38,12 +38,11 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 
 ## 6. Kako naslovnica bira članke
 
-- **Glavna priča:** članak označen kao "Zalijepljen" (Sticky, u desnoj koloni članka). Ako takvog nema, najnoviji članak iz kategorije **Izdvojeno**, a ako ni njega nema, najnoviji članak.
-- **Tri izdvojena teksta:** sljedeći članci iz **Izdvojeno**.
-- **Najnovije:** šest najnovijih tekstova koji već nisu gore.
+- **Glavna priča:** najnoviji članak. Ako želite da neki drugi članak bude gore, u članku u desnoj koloni uključite **Zalijepi na vrh** (Sticky).
+- **Tri teksta ispod glavne priče i Najnovije:** sljedećih devet članaka, strogo od najnovijeg prema starijem.
 - **Rubrike (Vijesti o školi, Sport, Umjetnost i kultura):** po tri teksta iz svake rubrike. Koje se rubrike prikazuju mijenja se u `functions.php` (`DP_HOME_SECTIONS`) i u šablonu naslovnice.
 - **Mišljenje:** najnoviji tekstovi iz rubrike Mišljenje koji već nisu gore.
-- **Iz arhive:** jedan stariji izdvojeni tekst, mijenja se svaki dan.
+- **Iz arhive:** jedan stariji tekst iz kategorije **Izdvojeno**, mijenja se svaki dan.
 
 Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 
