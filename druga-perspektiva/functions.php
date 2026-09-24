@@ -37,7 +37,7 @@ const DP_DEBATE_TAG = 'dvije-perspektive';
  * rubrika prikazuje, promijenite slug ovdje i naslov/link u šablonu naslovnice.
  */
 const DP_HOME_SECTIONS = array(
-	6 => 'vijestiskola',
+	6 => 'vijesti',
 	7 => 'sport',
 	8 => 'kultura',
 );
@@ -62,6 +62,13 @@ const DP_CATEGORY_COLORS = array(
  * oznaka za naslovnicu, a ostalo su ostaci demo sadržaja starog sajta.
  */
 const DP_HIDDEN_CATEGORIES = array( 'izdvojeno', 'zzdvojeno', 'uncategorized', 'arhiva', 'movies', 'music', 'news', 'ostalevijesti' );
+
+/*
+ * Rubrike čije se podrubrike prikazuju pod imenom roditelja. "Vijesti o školi"
+ * i "Ostale vijesti" su na sajtu jedna rubrika: "Vijesti". Stari linkovi na
+ * podrubrike i dalje rade.
+ */
+const DP_MERGED_PARENTS = array( 'vijesti' );
 
 /** Kategorija čiji članci pune izdvojene module na naslovnici. */
 const DP_FEATURED_CATEGORY = 'izdvojeno';
@@ -224,7 +231,17 @@ function dp_primary_category( $post_id ) {
 		}
 	);
 
-	return $visible[0];
+	$term = $visible[0];
+
+	// Podrubrike spojenih rubrika ("Vijesti o školi") prikazuju se kao roditelj ("Vijesti").
+	if ( $term->parent ) {
+		$parent = get_term( $term->parent, 'category' );
+		if ( $parent && ! is_wp_error( $parent ) && in_array( $parent->slug, DP_MERGED_PARENTS, true ) ) {
+			return $parent;
+		}
+	}
+
+	return $term;
 }
 
 /** Boja oznake za kategoriju (slug boje iz theme.json). */
@@ -278,8 +295,8 @@ function dp_category_body_style() {
 add_action( 'wp_head', 'dp_category_body_style' );
 
 /**
- * Blok "Categories" sa klasom "dp-rubrike": bez skrivenih kategorija i
- * bez roditelja "Vijesti" (njegove podrubrike su već na listi).
+ * Blok "Categories" sa klasom "dp-rubrike": bez skrivenih kategorija i bez
+ * podrubrika "Vijesti" (one su dio rubrike "Vijesti").
  * Prazne kategorije WordPress sam sakriva, a brojeve članaka ne prikazujemo.
  */
 function dp_rubrike_before( $pre, $block ) {
@@ -297,12 +314,20 @@ function dp_rubrike_excluded_ids() {
 		$ids = get_terms(
 			array(
 				'taxonomy'   => 'category',
-				'slug'       => array_merge( DP_HIDDEN_CATEGORIES, array( 'vijesti' ) ),
+				'slug'       => DP_HIDDEN_CATEGORIES,
 				'fields'     => 'ids',
 				'hide_empty' => false,
 			)
 		);
 		$ids = is_array( $ids ) ? $ids : array();
+
+		// Podrubrike spojenih rubrika se ne nabrajaju; na listi je samo roditelj.
+		foreach ( DP_MERGED_PARENTS as $slug ) {
+			$parent = get_term_by( 'slug', $slug, 'category' );
+			if ( $parent ) {
+				$ids = array_merge( $ids, get_term_children( $parent->term_id, 'category' ) );
+			}
+		}
 	}
 	return $ids;
 }

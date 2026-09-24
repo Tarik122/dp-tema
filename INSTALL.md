@@ -38,7 +38,7 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 
 ## 6. Kako naslovnica bira članke
 
-- **Glavna priča:** najnoviji članak. Ako želite da neki drugi članak bude gore, u članku u desnoj koloni uključite **Zalijepi na vrh** (Sticky).
+- **Glavna priča:** najnoviji članak. **Vi birate drugu:** otvorite članak → desna kolona **Članak** → uključite **Postavi na vrh bloga** (u novijim verzijama piše **Sticky** ili **Zalijepi**) → **Ažuriraj**. Taj članak ostaje glavna priča dok ga ne isključite. Ako ih je uključeno više, gore je najnoviji od njih.
 - **Tri teksta ispod glavne priče i Najnovije:** sljedećih devet članaka, strogo od najnovijeg prema starijem.
 - **Rubrike (Vijesti o školi, Sport, Umjetnost i kultura):** po tri teksta iz svake rubrike. Koje se rubrike prikazuju mijenja se u `functions.php` (`DP_HOME_SECTIONS`) i u šablonu naslovnice.
 - **Mišljenje:** najnoviji tekstovi iz rubrike Mišljenje koji već nisu gore.
@@ -46,7 +46,11 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 
 Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 
-## 7. Citat na naslovnici
+## 7. Vijesti
+
+"Vijesti o školi" i "Ostale vijesti" se na sajtu prikazuju kao jedna rubrika: **Vijesti** (plava oznaka). Stari linkovi i dalje rade. Za nove vijesti dovoljno je označiti kategoriju **Vijesti**. Podrubrike ne morate brisati.
+
+## 7a. Citat na naslovnici
 
 Naslovnica prikazuje jedan veliki citat ("Rečeno") iz najnovijeg članka koji ima **istaknuti citat**, pored crno-bijele naslovne fotografije tog članka. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
 
