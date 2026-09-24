@@ -1,0 +1,43 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|50"},"blockGap":"0"}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
+<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50)">
+	<!-- wp:group {"className":"dp-archive-head","layout":{"type":"default"}} -->
+	<div class="wp-block-group dp-archive-head">
+		<!-- wp:heading {"level":1,"className":"dp-archive-title","fontSize":"naslov-l"} -->
+		<h1 class="wp-block-heading dp-archive-title has-naslov-l-font-size">Svi tekstovi</h1>
+		<!-- /wp:heading -->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":20,"query":{"perPage":12,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":true},"className":"dp-river-query"} -->
+	<div class="wp-block-query dp-river-query">
+		<!-- wp:post-template {"className":"dp-river"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2"} /-->
+			<!-- wp:post-terms {"term":"category","className":"dp-chip"} /-->
+			<!-- wp:post-title {"level":2,"isLink":true,"fontSize":"naslov-s"} /-->
+			<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst"} /-->
+			<!-- wp:group {"className":"dp-list-meta","style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
+			<div class="wp-block-group dp-list-meta">
+				<!-- wp:post-author-name {"isLink":true} /-->
+				<!-- wp:post-date {"format":"j. F Y."} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-pagination {"paginationArrow":"none","className":"dp-pagination","layout":{"type":"flex","justifyContent":"space-between"}} -->
+			<!-- wp:query-pagination-previous {"label":"Novije"} /-->
+			<!-- wp:query-pagination-next {"label":"Starije"} /-->
+		<!-- /wp:query-pagination -->
+
+		<!-- wp:query-no-results -->
+			<!-- wp:paragraph {"className":"dp-empty"} -->
+			<p class="dp-empty">Još nema objavljenih tekstova.</p>
+			<!-- /wp:paragraph -->
+		<!-- /wp:query-no-results -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

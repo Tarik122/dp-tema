@@ -1,0 +1,40 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|50"},"blockGap":"0"}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
+<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50)">
+	<!-- wp:group {"className":"dp-404","style":{"spacing":{"blockGap":"1.25rem"}},"layout":{"type":"constrained","contentSize":"760px","justifyContent":"left"}} -->
+	<div class="wp-block-group dp-404">
+		<!-- wp:heading {"level":1,"className":"dp-archive-title","fontSize":"naslov-l"} -->
+		<h1 class="wp-block-heading dp-archive-title has-naslov-l-font-size">Ova stranica ne postoji</h1>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph {"fontSize":"dek"} -->
+		<p class="has-dek-font-size">Možda je link pogrešno prepisan ili je tekst premješten. Pokušajte ga pronaći pretragom:</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:search {"label":"Pretraži članke","showLabel":false,"placeholder":"Upišite riječ ili ime","buttonText":"Pretraži","className":"dp-search-form"} /-->
+
+		<!-- wp:paragraph -->
+		<p>Ili se vratite na <a href="/">naslovnicu</a>.</p>
+		<!-- /wp:paragraph -->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":9,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-read-more dp-min-1"} -->
+	<div class="wp-block-query dp-read-more dp-min-1">
+		<!-- wp:heading {"level":2,"className":"dp-module-heading"} -->
+		<h2 class="wp-block-heading dp-module-heading">Najnovije</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:post-template {"className":"dp-read-more-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","className":"dp-read-more-image"} /-->
+			<!-- wp:post-terms {"term":"category","className":"dp-chip"} /-->
+			<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
+			<!-- wp:post-author-name {"className":"dp-list-author"} /-->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

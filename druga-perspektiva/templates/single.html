@@ -1,0 +1,49 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|50"},"blockGap":"0"}},"layout":{"type":"constrained"}} -->
+<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50)">
+	<!-- wp:group {"tagName":"article","className":"dp-article","layout":{"type":"constrained"}} -->
+	<article class="wp-block-group dp-article">
+		<!-- wp:group {"className":"dp-article-head","style":{"spacing":{"blockGap":"1rem"}},"layout":{"type":"constrained","contentSize":"860px"}} -->
+		<div class="wp-block-group dp-article-head">
+			<!-- wp:post-terms {"term":"category","className":"dp-chip"} /-->
+			<!-- wp:post-title {"level":1,"className":"dp-article-title","fontSize":"display"} /-->
+			<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-article-dek"} /-->
+			<!-- wp:template-part {"slug":"post-meta"} /-->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:post-featured-image {"align":"wide","className":"dp-article-image","style":{"spacing":{"margin":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50"}}}} /-->
+
+		<!-- wp:post-content {"className":"dp-article-body","layout":{"type":"constrained"}} /-->
+
+		<!-- wp:group {"className":"dp-author-box","style":{"spacing":{"margin":{"top":"var:preset|spacing|60"},"blockGap":"0.4rem"}},"layout":{"type":"constrained"}} -->
+		<div class="wp-block-group dp-author-box" style="margin-top:var(--wp--preset--spacing--60)">
+			<!-- wp:paragraph {"className":"dp-author-label","fontSize":"small"} -->
+			<p class="dp-author-label has-small-font-size">Tekst napisao/la</p>
+			<!-- /wp:paragraph -->
+			<!-- wp:post-author-name {"isLink":true,"className":"dp-author-name"} /-->
+			<!-- wp:post-author-biography {"fontSize":"ui"} /-->
+		</div>
+		<!-- /wp:group -->
+	</article>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":9,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"align":"wide","className":"dp-read-more dp-min-1","metadata":{"name":"Pročitajte još"}} -->
+	<div class="wp-block-query alignwide dp-read-more dp-min-1">
+		<!-- wp:heading {"level":2,"className":"dp-module-heading"} -->
+		<h2 class="wp-block-heading dp-module-heading">Pročitajte još</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:post-template {"className":"dp-read-more-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","className":"dp-read-more-image"} /-->
+			<!-- wp:post-terms {"term":"category","className":"dp-chip"} /-->
+			<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
+			<!-- wp:post-author-name {"className":"dp-list-author"} /-->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->
