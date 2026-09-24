@@ -49,11 +49,22 @@ Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 
 ## 7. Citat na naslovnici
 
-Naslovnica prikazuje jedan veliki citat iz najnovijeg članka koji ima **istaknuti citat**. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
+Naslovnica prikazuje jedan veliki citat ("Rečeno") iz najnovijeg članka koji ima **istaknuti citat**, pored crno-bijele naslovne fotografije tog članka. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
 
 Dobar kandidat za prvi citat: tekst "Održan performans u Drugoj gimnaziji s porukom ljubavi i mira" počinje rečenicom „Ni jedna ljudska duša u sebi istinski ne može da nosi mržnju.“ Pretvorite taj prvi pasus u blok Pullquote.
 
-## 8. Uređivanje izgleda
+## 8. Dvije perspektive
+
+Poseban dio naslovnice gdje dva teksta o istoj temi stoje jedan naspram drugog (plavi lijevo, narandžasti desno, "ili" u sredini). Kako ga uključiti:
+
+1. Otvorite prvi članak → desna kolona **Oznake** (Tags) → upišite **Dvije perspektive** → **Ažuriraj**.
+2. Isto uradite za drugi članak.
+
+Na naslovnici se prikazuju dva najnovija članka sa tom oznakom. Ako ih je manje od dva, ovaj dio se ne prikazuje. Kad želite novi par, dodajte oznaku dvama novim člancima; stari par se sam povlači.
+
+Ideje: dva mišljenja koja se ne slažu, učenik i profesor o istoj temi, prvi razred i četvrti razred o istoj stvari.
+
+## 9. Uređivanje izgleda
 
 **Izgled → Editor** (Site Editor). Tu se mijenjaju zaglavlje (meni), podnožje (tekst "O nama", linkovi) i rasporedi. Meni je u **Šabloni → Zaglavlje**.
 

@@ -262,13 +262,42 @@ p {
 	}
 }
 
-/* ---------- Citat ---------- */
+/* ---------- Citat ("Rečeno") ---------- */
 
 .dp-citat {
-	margin-inline: auto;
-	max-width: 900px;
-	padding: var(--wp--preset--spacing--40) 0 0;
-	text-align: center;
+	display: grid;
+	gap: 1.5rem;
+	margin: 0;
+	padding: var(--wp--preset--spacing--40) 0;
+	border-top: var(--dp-line);
+	border-bottom: var(--dp-line);
+}
+
+.dp-citat-photo {
+	display: block;
+	margin-inline: calc(-1 * var(--dp-gutter));
+}
+
+/* Crno-bijela fotografija, da citat bude u prvom planu. */
+.dp-citat-img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 3 / 2;
+	object-fit: cover;
+	filter: grayscale(1) contrast(1.05);
+}
+
+.dp-citat-body {
+	align-self: center;
+}
+
+.dp-citat-label {
+	margin: 0 0 1rem;
+	font-family: var(--dp-sans);
+	font-size: var(--wp--preset--font-size--ui);
+	font-weight: 700;
+	color: var(--wp--preset--color--narandza-chip);
 }
 
 .dp-citat blockquote {
@@ -276,26 +305,28 @@ p {
 }
 
 .dp-citat-text {
+	position: relative;
 	margin: 0;
 	font-family: var(--dp-serif);
-	font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
-	line-height: 1.2;
+	font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.875rem);
+	line-height: 1.16;
 	letter-spacing: -0.01em;
 	text-wrap: balance;
 }
 
-/* Kratka narandžasta linija iznad citata. */
-.dp-citat::before {
-	content: "";
-	display: block;
-	width: 48px;
-	height: 4px;
-	margin: 0 auto 1.5rem;
-	background: var(--wp--preset--color--narandza);
-}
-
+/* Veliki narandžasti navodnik koji visi lijevo od teksta. */
 .dp-citat-text::before {
 	content: "„";
+	position: absolute;
+	right: 100%;
+	top: -0.42em;
+	margin-right: 0.06em;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-size: 2.2em;
+	line-height: 1;
+	color: var(--wp--preset--color--narandza);
 }
 
 .dp-citat-text::after {
@@ -324,6 +355,133 @@ p {
 
 .dp-citat-source a {
 	color: var(--wp--preset--color--tinta);
+}
+
+@media (max-width: 781px) {
+	/* Na telefonu nema mjesta lijevo, pa je navodnik običan, u redu s tekstom. */
+	.dp-citat-text::before {
+		position: static;
+		margin: 0;
+		font-family: inherit;
+		font-size: 1em;
+		line-height: inherit;
+	}
+}
+
+@media (min-width: 782px) {
+	.dp-citat.has-photo {
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		column-gap: 4.5rem;
+	}
+
+	.dp-citat:not(.has-photo) .dp-citat-body {
+		max-width: 52rem;
+		margin-inline: auto;
+		padding-left: 3rem;
+	}
+
+	.dp-citat-photo {
+		margin: 0;
+	}
+
+	.dp-citat-img {
+		aspect-ratio: 4 / 5;
+	}
+}
+
+/* ---------- Dvije perspektive ---------- */
+
+.dp-debate-head {
+	text-align: center;
+	padding-bottom: 1.75rem;
+}
+
+.dp-debate-head .dp-module-heading {
+	margin-bottom: 0.5rem;
+}
+
+.dp-debate-intro {
+	margin: 0 auto;
+	max-width: 34rem;
+	font-family: var(--dp-sans);
+	font-size: 1rem;
+	color: var(--wp--preset--color--siva);
+}
+
+.dp-debate-list {
+	position: relative;
+	display: grid;
+	gap: 3.25rem;
+}
+
+.dp-debate-list > li {
+	--dp-side: var(--wp--preset--color--plava-chip);
+	margin: 0;
+	padding-top: 1.25rem;
+	border-top: 6px solid var(--dp-side);
+}
+
+.dp-debate-list > li:nth-child(2) {
+	--dp-side: var(--wp--preset--color--narandza-chip);
+}
+
+.dp-debate-author {
+	margin: 0 0 0.6rem;
+	color: var(--dp-side);
+	font-size: 1.0625rem;
+}
+
+.dp-debate-list .wp-block-post-title {
+	margin: 0 0 0.75rem;
+	line-height: 1.12;
+}
+
+.dp-debate-dek {
+	margin: 0;
+	font-style: normal;
+	color: #333;
+}
+
+/* "ili" između dva teksta (na telefonu ispod prvog, na desktopu u sredini). */
+.dp-debate-list > li:first-child::after {
+	content: "ili";
+	display: grid;
+	margin: 1.75rem auto -1.6rem;
+	place-items: center;
+	width: 3.2rem;
+	height: 3.2rem;
+	border-radius: 50%;
+	background: var(--wp--preset--color--tinta);
+	color: var(--wp--preset--color--papir);
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-size: 1.375rem;
+	font-weight: 500;
+	line-height: 1;
+}
+
+@media (min-width: 782px) {
+	.dp-debate-list {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		column-gap: 6rem;
+	}
+
+	.dp-debate-list > li:first-child::after {
+		position: absolute;
+		left: 50%;
+		top: 3.25rem;
+		margin: 0;
+		transform: translateX(-50%);
+	}
+
+	.dp-debate-list > li:nth-child(2) {
+		text-align: right;
+	}
+
+	.dp-debate-list > li:nth-child(2) .dp-debate-dek p {
+		margin-left: auto;
+	}
 }
 
 /* ---------- Naslovi modula ---------- */
@@ -621,29 +779,10 @@ p {
 	font-size: var(--wp--preset--font-size--small);
 }
 
-.dp-section-dek {
-	display: none;
-}
-
-/* Široka rubrika: velika fotografija na jednoj strani, tekstovi na drugoj. */
-.dp-section--spread .dp-section-list > li:first-child .dp-section-dek {
-	display: block;
-	margin: 0 0 0.5rem;
-	font-style: normal;
-	color: #333;
-}
-
-.dp-section--spread .dp-section-list > li:first-child .wp-block-post-title {
-	font-size: var(--wp--preset--font-size--naslov-m) !important;
-	font-weight: 400;
-	line-height: 1.12;
-	margin-bottom: 0.6rem;
-}
-
 /* ---------- Mišljenje: kolumne, ime autora prvo ---------- */
 
 .dp-opinion {
-	padding: 0;
+	padding: 0 var(--dp-gutter);
 }
 
 .dp-opinion-list > li {
@@ -1447,68 +1586,25 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	}
 
 	.dp-sections {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		column-gap: 3rem;
-	}
-
-	/* Mišljenje: jedan red po kolumnisti, ime lijevo, tekst desno. */
-	.dp-opinion-list > li {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
-		column-gap: 3rem;
-		align-items: baseline;
-		padding: 1.5rem 0;
-	}
-
-	.dp-opinion-list > li > * {
-		grid-column: 2;
-	}
-
-	.dp-opinion-list .dp-opinion-author {
-		grid-column: 1;
-		grid-row: 1 / span 2;
-		margin: 0;
-		font-size: 1.25rem;
-	}
-
-	.dp-opinion .wp-block-post-title {
-		font-size: var(--wp--preset--font-size--naslov-m) !important;
-		line-height: 1.15;
-	}
-
-	.dp-opinion .dp-standfirst {
-		max-width: 40rem;
-	}
-
-	.dp-section--spread .dp-section-list {
-		display: grid;
-		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		grid-template-columns: repeat(3, 1fr);
 		column-gap: 2.5rem;
-		align-content: start;
 	}
 
-	.dp-section--spread .dp-section-list > li:first-child {
-		display: contents;
+	.dp-opinion-list {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		column-gap: 0;
 	}
 
-	.dp-section--spread .dp-section-list > li:first-child .dp-section-image {
-		grid-column: 1;
-		grid-row: 1 / span 6;
-		margin: 0;
+	.dp-opinion-list > li {
+		padding: 0.5rem 2rem 0;
+		border-bottom: 0;
+		border-left: var(--dp-line);
 	}
 
-	.dp-section--spread .dp-section-list > li:first-child > :not(.dp-section-image),
-	.dp-section--spread .dp-section-list > li:not(:first-child) {
-		grid-column: 2;
-	}
-
-	.dp-section--spread .dp-section-list > li:first-child .wp-block-post-author-name {
-		padding-bottom: 1rem;
-		border-bottom: var(--dp-line);
-	}
-
-	.dp-section--spread .dp-section-list > li:nth-child(2) {
-		padding-top: 1rem;
+	.dp-opinion-list > li:first-child {
+		padding-left: 0;
+		border-left: 0;
 	}
 
 	.dp-read-more-list {

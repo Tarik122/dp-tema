@@ -23,6 +23,14 @@ const DP_QUERY_LATEST    = 3; // "Najnovije", lista naslova.
 const DP_QUERY_OPINION   = 4; // Blok "Mišljenje".
 const DP_QUERY_ARCHIVE   = 5; // "Iz arhive".
 const DP_QUERY_READ_MORE = 9; // "Pročitajte još" ispod članka.
+const DP_QUERY_DEBATE    = 10; // "Dvije perspektive".
+
+/*
+ * "Dvije perspektive": dva najnovija članka sa ovom oznakom (tag) stoje
+ * jedan naspram drugog na naslovnici. Oznaka se dodaje u članku, desno
+ * pod "Oznake".
+ */
+const DP_DEBATE_TAG = 'dvije-perspektive';
 
 /*
  * Rubrike na naslovnici: queryId => slug kategorije. Da promijenite koja se
@@ -516,6 +524,11 @@ function dp_home_layout() {
 		$shown[] = $lead;
 	}
 
+	// Dvije perspektive: dva najnovija teksta sa oznakom, samo ako ih ima oba.
+	$debate = dp_post_ids( array( 'tag' => DP_DEBATE_TAG, 'numberposts' => 2, 'post__not_in' => $shown ) );
+	$debate = 2 === count( $debate ) ? $debate : array();
+	$shown  = array_merge( $shown, $debate );
+
 	// Izdvojeni.
 	$features = $featured ? dp_post_ids( array( 'cat' => $featured->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
 	if ( count( $features ) < 3 ) {
@@ -557,6 +570,7 @@ function dp_home_layout() {
 		DP_QUERY_LATEST   => $latest,
 		DP_QUERY_OPINION  => $opinions,
 		DP_QUERY_ARCHIVE  => $archive,
+		DP_QUERY_DEBATE   => $debate,
 	) + $sections;
 
 	return $layout;
@@ -584,7 +598,7 @@ function dp_query_vars( $query, $block ) {
 
 	if ( DP_QUERY_READ_MORE === $query_id ) {
 		$ids = is_singular( 'post' ) ? dp_read_more_ids( get_queried_object_id() ) : dp_post_ids( array( 'numberposts' => 3 ) );
-	} elseif ( in_array( $query_id, array_merge( array( DP_QUERY_LEAD, DP_QUERY_FEATURES, DP_QUERY_LATEST, DP_QUERY_OPINION, DP_QUERY_ARCHIVE ), array_keys( DP_HOME_SECTIONS ) ), true ) ) {
+	} elseif ( in_array( $query_id, array_merge( array( DP_QUERY_LEAD, DP_QUERY_FEATURES, DP_QUERY_LATEST, DP_QUERY_OPINION, DP_QUERY_ARCHIVE, DP_QUERY_DEBATE ), array_keys( DP_HOME_SECTIONS ) ), true ) ) {
 		$layout = dp_home_layout();
 		$ids    = $layout[ $query_id ];
 	}
@@ -709,10 +723,14 @@ function dp_render_citat( $content, $block ) {
 			continue;
 		}
 
-		$cite = $quote['cite'] ? sprintf( '<p class="dp-citat-who">%s</p>', esc_html( $quote['cite'] ) ) : '';
+		$cite  = $quote['cite'] ? sprintf( '<p class="dp-citat-who">%s</p>', esc_html( $quote['cite'] ) ) : '';
+		$image = get_the_post_thumbnail( $post, 'large', array( 'class' => 'dp-citat-img', 'alt' => '', 'loading' => 'lazy' ) );
+		$image = $image ? sprintf( '<a class="dp-citat-photo" href="%s" tabindex="-1" aria-hidden="true">%s</a>', esc_url( get_permalink( $post ) ), $image ) : '';
 
 		return sprintf(
-			'<figure class="wp-block-group dp-citat"><blockquote><p class="dp-citat-text">%1$s</p></blockquote><figcaption>%2$s<p class="dp-citat-source">Iz teksta <a href="%3$s">%4$s</a></p></figcaption></figure>',
+			'<figure class="wp-block-group dp-citat%1$s">%2$s<div class="dp-citat-body"><p class="dp-citat-label">Rečeno</p><blockquote><p class="dp-citat-text">%3$s</p></blockquote><figcaption>%4$s<p class="dp-citat-source">Iz teksta <a href="%5$s">%6$s</a></p></figcaption></div></figure>',
+			$image ? ' has-photo' : '',
+			$image,
 			esc_html( trim( $quote['text'], " \t\n\"„“”" ) ),
 			$cite,
 			esc_url( get_permalink( $post ) ),
