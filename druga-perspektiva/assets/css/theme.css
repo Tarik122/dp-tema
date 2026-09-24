@@ -105,7 +105,7 @@ p {
 
 .dp-chip a {
 	display: inline-block;
-	background: var(--dp-chip, var(--wp--preset--color--navy));
+	background: var(--dp-chip, var(--wp--preset--color--tinta));
 	color: var(--wp--preset--color--papir);
 	font-family: var(--dp-sans);
 	font-size: var(--wp--preset--font-size--small);
@@ -268,7 +268,7 @@ p {
 /* ---------- Citat ("Rečeno") ---------- */
 
 /*
- * Rečeno je jedini tamni trenutak na naslovnici: navy ploha od ruba do ruba
+ * Rečeno je narandžasta ploha od ruba do ruba
  * ekrana (box-shadow + clip-path, bez horizontalnog skrolanja).
  */
 .dp-citat {
@@ -276,8 +276,8 @@ p {
 	gap: 1.75rem;
 	margin: 0;
 	padding: var(--wp--preset--spacing--60) 0;
-	background: var(--wp--preset--color--navy);
-	box-shadow: 0 0 0 100vmax var(--wp--preset--color--navy);
+	background: var(--wp--preset--color--tinta);
+	box-shadow: 0 0 0 100vmax var(--wp--preset--color--tinta);
 	clip-path: inset(0 -100vmax);
 	color: var(--dp-paper);
 }
@@ -630,7 +630,7 @@ p {
 }
 
 .dp-section {
-	--dp-section-color: var(--wp--preset--color--navy);
+	--dp-section-color: var(--wp--preset--color--tinta);
 	border-top: 3px solid var(--dp-section-color);
 	padding-top: 0.75rem;
 }
@@ -1535,7 +1535,7 @@ body:has(.dp-igre-hub, .dp-igra-page) {
 
 .dp-igre-cards > li:nth-child(4n+2) { --dp-card: var(--wp--preset--color--narandza-chip); }
 .dp-igre-cards > li:nth-child(4n+3) { --dp-card: var(--wp--preset--color--zelena); }
-.dp-igre-cards > li:nth-child(4n+4) { --dp-card: var(--wp--preset--color--navy); }
+.dp-igre-cards > li:nth-child(4n+4) { --dp-card: var(--wp--preset--color--tinta); }
 
 .dp-igra-card {
 	position: relative;
@@ -1839,7 +1839,7 @@ body:has(.dp-igre-hub, .dp-igra-page) {
 
 .dp-fact-box,
 .dp-note {
-	border-top: 3px solid var(--wp--preset--color--navy);
+	border-top: 3px solid var(--wp--preset--color--tinta);
 }
 
 .dp-fact-box > * {
@@ -2087,5 +2087,218 @@ body:has(.dp-igre-hub, .dp-igra-page) {
 
 	.dp-article-body .wp-block-pullquote {
 		margin-left: -3rem;
+	}
+}
+
+/* =========================================================================
+   Izgled 3.0: urednički
+   -------------------------------------------------------------------------
+   Razigrani elementi (pločice, selotejp, sveska) ostaju samo na stranicama
+   igara. Novine dobijaju uredničke poteze: veliku naslovnu fotografiju sa
+   naslovom na bijeloj plohi preko ugla, kurzivne nazive rubrika u boji
+   rubrike i narandžastu traku za citat. Boje: bijela, crna, Instagram
+   plava i narandžasta.
+   ========================================================================= */
+
+html {
+	overflow-x: clip;
+}
+
+.dp-home > * + * {
+	margin-top: clamp(2.25rem, 4vw, 3.25rem);
+}
+
+/* Nazivi rubrika: veliki kurziv u boji rubrike, linija do kraja reda. */
+.dp-module-heading,
+.dp-section-heading {
+	display: flex;
+	align-items: baseline;
+	gap: 1rem;
+	margin: 0 0 1.25rem;
+	padding: 0;
+	border: 0;
+	color: var(--dp-h, var(--dp-ink));
+	font-family: var(--dp-serif);
+	font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.375rem);
+	font-style: italic;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	line-height: 1.1;
+	text-align: left;
+	text-transform: none;
+}
+
+.dp-module-heading::after,
+.dp-section-heading::after {
+	content: "";
+	flex: 1;
+	min-width: 1.5rem;
+	border-top: 1px solid var(--dp-ink);
+	transform: translateY(-0.3em);
+}
+
+.dp-module-heading a,
+.dp-section-heading a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.dp-section {
+	padding-top: 0;
+	border-top: 0;
+}
+
+.dp-section:nth-child(1) { --dp-h: var(--wp--preset--color--plava-chip); }
+.dp-section:nth-child(2),
+.dp-section:nth-child(3) { --dp-h: var(--wp--preset--color--narandza-chip); }
+
+.dp-section-heading {
+	font-size: clamp(1.625rem, 1.3rem + 1vw, 2rem);
+}
+
+/* Glavna priča: velika fotografija, naslov na bijeloj plohi preko ugla. */
+.dp-lead-title {
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+
+@media (min-width: 900px) {
+	.dp-lead-card {
+		grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+		gap: 0 !important;
+		align-items: end !important;
+	}
+
+	.dp-lead-image {
+		grid-column: 4 / -1 !important;
+		grid-row: 1 !important;
+		margin: 0 !important;
+	}
+
+	.dp-lead-image img {
+		aspect-ratio: 16 / 10 !important;
+		object-fit: cover;
+	}
+
+	.dp-lead-text {
+		position: relative;
+		z-index: 2;
+		grid-column: 1 / 8 !important;
+		grid-row: 1 !important;
+		align-items: flex-start !important;
+		max-width: none;
+		margin: 0 0 -1px !important;
+		padding: 2.25rem 2.75rem 0 0;
+		background: var(--dp-paper);
+		text-align: left;
+	}
+
+	.dp-lead-text .wp-block-post-title,
+	.dp-lead-text .wp-block-post-excerpt {
+		text-align: left !important;
+	}
+
+	.dp-lead-title {
+		font-size: clamp(2.5rem, 1.4rem + 2.6vw, 3.75rem) !important;
+		line-height: 1.04;
+	}
+
+	.dp-lead-dek p {
+		margin-inline: 0;
+	}
+}
+
+.dp-feature-title,
+.dp-section-list > li:first-child .wp-block-post-title {
+	font-weight: 600;
+}
+
+/* Rečeno: narandžasta traka od ruba do ruba, crni tekst. */
+.dp-citat {
+	background: var(--wp--preset--color--narandza);
+	box-shadow: 0 0 0 100vmax var(--wp--preset--color--narandza);
+	color: var(--dp-ink);
+	padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.dp-citat-text,
+.dp-citat-label,
+.dp-citat-source,
+.dp-citat-source a,
+.dp-citat-source a:hover,
+.dp-citat-text::before {
+	color: var(--dp-ink);
+}
+
+.dp-citat-text {
+	font-weight: 600;
+}
+
+.dp-citat-label {
+	font-family: var(--dp-serif);
+	font-size: 1.375rem;
+	font-style: italic;
+	font-weight: 600;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+@media (max-width: 781px) {
+	.dp-citat-photo {
+		margin-inline: 0;
+	}
+}
+
+.dp-opinion-author {
+	font-size: 1.125rem;
+}
+
+/* Najnovije: više tekstova, u četiri kolone, fotografija iznad naslova. */
+@media (min-width: 782px) {
+	.dp-list--thumbs {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		column-gap: 2rem;
+	}
+
+	.dp-list--thumbs > li {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.dp-list--thumbs .dp-list-thumb {
+		order: -1;
+		width: 100%;
+		margin-bottom: 0.3rem;
+	}
+
+	.dp-list--thumbs .dp-list-thumb img {
+		width: 100% !important;
+		height: auto !important;
+		aspect-ratio: 3 / 2 !important;
+	}
+
+	.dp-archive-list {
+		display: grid;
+		gap: 1rem;
+	}
+}
+
+.dp-igre-title {
+	font-family: var(--dp-sans);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	text-transform: none;
+}
+
+.dp-footer-heading,
+.dp-footer-small {
+	color: #fff;
+}
+
+@media (max-width: 599px) {
+	.dp-module-heading,
+	.dp-section-heading {
+		font-size: 1.625rem;
 	}
 }

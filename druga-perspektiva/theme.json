@@ -36,11 +36,6 @@
 					"color": "#D9D9D6"
 				},
 				{
-					"slug": "navy",
-					"name": "Navy",
-					"color": "#16215C"
-				},
-				{
 					"slug": "plava",
 					"name": "Plava (Instagram)",
 					"color": "#5271FE"
@@ -371,7 +366,7 @@
 			},
 			"button": {
 				"color": {
-					"background": "var:preset|color|navy",
+					"background": "var:preset|color|tinta",
 					"text": "var:preset|color|papir"
 				},
 				"border": {
@@ -503,7 +498,7 @@
 			"core/quote": {
 				"border": {
 					"left": {
-						"color": "var:preset|color|navy",
+						"color": "var:preset|color|tinta",
 						"width": "3px",
 						"style": "solid"
 					}

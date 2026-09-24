@@ -45,13 +45,13 @@ const DP_HOME_SECTIONS = array(
 /*
  * Rubrike: slug kategorije => boja oznake (slug boje iz theme.json).
  * Slugovi su isti kao na starom sajtu da stari linkovi rade.
- * Nova kategorija koja nije ovdje dobija navy oznaku.
+ * Nova kategorija koja nije ovdje dobija crnu oznaku.
  */
 const DP_CATEGORY_COLORS = array(
 	'vijestiskola'   => 'plava-chip',
 	'ostale-vijesti' => 'plava-chip',
 	'vijesti'        => 'plava-chip',
-	'opinion'        => 'navy',
+	'opinion'        => 'tinta',
 	'sport'          => 'narandza-chip',
 	'kultura'        => 'narandza-chip',
 	'nauka'          => 'zelena',
@@ -258,7 +258,7 @@ function dp_category_color( $term ) {
 			return DP_CATEGORY_COLORS[ $parent->slug ];
 		}
 	}
-	return 'navy';
+	return 'tinta';
 }
 
 /**
@@ -517,9 +517,9 @@ function dp_post_ids( $args ) {
 /**
  * Raspored naslovnice, izračunat jednom po učitavanju:
  * - glavna priča: zalijepljeni (sticky) članak, inače najnoviji članak;
- * - izdvojeni i najnovije: sljedećih 3 + 6 članaka, strogo od najnovijeg;
+ * - izdvojeni i najnovije: sljedećih 3 + 8 članaka, strogo od najnovijeg;
  * - mišljenje: tri najnovija iz rubrike Mišljenje koja nisu već prikazana;
- * - iz arhive: jedan izdvojeni stariji od šest mjeseci, mijenja se svaki dan.
+ * - iz arhive: tri izdvojena starija od šest mjeseci, mijenjaju se svaki dan.
  */
 function dp_home_layout() {
 	static $layout = null;
@@ -547,9 +547,9 @@ function dp_home_layout() {
 	}
 
 	// Izdvojeni i Najnovije: redom od najnovijeg, bez preskakanja.
-	$stream   = dp_post_ids( array( 'numberposts' => 9, 'post__not_in' => $shown ) );
+	$stream   = dp_post_ids( array( 'numberposts' => 11, 'post__not_in' => $shown ) );
 	$features = array_slice( $stream, 0, 3 );
-	$latest   = array_slice( $stream, 3, 6 );
+	$latest   = array_slice( $stream, 3, 8 );
 	$shown    = array_merge( $shown, $stream );
 
 	// Mišljenje: najnovije kolumne koje već nisu gore.
@@ -560,7 +560,7 @@ function dp_home_layout() {
 	$sections = array();
 	foreach ( DP_HOME_SECTIONS as $query_id => $slug ) {
 		$term                  = get_term_by( 'slug', $slug, 'category' );
-		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
+		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => 4, 'post__not_in' => $shown ) ) : array();
 		$shown                 = array_merge( $shown, $sections[ $query_id ] );
 	}
 
@@ -574,7 +574,14 @@ function dp_home_layout() {
 	if ( ! $pool ) {
 		$pool = dp_post_ids( $old_args );
 	}
-	$archive = $pool ? array( $pool[ (int) floor( time() / DAY_IN_SECONDS ) % count( $pool ) ] ) : array();
+	// Tri starija teksta; izbor se pomjera svaki dan.
+	$archive = array();
+	if ( $pool ) {
+		$start = (int) floor( time() / DAY_IN_SECONDS ) % count( $pool );
+		for ( $i = 0; $i < min( 3, count( $pool ) ); $i++ ) {
+			$archive[] = $pool[ ( $start + $i ) % count( $pool ) ];
+		}
+	}
 
 	$layout = array(
 		DP_QUERY_LEAD     => $lead ? array( $lead ) : array(),
@@ -883,6 +890,8 @@ function dp_letter_tiles( $text, $max = 7 ) {
 
 	return '<span class="dp-tiles" aria-hidden="true">' . $tiles . '</span>';
 }
+
+add_filter( 'render_block_core/query-title', 'dp_heading_tiles', 10, 2 );
 
 /** Naslov sa klasom "dp-tiles-title" (stranica /igre) prikazuje se kao pločice. */
 function dp_tiles_title( $content, $block, $instance ) {
