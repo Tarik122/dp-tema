@@ -30,7 +30,7 @@ Sampled from your Instagram posts, then adjusted where small white text would be
 
 ## 2. Typefaces
 
-> **Update after feedback (v1.2):** version 1 looked like a copy of The Confluence, and the Bodoni italic version looked AI-made. After studying the real New Yorker site, the theme now uses **regular-weight** Source Serif headlines (no bold), roman (not italic) section titles in Bodoni Moda capitals, centered over a thin rule, a lead with centered text beside the photo instead of text on the photo, no colored panels on the homepage, and author names in plain bold sans. Navy is used only in the footer. The Instagram chips and the Igre tile stay as the brand link.
+> **Update (v2.0), after studying 20 real magazine and student-paper sites** (Vanity Fair, Pitchfork, Wired, Teen Vogue, The Cut, Monocle, Interview, i-D, It's Nice That, Quanta, Kosovo 2.0, Buka, The Harvard Crimson, Columbia Spectator, Varsity…): the design system now grows out of the Instagram chip. Every homepage module has a thin rule in its section color with its name in a colored label hanging from it (Vijesti blue, Sport and Kultura orange, Nauka green, Mišljenje navy). The top of the homepage is a three-column front page on desktop (two stories | lead story | "Najnovije" with dates), the way real magazines open. "Rečeno" is a full-width black band, the only dark moment on the page. Headlines are bold serif again, and Bodoni Moda was removed.
 
 | Role | Font | Why |
 |---|---|---|

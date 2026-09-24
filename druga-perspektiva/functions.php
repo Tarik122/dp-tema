@@ -33,13 +33,15 @@ const DP_QUERY_DEBATE    = 10; // "Dvije perspektive".
 const DP_DEBATE_TAG = 'dvije-perspektive';
 
 /*
- * Rubrike na naslovnici: queryId => slug kategorije. Da promijenite koja se
- * rubrika prikazuje, promijenite slug ovdje i naslov/link u šablonu naslovnice.
+ * Rubrike na naslovnici: queryId => array( slug kategorije, broj tekstova ).
+ * Da promijenite koja se rubrika prikazuje, promijenite slug ovdje i
+ * naslov/link u šablonu naslovnice.
  */
 const DP_HOME_SECTIONS = array(
-	6 => 'vijesti',
-	7 => 'sport',
-	8 => 'kultura',
+	6  => array( 'vijesti', 4 ),
+	7  => array( 'sport', 3 ),
+	8  => array( 'kultura', 3 ),
+	11 => array( 'nauka', 3 ),
 );
 
 /*
@@ -514,7 +516,8 @@ function dp_post_ids( $args ) {
 /**
  * Raspored naslovnice, izračunat jednom po učitavanju:
  * - glavna priča: zalijepljeni (sticky) članak, inače najnoviji članak;
- * - izdvojeni i najnovije: sljedećih 3 + 6 članaka, strogo od najnovijeg;
+ * - dva teksta pored glavne priče i "Najnovije": sljedećih 2 + 6 članaka,
+ *   strogo od najnovijeg;
  * - mišljenje: tri najnovija iz rubrike Mišljenje koja nisu već prikazana;
  * - iz arhive: jedan izdvojeni stariji od šest mjeseci, mijenja se svaki dan.
  */
@@ -548,10 +551,10 @@ function dp_home_layout() {
 	$debate = 2 === count( $debate ) ? $debate : array();
 	$shown  = array_merge( $shown, $debate );
 
-	// Izdvojeni i Najnovije: redom od najnovijeg, bez preskakanja.
-	$stream   = dp_post_ids( array( 'numberposts' => 9, 'post__not_in' => $shown ) );
-	$features = array_slice( $stream, 0, 3 );
-	$latest   = array_slice( $stream, 3, 6 );
+	// Naslovnica: dva teksta lijevo i "Najnovije" desno, redom od najnovijeg.
+	$stream   = dp_post_ids( array( 'numberposts' => 8, 'post__not_in' => $shown ) );
+	$features = array_slice( $stream, 0, 2 );
+	$latest   = array_slice( $stream, 2, 6 );
 	$shown    = array_merge( $shown, $stream );
 
 	// Mišljenje: najnovije kolumne koje već nisu gore.
@@ -560,9 +563,10 @@ function dp_home_layout() {
 
 	// Rubrike: po tri teksta iz svake, bez onih koji su već gore.
 	$sections = array();
-	foreach ( DP_HOME_SECTIONS as $query_id => $slug ) {
+	foreach ( DP_HOME_SECTIONS as $query_id => $section ) {
+		list( $slug, $count ) = $section;
 		$term                  = get_term_by( 'slug', $slug, 'category' );
-		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
+		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => $count, 'post__not_in' => $shown ) ) : array();
 		$shown                 = array_merge( $shown, $sections[ $query_id ] );
 	}
 
@@ -742,7 +746,7 @@ function dp_render_citat( $content, $block ) {
 		$image = $image ? sprintf( '<a class="dp-citat-photo" href="%s" tabindex="-1" aria-hidden="true">%s</a>', esc_url( get_permalink( $post ) ), $image ) : '';
 
 		return sprintf(
-			'<figure class="wp-block-group dp-citat%1$s">%2$s<div class="dp-citat-body"><p class="dp-citat-label">Rečeno</p><blockquote><p class="dp-citat-text">%3$s</p></blockquote><figcaption>%4$s<p class="dp-citat-source">Iz teksta <a href="%5$s">%6$s</a></p></figcaption></div></figure>',
+			'<figure class="wp-block-group alignfull dp-citat%1$s"><div class="dp-citat-inner">%2$s<div class="dp-citat-body"><p class="dp-citat-label">Rečeno</p><blockquote><p class="dp-citat-text">%3$s</p></blockquote><figcaption>%4$s<p class="dp-citat-source">Iz teksta <a href="%5$s">%6$s</a></p></figcaption></div></div></figure>',
 			$image ? ' has-photo' : '',
 			$image,
 			esc_html( trim( $quote['text'], " \t\n\"„“”" ) ),

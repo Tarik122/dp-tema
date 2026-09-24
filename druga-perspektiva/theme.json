@@ -150,31 +150,6 @@
 					]
 				},
 				{
-					"slug": "display",
-					"name": "Bodoni Moda (veliki naslovi)",
-					"fontFamily": "\"Bodoni Moda\", \"Source Serif 4\", Georgia, serif",
-					"fontFace": [
-						{
-							"fontFamily": "Bodoni Moda",
-							"fontStyle": "normal",
-							"fontWeight": "500 800",
-							"fontDisplay": "swap",
-							"src": [
-								"file:./assets/fonts/bodoni-moda.woff2"
-							]
-						},
-						{
-							"fontFamily": "Bodoni Moda",
-							"fontStyle": "italic",
-							"fontWeight": "400 700",
-							"fontDisplay": "swap",
-							"src": [
-								"file:./assets/fonts/bodoni-moda-italic.woff2"
-							]
-						}
-					]
-				},
-				{
 					"slug": "sans",
 					"name": "Lato",
 					"fontFamily": "Lato, \"Helvetica Neue\", Arial, sans-serif",
@@ -270,10 +245,10 @@
 				{
 					"slug": "display",
 					"name": "Veliki naslov",
-					"size": "4rem",
+					"size": "3.5rem",
 					"fluid": {
-						"min": "2.25rem",
-						"max": "4rem"
+						"min": "2.125rem",
+						"max": "3.5rem"
 					}
 				}
 			]
@@ -341,9 +316,9 @@
 			"heading": {
 				"typography": {
 					"fontFamily": "var:preset|font-family|serif",
-					"fontWeight": "400",
-					"lineHeight": "1.15",
-					"letterSpacing": "-0.005em"
+					"fontWeight": "700",
+					"lineHeight": "1.12",
+					"letterSpacing": "-0.01em"
 				},
 				"color": {
 					"text": "var:preset|color|tinta"
@@ -418,7 +393,7 @@
 		"blocks": {
 			"core/post-title": {
 				"typography": {
-					"fontWeight": "400",
+					"fontWeight": "600",
 					"lineHeight": "1.15"
 				},
 				"elements": {
