@@ -555,11 +555,6 @@
 			"area": "header"
 		},
 		{
-			"name": "masthead",
-			"title": "Zaglavlje naslovnice (veliki logo)",
-			"area": "header"
-		},
-		{
 			"name": "footer",
 			"title": "Podnožje",
 			"area": "footer"

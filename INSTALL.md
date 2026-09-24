@@ -59,6 +59,6 @@ Dobar kandidat za prvi citat: tekst "Održan performans u Drugoj gimnaziji s por
 
 Korisni blokovi za pisanje su u editoru članka pod **Uzorci → Druga perspektiva**: info okvir, intervju, foto galerija, ispravka, napomena redakcije.
 
-Naslovnica ima svoje veliko zaglavlje (**Zaglavlje naslovnice**), a ostale stranice manje (**Zaglavlje**). Meni se mijenja u oba.
+Meni se mijenja u **Zaglavlje**.
 
 Ako nešto pođe po zlu u Site Editoru: otvorite šablon → tri tačke → **Resetuj** i vraća se originalni izgled teme.

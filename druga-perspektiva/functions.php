@@ -663,18 +663,8 @@ function dp_search_title( $content, $block ) {
 add_filter( 'render_block_core/query-title', 'dp_search_title', 10, 2 );
 
 /* -------------------------------------------------------------------------
- * Naslovnica: datum u zaglavlju i citat
+ * Naslovnica: citat
  * ---------------------------------------------------------------------- */
-
-/** Paragraf sa klasom "dp-danas" prikazuje današnji datum, npr. "Četvrtak, 24. septembar 2026.". */
-function dp_today( $content, $block ) {
-	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-danas' ) ) {
-		return $content;
-	}
-	$date = wp_date( 'l, j. F Y.' );
-	return sprintf( '<p class="dp-danas"><time datetime="%s">%s</time></p>', esc_attr( wp_date( 'Y-m-d' ) ), esc_html( mb_strtoupper( mb_substr( $date, 0, 1 ) ) . mb_substr( $date, 1 ) ) );
-}
-add_filter( 'render_block_core/paragraph', 'dp_today', 10, 2 );
 
 /** Traži prvi blok "Pullquote" sa tekstom (i unutar grupa i kolona). */
 function dp_find_pullquote( $blocks ) {
