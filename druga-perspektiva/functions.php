@@ -666,6 +666,19 @@ add_filter( 'render_block_core/query-title', 'dp_search_title', 10, 2 );
  * Sitnice
  * ---------------------------------------------------------------------- */
 
+/**
+ * Naslovi zalijepljeni iz Worda ili Google Docsa često imaju "tvrde" razmake
+ * (&nbsp;) zbog kojih se red ne može prelomiti. Pri prikazu ih pretvaramo u
+ * obične razmake; sačuvani naslov se ne mijenja.
+ */
+function dp_normal_spaces_in_titles( $title ) {
+	if ( is_admin() ) {
+		return $title;
+	}
+	return str_replace( array( "\xC2\xA0", '&nbsp;', '&#160;' ), ' ', $title );
+}
+add_filter( 'the_title', 'dp_normal_spaces_in_titles' );
+
 /** Automatski izvod bez "[…]". */
 add_filter(
 	'excerpt_more',

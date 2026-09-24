@@ -599,15 +599,26 @@ p {
 	margin: 0 !important;
 }
 
+/* Igre: široka plava traka odmah ispod izdvojenih tekstova. */
 .dp-igre-tile {
 	position: relative;
-	align-self: start;
+	display: grid !important;
+	gap: 1rem;
+	padding: 1.75rem var(--dp-gutter) !important;
+	margin-inline: calc(-1 * var(--dp-gutter));
 }
 
 .dp-igre-title {
 	margin: 0;
 	color: var(--wp--preset--color--papir);
-	font-size: var(--wp--preset--font-size--naslov-m);
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 500;
+	font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	line-height: 1;
 }
 
 .dp-igre-title a {
@@ -615,27 +626,31 @@ p {
 	text-decoration: none;
 }
 
+/* Cijela traka je link na igru. */
 .dp-igre-title a::after {
 	content: "";
 	position: absolute;
 	inset: 0;
 }
 
-.dp-igre-title a:hover {
-	color: inherit;
-	text-decoration: underline;
+.dp-igre-tile:hover .dp-igre-cta,
+.dp-igre-tile:focus-within .dp-igre-cta {
+	background: var(--wp--preset--color--papir);
+	color: var(--wp--preset--color--plava-chip);
 }
 
 .dp-beta {
 	display: inline-block;
-	margin-left: 0.3em;
-	padding: 0.15em 0.4em;
-	border: 1px solid rgba(255, 255, 255, 0.8);
+	margin-left: 0.4em;
+	padding: 0.2em 0.45em;
+	border: 1px solid rgba(255, 255, 255, 0.85);
 	font-family: var(--dp-sans);
-	font-size: 0.75rem;
+	font-size: 0.8125rem;
 	font-weight: 700;
+	letter-spacing: 0;
+	text-transform: none;
 	line-height: 1.2;
-	vertical-align: 0.35em;
+	vertical-align: 0.6em;
 }
 
 .dp-igre-tiles {
@@ -646,11 +661,11 @@ p {
 .dp-igre-tiles span {
 	display: grid;
 	place-items: center;
-	width: 42px;
-	height: 42px;
+	width: 48px;
+	height: 48px;
 	border: 2px solid rgba(255, 255, 255, 0.7);
 	font-family: var(--dp-sans);
-	font-size: 1.25rem;
+	font-size: 1.5rem;
 	font-weight: 700;
 	color: var(--wp--preset--color--papir);
 }
@@ -668,7 +683,21 @@ p {
 
 .dp-igre-tile p {
 	margin: 0;
-	max-width: 34ch;
+}
+
+.dp-igre-text {
+	max-width: 30rem;
+	font-size: 1.0625rem;
+	line-height: 1.5;
+}
+
+.dp-igre-cta {
+	justify-self: start;
+	padding: 0.55rem 1.1rem;
+	border: 2px solid var(--wp--preset--color--papir);
+	font-family: var(--dp-sans);
+	font-weight: 700;
+	font-size: var(--wp--preset--font-size--ui);
 }
 
 .dp-archive-list > li {
@@ -1218,10 +1247,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 
 	.dp-bottom {
 		grid-template-columns: 1fr 1fr;
-	}
-
-	.dp-rubrike-module {
-		grid-column: 1 / -1;
+		column-gap: 3rem;
 	}
 
 	.is-style-siroka-fotografija {
@@ -1230,6 +1256,20 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 @media (min-width: 782px) {
+	.dp-igre-tile {
+		margin-inline: 0;
+		grid-template-columns: auto 1fr auto;
+		grid-template-areas: "title text cta" "tiles text cta";
+		column-gap: 3rem;
+		align-items: center;
+		padding: 2rem 2.5rem !important;
+	}
+
+	.dp-igre-title { grid-area: title; }
+	.dp-igre-tiles { grid-area: tiles; }
+	.dp-igre-text { grid-area: text; }
+	.dp-igre-cta { grid-area: cta; }
+
 	.dp-lead-card {
 		grid-template-columns: 1fr 1fr;
 		gap: 3rem;
@@ -1342,13 +1382,6 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 @media (min-width: 1000px) {
-	.dp-bottom {
-		grid-template-columns: 1fr 1fr 1fr;
-	}
-
-	.dp-rubrike-module {
-		grid-column: auto;
-	}
 
 	.dp-article-body .wp-block-pullquote {
 		margin-left: -3rem;

@@ -18,8 +18,12 @@
 	<div class="dp-igre-tiles" aria-hidden="true"><span class="is-hit">R</span><span>I</span><span class="is-near">J</span><span>E</span><span class="is-hit">Č</span></div>
 	<!-- /wp:html -->
 
-	<!-- wp:paragraph {"fontSize":"ui"} -->
-	<p class="has-ui-font-size">Pogodite skrivenu riječ. Igra je još u probnoj verziji, pa nam javite ako nešto ne radi.</p>
+	<!-- wp:paragraph {"className":"dp-igre-text"} -->
+	<p class="dp-igre-text">Pogodite skrivenu riječ u šest pokušaja. Igra je još u probnoj verziji, pa nam javite ako nešto ne radi.</p>
+	<!-- /wp:paragraph -->
+
+	<!-- wp:paragraph {"className":"dp-igre-cta"} -->
+	<p class="dp-igre-cta">Igrajte</p>
 	<!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
