@@ -52,6 +52,15 @@
 					]
 				},
 				{
+					"slug": "display",
+					"name": "Bodoni Moda (veliki naslovi)",
+					"fontFamily": "\"Bodoni Moda\", \"Source Serif 4\", Georgia, serif",
+					"fontFace": [
+						{ "fontFamily": "Bodoni Moda", "fontStyle": "normal", "fontWeight": "500 800", "fontDisplay": "swap", "src": [ "file:./assets/fonts/bodoni-moda.woff2" ] },
+						{ "fontFamily": "Bodoni Moda", "fontStyle": "italic", "fontWeight": "400 700", "fontDisplay": "swap", "src": [ "file:./assets/fonts/bodoni-moda-italic.woff2" ] }
+					]
+				},
+				{
 					"slug": "sans",
 					"name": "Lato",
 					"fontFamily": "Lato, \"Helvetica Neue\", Arial, sans-serif",

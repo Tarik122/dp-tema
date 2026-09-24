@@ -9,6 +9,7 @@
 	--dp-rule: 2px solid var(--wp--preset--color--tinta);
 	--dp-sans: var(--wp--preset--font-family--sans);
 	--dp-serif: var(--wp--preset--font-family--serif);
+	--dp-display: var(--wp--preset--font-family--display);
 	--dp-gutter: var(--wp--style--root--padding-left, 1rem);
 }
 
@@ -74,6 +75,32 @@ p {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+}
+
+/*
+ * Veliki naslovi u Bodoni Modi, istom duhu kao DP logo. Manji naslovi
+ * ostaju u Source Serifu, jer Bodoni tanke linije gubi na malim veličinama.
+ */
+.dp-lead-title,
+.dp-article-title,
+.dp-archive-title,
+.dp-igre-title,
+.dp-features-list > li:nth-child(2) .dp-feature-title,
+body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
+	font-family: var(--dp-display);
+	font-weight: 600;
+	letter-spacing: -0.005em;
+	font-variant-numeric: lining-nums;
+	/* Manja optička veličina = deblje tanke linije, čitljivije na ekranu. */
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 20;
+}
+
+.dp-module-heading,
+.dp-opinion-author,
+.dp-author-name {
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 16;
 }
 
 /* ---------- Oznaka rubrike (chip), kao na Instagramu ---------- */
@@ -248,10 +275,15 @@ p {
 /* ---------- Naslovi modula ---------- */
 
 .dp-module-heading {
-	border-top: var(--dp-rule);
-	padding-top: 0.75rem;
-	margin: 0 0 0.5rem;
-	font-size: var(--wp--preset--font-size--naslov-m);
+	border-top: 1px solid var(--wp--preset--color--tinta);
+	padding-top: 0.6rem;
+	margin: 0 0 0.75rem;
+	font-family: var(--dp-display);
+	font-style: italic;
+	font-weight: 500;
+	font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+	line-height: 1.05;
+	letter-spacing: -0.01em;
 }
 
 .dp-module-heading a {
@@ -444,23 +476,21 @@ p {
 	line-height: 1.2;
 }
 
-/* ---------- Mišljenje (navy blok) ---------- */
+/* ---------- Mišljenje: kolumne, ime autora prvo ---------- */
 
 .dp-opinion {
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--papir);
+	background: var(--wp--preset--color--papir-2);
 	padding: var(--wp--preset--spacing--50) var(--dp-gutter) var(--wp--preset--spacing--60);
 }
 
-.dp-opinion .dp-module-heading {
-	color: var(--wp--preset--color--papir);
-	border-top-color: var(--wp--preset--color--papir);
+.dp-opinion .dp-module-heading a:hover {
+	color: var(--wp--preset--color--narandza-chip);
 }
 
 .dp-opinion-list > li {
 	margin: 0;
 	padding: 1.25rem 0;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+	border-bottom: var(--dp-line);
 }
 
 .dp-opinion-list > li:last-child {
@@ -468,23 +498,22 @@ p {
 }
 
 .dp-opinion-author {
-	color: var(--wp--preset--color--narandza);
-	font-size: 1rem;
-	margin-bottom: 0.35rem;
+	font-family: var(--dp-display);
+	font-style: italic;
+	font-weight: 500;
+	font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+	line-height: 1.1;
+	color: var(--wp--preset--color--narandza-chip);
+	margin-bottom: 0.5rem;
 }
 
 .dp-opinion .wp-block-post-title {
 	margin: 0;
-	color: var(--wp--preset--color--papir);
-}
-
-.dp-opinion .wp-block-post-title a {
-	color: var(--wp--preset--color--papir);
 }
 
 .dp-opinion .dp-standfirst {
 	margin-top: 0.6rem;
-	color: rgba(255, 255, 255, 0.86);
+	font-size: 1.0625rem !important;
 }
 
 /* ---------- Donji red: Igre, Iz arhive, Rubrike ---------- */
@@ -876,7 +905,9 @@ p {
 }
 
 .dp-author-name {
-	font-family: var(--dp-serif);
+	font-family: var(--dp-display);
+	font-style: italic;
+	font-weight: 500;
 	font-size: var(--wp--preset--font-size--naslov-s);
 }
 
@@ -1178,7 +1209,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	.dp-opinion-list > li {
 		padding: 0.5rem 2rem 0;
 		border-bottom: 0;
-		border-left: 1px solid rgba(255, 255, 255, 0.22);
+		border-left: var(--dp-line);
 	}
 
 	.dp-opinion-list > li:first-child {

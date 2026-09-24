@@ -30,6 +30,8 @@ Sampled from your Instagram posts, then adjusted where small white text would be
 
 ## 2. Typefaces
 
+> **Update after the first build:** the first version looked too much like The Confluence (serif headlines, a big navy block, thick black rules). Big headlines now use **Bodoni Moda**, a high-contrast serif in the spirit of the DP logo. Section titles are large Bodoni italics over a thin rule. Mišljenje sits on a light panel with author names in orange Bodoni italics. Navy appears only in the footer and the Mišljenje chip. Smaller headlines and article text stay in Source Serif 4, and labels stay in Lato.
+
 | Role | Font | Why |
 |---|---|---|
 | Headlines, deks, article text | **Source Serif 4** (free, variable) | Excellent č ć đ š ž. It has an *optical size* setting that makes big headlines sharper and more elegant, much like The Confluence's serif. It isn't one of the overused defaults. |
