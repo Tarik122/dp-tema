@@ -24,6 +24,14 @@ const DP_QUERY_OPINION   = 4; // Blok "Mišljenje".
 const DP_QUERY_ARCHIVE   = 5; // "Iz arhive".
 const DP_QUERY_READ_MORE = 9; // "Pročitajte još" ispod članka.
 const DP_QUERY_DEBATE    = 10; // "Dvije perspektive".
+const DP_QUERY_GAMES     = 12; // Sve igre, na stranici /igre.
+const DP_QUERY_MORE_GAMES = 13; // "Više igara" ispod jedne igre.
+
+/*
+ * Igre: stranica sa ovim slugom (/igre) je početna za sve igre. Svaka igra
+ * je posebna stranica kojoj je "Igre" roditeljska stranica (/igre/rijec/).
+ */
+const DP_GAMES_SLUG = 'igre';
 
 /*
  * "Dvije perspektive": dva najnovija članka sa ovom oznakom (tag) stoje
@@ -98,6 +106,9 @@ function dp_setup() {
 	add_theme_support( 'editor-styles' );
 	add_editor_style( 'assets/css/theme.css' );
 	remove_theme_support( 'core-block-patterns' );
+
+	// Stranice dobijaju polje "Izvod": za igre je to kratak opis na kartici.
+	add_post_type_support( 'page', 'excerpt' );
 }
 add_action( 'after_setup_theme', 'dp_setup' );
 
@@ -616,6 +627,12 @@ function dp_query_vars( $query, $block ) {
 
 	if ( DP_QUERY_READ_MORE === $query_id ) {
 		$ids = is_singular( 'post' ) ? dp_read_more_ids( get_queried_object_id() ) : dp_post_ids( array( 'numberposts' => 3 ) );
+	} elseif ( DP_QUERY_GAMES === $query_id ) {
+		$hub = is_page() ? get_queried_object_id() : dp_games_hub_id();
+		$ids = dp_game_ids( $hub );
+	} elseif ( DP_QUERY_MORE_GAMES === $query_id ) {
+		$current = is_page() ? get_queried_object_id() : 0;
+		$ids     = $current ? dp_game_ids( wp_get_post_parent_id( $current ), 3, $current ) : array();
 	} elseif ( in_array( $query_id, array_merge( array( DP_QUERY_LEAD, DP_QUERY_FEATURES, DP_QUERY_LATEST, DP_QUERY_OPINION, DP_QUERY_ARCHIVE, DP_QUERY_DEBATE ), array_keys( DP_HOME_SECTIONS ) ), true ) ) {
 		$layout = dp_home_layout();
 		$ids    = $layout[ $query_id ];
@@ -623,6 +640,10 @@ function dp_query_vars( $query, $block ) {
 
 	if ( null === $ids ) {
 		return $query;
+	}
+
+	if ( in_array( $query_id, array( DP_QUERY_GAMES, DP_QUERY_MORE_GAMES ), true ) ) {
+		$query['post_type'] = 'page';
 	}
 
 	$query['post__in']            = $ids ? $ids : array( 0 );
@@ -811,6 +832,154 @@ function dp_end_mark( $content, $block ) {
 	return $content;
 }
 add_filter( 'render_block_core/post-content', 'dp_end_mark', 10, 2 );
+
+/* -------------------------------------------------------------------------
+ * Igre: početna stranica za sve igre i stranica jedne igre
+ * ---------------------------------------------------------------------- */
+
+/** ID stranice /igre (0 ako je nema). */
+function dp_games_hub_id() {
+	static $id = null;
+	if ( null === $id ) {
+		$hub = get_page_by_path( DP_GAMES_SLUG );
+		$id  = ( $hub && 'publish' === $hub->post_status ) ? (int) $hub->ID : 0;
+	}
+	return $id;
+}
+
+/**
+ * Igre su objavljene podstranice stranice $parent_id. Redoslijed: polje
+ * "Redoslijed" (Order) u postavkama stranice, pa po datumu objave (nova igra
+ * ide na kraj). Tako svaka igra zadržava svoje mjesto i svoju boju.
+ */
+function dp_game_ids( $parent_id, $limit = 50, $exclude = 0 ) {
+	if ( ! $parent_id ) {
+		return array();
+	}
+
+	return array_map(
+		'intval',
+		get_posts(
+			array(
+				'post_type'        => 'page',
+				'post_status'      => 'publish',
+				'post_parent'      => (int) $parent_id,
+				'numberposts'      => $limit,
+				'post__not_in'     => $exclude ? array( (int) $exclude ) : array(),
+				'orderby'          => array(
+					'menu_order' => 'ASC',
+					'date'       => 'ASC',
+				),
+				'fields'           => 'ids',
+				'no_found_rows'    => true,
+				'suppress_filters' => false,
+			)
+		)
+	);
+}
+
+/**
+ * Slova naziva kao pločice iz igre (prva riječ, najviše 7 slova). Prvo i
+ * zadnje slovo su "pogođena" (narandžasta), treće je bijelo, ostala prazna.
+ */
+function dp_letter_tiles( $text, $max = 7 ) {
+	$text  = html_entity_decode( wp_strip_all_tags( $text ), ENT_QUOTES, 'UTF-8' );
+	$words = preg_split( '/[^\p{L}]+/u', $text, -1, PREG_SPLIT_NO_EMPTY );
+	$chars = $words ? mb_str_split( mb_substr( mb_strtoupper( $words[0] ), 0, $max ) ) : array();
+	$count = count( $chars );
+	$tiles = '';
+
+	foreach ( $chars as $i => $char ) {
+		$class = '';
+		if ( 0 === $i || ( $count > 3 && $count - 1 === $i ) ) {
+			$class = ' class="is-hit"';
+		} elseif ( 2 === $i ) {
+			$class = ' class="is-near"';
+		}
+		$tiles .= sprintf( '<span%s>%s</span>', $class, esc_html( $char ) );
+	}
+
+	return '<span class="dp-tiles" aria-hidden="true">' . $tiles . '</span>';
+}
+
+/** Naslov sa klasom "dp-tiles-title" (stranica /igre) prikazuje se kao pločice. */
+function dp_tiles_title( $content, $block, $instance ) {
+	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-tiles-title' ) ) {
+		return $content;
+	}
+
+	$post_id = isset( $instance->context['postId'] ) ? $instance->context['postId'] : get_the_ID();
+	$title   = get_the_title( $post_id );
+	$level   = isset( $block['attrs']['level'] ) ? (int) $block['attrs']['level'] : 2;
+
+	return sprintf(
+		'<h%1$d class="wp-block-post-title dp-tiles-title"><span class="screen-reader-text">%2$s</span>%3$s</h%1$d>',
+		$level,
+		esc_html( $title ),
+		dp_letter_tiles( $title )
+	);
+}
+add_filter( 'render_block_core/post-title', 'dp_tiles_title', 10, 3 );
+
+/** Igra bez istaknute slike dobija sliku od slova svog naziva. */
+function dp_game_visual( $content, $block, $instance ) {
+	$class = $block['attrs']['className'] ?? '';
+	if ( false === strpos( $class, 'dp-igra-visual' ) || '' !== trim( $content ) ) {
+		return $content;
+	}
+
+	$post_id = isset( $instance->context['postId'] ) ? $instance->context['postId'] : get_the_ID();
+
+	return sprintf(
+		'<figure class="wp-block-post-featured-image %1$s dp-igra-visual--tiles">%2$s</figure>',
+		esc_attr( $class ),
+		dp_letter_tiles( get_the_title( $post_id ) )
+	);
+}
+add_filter( 'render_block_core/post-featured-image', 'dp_game_visual', 10, 3 );
+
+/** Oznaka "Novo" na kartici igre stoji prvih 30 dana nakon objave. */
+function dp_game_new_badge( $content, $block ) {
+	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-igra-novo' ) ) {
+		return $content;
+	}
+	$published = (int) get_post_time( 'U', true );
+	return ( $published && time() - $published < 30 * DAY_IN_SECONDS ) ? $content : '';
+}
+add_filter( 'render_block_core/paragraph', 'dp_game_new_badge', 10, 2 );
+
+/** Plava traka "Igre" na naslovnici nabraja igre (najviše pet). */
+function dp_game_links( $content, $block ) {
+	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-igre-links' ) ) {
+		return $content;
+	}
+
+	$links = '';
+	foreach ( dp_game_ids( dp_games_hub_id(), 5 ) as $id ) {
+		$links .= sprintf( '<a href="%s">%s</a>', esc_url( get_permalink( $id ) ), esc_html( get_the_title( $id ) ) );
+	}
+
+	return $links ? '<p class="dp-igre-links">' . $links . '</p>' : '';
+}
+add_filter( 'render_block_core/paragraph', 'dp_game_links', 10, 2 );
+
+/**
+ * Podstranice stranice /igre automatski koriste šablon jedne igre
+ * ("Igre: jedna igra"), osim ako je urednik ručno odabrao drugi šablon.
+ */
+function dp_game_page_template( $templates ) {
+	$page = get_queried_object();
+	if ( ! $page instanceof WP_Post || ! $page->post_parent || get_page_template_slug( $page ) ) {
+		return $templates;
+	}
+
+	if ( (int) $page->post_parent === dp_games_hub_id() ) {
+		array_unshift( $templates, 'page-igra.php' );
+	}
+
+	return $templates;
+}
+add_filter( 'page_template_hierarchy', 'dp_game_page_template' );
 
 /* -------------------------------------------------------------------------
  * Sitnice

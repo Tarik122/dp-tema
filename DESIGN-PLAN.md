@@ -281,6 +281,8 @@ On page 2 and later, the big first item disappears and it's just the list.
 
 ## 8. Igre page (/igre)
 
+> **Update (v2.1):** /igre is now a games landing page. It has a blue band with the title set as letter tiles, then one colored card per game. Each game is a child page of Igre (e.g. /igre/rijec/). A card without an image gets a tile picture made from the game's name. New games get a "Novo" badge for 30 days, and every game page ends with "Više igara". The sketch below is the original single-game plan.
+
 ```
 ┌──────────────────────────────────────┐
 │ header                               │

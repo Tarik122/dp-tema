@@ -1,10 +1,10 @@
 <?php
 /**
- * Title: Igre (pločica za naslovnicu)
+ * Title: Igre (traka za naslovnicu)
  * Slug: druga-perspektiva/igre-tile
  * Categories: druga-perspektiva
  * Keywords: igre, wordle, igra
- * Description: Plava pločica koja vodi na stranicu /igre.
+ * Description: Plava traka koja vodi na stranicu /igre i sama nabraja igre (podstranice stranice Igre).
  * Inserter: true
  */
 ?>
@@ -19,11 +19,15 @@
 	<!-- /wp:html -->
 
 	<!-- wp:paragraph {"className":"dp-igre-text"} -->
-	<p class="dp-igre-text">Pogodite skrivenu riječ u šest pokušaja. Igra je još u probnoj verziji, pa nam javite ako nešto ne radi.</p>
+	<p class="dp-igre-text">Igre koje pravi redakcija Druge perspektive. Još su u probnoj verziji, pa nam javite ako nešto ne radi.</p>
+	<!-- /wp:paragraph -->
+
+	<!-- wp:paragraph {"className":"dp-igre-links"} -->
+	<p class="dp-igre-links">Ovdje se same pojavljuju igre sa stranice Igre.</p>
 	<!-- /wp:paragraph -->
 
 	<!-- wp:paragraph {"className":"dp-igre-cta"} -->
-	<p class="dp-igre-cta">Igrajte</p>
+	<p class="dp-igre-cta">Sve igre</p>
 	<!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->

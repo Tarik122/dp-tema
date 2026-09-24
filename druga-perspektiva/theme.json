@@ -543,7 +543,14 @@
 	"customTemplates": [
 		{
 			"name": "page-igre",
-			"title": "Igre (bez potpisa, široko)",
+			"title": "Igre: sve igre (početna)",
+			"postTypes": [
+				"page"
+			]
+		},
+		{
+			"name": "page-igra",
+			"title": "Igre: jedna igra",
 			"postTypes": [
 				"page"
 			]

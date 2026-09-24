@@ -18,7 +18,7 @@ DP logo se sam postavlja kao logo sajta. Datumi se sami pišu kao "11. april 202
 ## 3. Provjerite ove stranice
 
 - Naslovnica, jedan članak, rubrika (npr. Sport), pretraga i stranica koja ne postoji (npr. `/abc`).
-- **/igre**: da li igra radi normalno. Plugin za igru mora ostati uključen.
+- **/igre**: da li igra radi normalno (ispod plave trake "IGRE"). Plugin za igru mora ostati uključen. Zatim uradite korake iz dijela **Igre** ispod.
 - Na telefonu: dugme **Rubrike** otvara meni.
 
 ## 4. Stara tema i njeni dodaci
@@ -55,6 +55,32 @@ Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 Naslovnica prikazuje jedan veliki citat ("Rečeno") na crnoj traci, iz najnovijeg članka koji ima **istaknuti citat**, pored crno-bijele naslovne fotografije tog članka. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
 
 Dobar kandidat za prvi citat: tekst "Održan performans u Drugoj gimnaziji s porukom ljubavi i mira" počinje rečenicom „Ni jedna ljudska duša u sebi istinski ne može da nosi mržnju.“ Pretvorite taj prvi pasus u blok Pullquote.
+
+## Igre (/igre)
+
+Stranica **/igre** je sada početna za sve igre: plava traka sa naslovom od pločica, a ispod kartica za svaku igru. Svaka igra je posebna stranica ispod stranice Igre (npr. `/igre/rijec/`).
+
+**Jednom, poslije instalacije teme: premjestite Wordle na njegovu stranicu**
+
+1. **Stranice → Dodaj novu.** Naslov: **Riječ** (ili kako god želite da se igra zove).
+2. U sadržaj dodajte blok **Shortcode** i upišite `[dp_wordle]`.
+3. U desnoj koloni: **Roditeljska stranica** (Parent) → **Igre**.
+4. **Izvod** (Excerpt): jedna rečenica o igri, npr. "Pogodite skrivenu riječ u šest pokušaja." Ona se piše na kartici igre.
+5. **Objavi.** Igra je sada na `/igre/rijec/`.
+6. Otvorite stranicu **Igre**, obrišite `[dp_wordle]` iz nje i kliknite **Ažuriraj**. Stranica može ostati prazna ili dodajte kratak uvod.
+
+Dok to ne uradite, igra se i dalje prikazuje na `/igre`, pa ništa ne prestaje raditi. Poslije premještanja provjerite da li igra radi na novoj adresi (npr. da li dugme za dijeljenje rezultata i dalje radi).
+
+**Nova igra**
+
+Isto kao koraci 1 do 5: nova stranica, roditelj **Igre**, izvod, objavi. Tema je sama:
+
+- doda karticu na `/igre` i link u plavu traku na naslovnici (do pet igara),
+- napravi sliku kartice od slova naziva igre (ako želite pravu sliku, postavite **Istaknutu sliku**),
+- stavi oznaku **Novo** prvih 30 dana,
+- ispod svake igre prikaže **Više igara**.
+
+**Redoslijed i boje:** igre idu redom kojim su objavljene, pa nova igra ide na kraj. Kartice su redom plava, narandžasta, zelena i navy. Za drugi redoslijed koristite polje **Redoslijed** (Order) u postavkama stranice: manji broj ide prvi.
 
 ## 8. Dvije perspektive
 

@@ -1,0 +1,59 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"dp-igra-page","style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|60"},"blockGap":"0"}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
+<main class="wp-block-group dp-igra-page" style="padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--60)">
+	<!-- wp:group {"className":"dp-igra-head","style":{"spacing":{"blockGap":"0.9rem"}},"layout":{"type":"constrained","contentSize":"600px"}} -->
+	<div class="wp-block-group dp-igra-head">
+		<!-- wp:group {"className":"dp-igra-kicker","style":{"spacing":{"blockGap":"0.5rem"}},"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"center","verticalAlignment":"center"}} -->
+		<div class="wp-block-group dp-igra-kicker">
+			<!-- wp:paragraph {"className":"dp-chip dp-chip--igre"} -->
+			<p class="dp-chip dp-chip--igre"><a href="/igre/">Igre</a></p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:paragraph {"className":"dp-beta-chip dp-beta-chip--outline"} -->
+			<p class="dp-beta-chip dp-beta-chip--outline">beta</p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:post-title {"level":1,"className":"dp-igra-page-title"} /-->
+		<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-igra-page-opis"} /-->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:post-content {"className":"dp-igre-game","layout":{"type":"constrained","contentSize":"600px"}} /-->
+
+	<!-- wp:query {"queryId":13,"query":{"perPage":3,"pages":0,"offset":0,"postType":"page","order":"asc","orderBy":"menu_order","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-mod dp-mod--plava dp-igre-more dp-min-1","metadata":{"name":"Više igara"}} -->
+	<div class="wp-block-query dp-mod dp-mod--plava dp-igre-more dp-min-1">
+		<!-- wp:group {"className":"dp-modhead","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"top"}} -->
+		<div class="wp-block-group dp-modhead">
+			<!-- wp:heading {"level":2,"className":"dp-module-heading"} -->
+			<h2 class="wp-block-heading dp-module-heading">Više igara</h2>
+			<!-- /wp:heading -->
+
+			<!-- wp:paragraph {"className":"dp-more"} -->
+			<p class="dp-more"><a href="/igre/">Sve igre</a></p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:post-template {"className":"dp-igre-cards dp-igre-cards--small"} -->
+			<!-- wp:group {"className":"dp-igra-card","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-igra-card">
+				<!-- wp:post-featured-image {"aspectRatio":"16/10","className":"dp-igra-visual"} /-->
+
+				<!-- wp:group {"className":"dp-igra-text","layout":{"type":"default"}} -->
+				<div class="wp-block-group dp-igra-text">
+					<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-igra-title"} /-->
+					<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-igra-opis"} /-->
+				</div>
+				<!-- /wp:group -->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

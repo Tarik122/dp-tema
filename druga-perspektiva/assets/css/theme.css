@@ -525,6 +525,31 @@ p {
 	line-height: 1.5;
 }
 
+/* Igre nabrojane na traci: iznad linka cijele trake, da se mogu kliknuti. */
+.dp-igre-links {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.dp-igre-links a {
+	padding: 0.3rem 0.65rem 0.35rem;
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	color: var(--dp-paper);
+	font-family: var(--dp-sans);
+	font-size: 0.9375rem;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.dp-igre-links a:hover,
+.dp-igre-links a:focus-visible {
+	background: var(--dp-paper);
+	color: var(--wp--preset--color--plava-chip);
+}
+
 .dp-igre-cta {
 	justify-self: start;
 	padding: 0.55rem 1.1rem;
@@ -1373,7 +1398,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 }
 
 /* =========================================================================
-   19. Stranica Igre
+   19. Igre: početna (/igre), kartice igara i stranica jedne igre
    ========================================================================= */
 
 .dp-beta-chip {
@@ -1387,13 +1412,349 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	line-height: 1.2;
 }
 
-.dp-igre-page .dp-igre-game {
-	margin-block: var(--wp--preset--spacing--50);
+.dp-beta-chip--light {
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	background: transparent;
+}
+
+.dp-beta-chip--outline {
+	border: 1px solid var(--dp-ink);
+	background: transparent;
+	color: var(--dp-ink);
+}
+
+/* Pločice sa slovima, kao u igri. Boje se mijenjaju preko --dp-hit. */
+.dp-tiles {
+	--dp-tile: 3rem;
+	display: flex;
+	flex-wrap: nowrap;
+	gap: calc(var(--dp-tile) * 0.12);
+}
+
+.dp-tiles span {
+	display: grid;
+	place-items: center;
+	flex: 0 0 auto;
+	width: var(--dp-tile);
+	height: var(--dp-tile);
+	border: max(2px, calc(var(--dp-tile) * 0.05)) solid rgba(255, 255, 255, 0.75);
+	color: var(--dp-paper);
+	font-family: var(--dp-sans);
+	font-size: calc(var(--dp-tile) * 0.52);
+	font-weight: 700;
+	line-height: 1;
+}
+
+.dp-tiles .is-hit {
+	border-color: var(--dp-hit, var(--wp--preset--color--narandza));
+	background: var(--dp-hit, var(--wp--preset--color--narandza));
+}
+
+.dp-tiles .is-near {
+	border-color: var(--dp-paper);
+	background: var(--dp-paper);
+	color: var(--dp-card, var(--wp--preset--color--plava-chip));
+}
+
+/* Početna za igre: plava traka sa naslovom od pločica. */
+.dp-igre-hero {
+	margin-bottom: var(--wp--preset--spacing--50);
+}
+
+.dp-igre-hero-inner > * {
+	margin-block: 0;
+}
+
+.dp-igre-hero-row {
+	margin-bottom: 1.25rem !important;
+}
+
+.dp-tiles-title {
+	margin: 0;
+}
+
+.dp-tiles-title .dp-tiles {
+	--dp-tile: clamp(3.25rem, 2rem + 5vw, 5.5rem);
+}
+
+.dp-igre-hero-text {
+	max-width: 36rem;
+	font-size: var(--wp--preset--font-size--dek);
+	line-height: 1.4;
+}
+
+/* Sadržaj stranice /igre (kratak uvod ili, prije premještanja, sama igra). */
+.dp-igre-content:not(:empty) {
+	margin-bottom: var(--wp--preset--spacing--50);
+}
+
+.dp-igre-content > :first-child {
+	margin-top: 0;
+}
+
+/* Kartice igara: svaka u svojoj boji; široka kartica postaje vodoravna. */
+.dp-igre-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+	gap: 1.5rem;
+}
+
+.dp-igre-cards > li {
+	--dp-card: var(--wp--preset--color--plava-chip);
+	--dp-hit: var(--wp--preset--color--narandza);
+	margin: 0;
+	container-type: inline-size;
+}
+
+.dp-igre-cards > li:nth-child(4n+2) {
+	--dp-card: var(--wp--preset--color--narandza-chip);
+	--dp-hit: var(--wp--preset--color--navy);
+}
+
+.dp-igre-cards > li:nth-child(4n+3) {
+	--dp-card: var(--wp--preset--color--zelena);
+}
+
+.dp-igre-cards > li:nth-child(4n+4) {
+	--dp-card: var(--wp--preset--color--navy);
+}
+
+.dp-igra-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	background: var(--dp-card);
+	color: var(--dp-paper);
+}
+
+.dp-igra-card > * {
+	margin: 0 !important;
+}
+
+.dp-igra-card:hover .dp-igra-cta,
+.dp-igra-card:focus-within .dp-igra-cta {
+	background: var(--dp-ink);
+	color: var(--dp-paper);
+}
+
+.dp-igra-card:focus-within {
+	outline: 3px solid var(--wp--preset--color--plava);
+	outline-offset: 3px;
+}
+
+.dp-igra-visual {
+	margin: 0;
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+}
+
+.dp-igra-visual img {
+	width: 100%;
+	height: 100% !important;
+	object-fit: cover;
+}
+
+.dp-igra-visual--tiles {
+	display: grid;
+	place-items: center;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dp-igra-visual--tiles .dp-tiles {
+	--dp-tile: clamp(2.25rem, 12cqi, 4rem);
+}
+
+.dp-igra-novo {
+	position: absolute;
+	top: 1rem;
+	left: 1rem;
+	z-index: 2;
+	padding: 0.25rem 0.55rem;
+	background: var(--dp-paper);
+	color: var(--dp-card);
+	font-family: var(--dp-sans);
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 700;
+	line-height: 1.2;
+	pointer-events: none;
+}
+
+.dp-igra-text {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.6rem;
+	padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.dp-igra-text > * {
+	margin: 0 !important;
+}
+
+.dp-igra-title {
+	color: var(--dp-paper);
+	font-family: var(--dp-sans);
+	font-size: clamp(1.625rem, 1.3rem + 1vw, 2rem) !important;
+	font-weight: 700;
+	line-height: 1.05;
+}
+
+.dp-igra-title a,
+.dp-igra-title a:hover {
+	color: var(--dp-paper);
+	text-decoration: none;
+}
+
+/* Cijela kartica je link na igru. */
+.dp-igra-title a::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}
+
+.dp-igra-opis {
+	color: rgba(255, 255, 255, 0.92);
+	font-size: 1.0625rem;
+	font-style: normal;
+	line-height: 1.45;
+}
+
+.dp-igra-cta {
+	margin-top: auto !important;
+	padding: 0.55rem 1.2rem;
+	background: var(--dp-paper);
+	color: var(--dp-card);
+	font-family: var(--dp-sans);
+	font-size: var(--wp--preset--font-size--ui);
+	font-weight: 700;
+}
+
+.dp-igra-opis + .dp-igra-cta,
+.dp-igra-title + .dp-igra-cta {
+	margin-top: 0.6rem !important;
+}
+
+/* Široka kartica (npr. kad postoji samo jedna igra): slika lijevo, tekst desno. */
+@container (min-width: 720px) {
+	.dp-igra-card {
+		flex-direction: row;
+		min-height: 22rem;
+	}
+
+	.dp-igra-visual {
+		flex: 0 0 55%;
+		aspect-ratio: auto;
+		border-right: 1px solid rgba(255, 255, 255, 0.25);
+		border-bottom: 0;
+	}
+
+	.dp-igra-visual--tiles .dp-tiles {
+		--dp-tile: clamp(3rem, 8cqi, 5rem);
+	}
+
+	.dp-igra-text {
+		justify-content: center;
+		padding: 2.5rem;
+	}
+
+	.dp-igra-title {
+		font-size: clamp(2.25rem, 1.6rem + 2vw, 3rem) !important;
+	}
+
+	.dp-igra-cta {
+		margin-top: 0.6rem !important;
+	}
+}
+
+.dp-igre-ideja {
+	margin-top: var(--wp--preset--spacing--50) !important;
+	color: var(--dp-grey);
+	font-family: var(--dp-sans);
+	font-size: 1rem;
+	text-align: center;
+}
+
+.dp-igre-ideja a {
+	color: var(--dp-ink);
+}
+
+/* Stranica jedne igre. */
+.dp-igra-head {
+	text-align: center;
+}
+
+.dp-igra-head > * {
+	margin-block: 0;
+}
+
+.dp-igra-head > * + * {
+	margin-top: 1rem !important;
+}
+
+.dp-igra-head > .dp-igra-page-opis {
+	margin-top: 0.6rem !important;
+}
+
+.dp-chip--igre {
+	--dp-chip: var(--wp--preset--color--plava-chip);
+}
+
+.dp-igra-page-title {
+	font-family: var(--dp-sans);
+	font-size: clamp(2.5rem, 1.8rem + 3vw, 4rem) !important;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: -0.02em;
+}
+
+.dp-igra-page-opis {
+	font-size: var(--wp--preset--font-size--dek);
+}
+
+.dp-igre-game {
+	margin-top: var(--wp--preset--spacing--40) !important;
 	font-family: var(--dp-sans);
 }
 
-.dp-igre-page .dp-igre-game :is(button, input) {
+.dp-igre-game :is(button, input) {
 	font-family: var(--dp-sans);
+}
+
+.dp-igre-more {
+	margin-top: var(--dp-gap) !important;
+}
+
+/* Manje kartice ispod igre: uvijek vodoravne, pločice lijevo. */
+.dp-igre-cards--small .dp-igra-card {
+	flex-direction: row;
+	min-height: 8.5rem;
+}
+
+.dp-igre-cards--small .dp-igra-visual {
+	flex: 0 0 40%;
+	aspect-ratio: auto;
+	border-right: 1px solid rgba(255, 255, 255, 0.25);
+	border-bottom: 0;
+}
+
+.dp-igre-cards--small .dp-igra-visual--tiles .dp-tiles {
+	--dp-tile: clamp(1.25rem, 6.5cqi, 2.25rem);
+}
+
+.dp-igre-cards--small .dp-igra-text {
+	justify-content: center;
+	padding: 1rem 1.25rem;
+}
+
+.dp-igre-cards--small .dp-igra-title {
+	font-size: 1.5rem !important;
+}
+
+.dp-igre-cards--small .dp-igra-opis {
+	font-size: 1rem;
 }
 
 /* =========================================================================
@@ -1537,7 +1898,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 		grid-template-columns: auto 1fr auto;
 		grid-template-areas:
 			"title text cta"
-			"tiles text cta";
+			"tiles links cta";
 		column-gap: 3rem;
 		align-items: center;
 		margin-inline: 0;
@@ -1547,6 +1908,7 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	.dp-igre-title { grid-area: title; }
 	.dp-igre-tiles { grid-area: tiles; }
 	.dp-igre-text { grid-area: text; }
+	.dp-igre-links { grid-area: links; align-self: start; }
 	.dp-igre-cta { grid-area: cta; }
 
 	/* Vijesti: velika priča lijevo, lista desno (priče desno stoje jedna ispod druge). */
