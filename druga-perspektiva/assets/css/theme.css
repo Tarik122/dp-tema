@@ -266,8 +266,8 @@ p {
 
 .dp-module-heading {
 	border-top: var(--dp-line);
-	padding-top: var(--wp--preset--spacing--40);
-	margin: 0 0 var(--wp--preset--spacing--40);
+	padding-top: 1.25rem;
+	margin: 0 0 1.5rem;
 	font-family: var(--dp-display);
 	font-optical-sizing: none;
 	font-variation-settings: "opsz" 24;
@@ -287,7 +287,7 @@ p {
 /* ---------- Naslovnica: glavna priča ---------- */
 
 .dp-home > * + * {
-	margin-top: var(--wp--preset--spacing--60);
+	margin-top: var(--wp--preset--spacing--50);
 }
 
 .dp-home > .screen-reader-text + * {
@@ -307,7 +307,7 @@ p {
 .dp-lead-card {
 	display: grid;
 	gap: 1.25rem;
-	padding-bottom: var(--wp--preset--spacing--50);
+	padding-bottom: var(--wp--preset--spacing--40);
 	border-bottom: var(--dp-line);
 }
 
@@ -389,7 +389,7 @@ p {
 /* Treći tekst: mala kvadratna fotografija desno. */
 .dp-features-list > li:nth-child(3) {
 	display: grid;
-	grid-template-columns: 1fr 104px;
+	grid-template-columns: minmax(0, 1fr) 104px;
 	gap: 1rem;
 	align-items: start;
 }
@@ -434,6 +434,127 @@ p {
 .dp-list .wp-block-post-title {
 	margin: 0 0 0.4rem;
 	line-height: 1.2;
+}
+
+/* Najnovije sa malim fotografijama desno. */
+.dp-list--thumbs > li {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 88px;
+	column-gap: 1rem;
+	row-gap: 0.35rem;
+	align-content: start;
+}
+
+.dp-list--thumbs > li > * {
+	grid-column: 1;
+	margin: 0;
+}
+
+.dp-list--thumbs .dp-list-thumb {
+	grid-column: 2;
+	grid-row: 1 / span 3;
+	margin: 0;
+}
+
+.dp-list--thumbs .dp-list-thumb {
+	width: 88px;
+	overflow: hidden;
+}
+
+.dp-list--thumbs .dp-list-thumb img {
+	width: 100% !important;
+	height: 88px !important;
+	aspect-ratio: 1 !important;
+	object-fit: cover;
+}
+
+.dp-list--thumbs > li:not(:has(.dp-list-thumb)) > * {
+	grid-column: 1 / -1;
+}
+
+/* ---------- Rubrike na naslovnici ---------- */
+
+.dp-sections {
+	display: grid;
+	gap: var(--wp--preset--spacing--50);
+}
+
+.dp-sections > * {
+	margin: 0 !important;
+}
+
+.dp-sections:not(:has(.wp-block-query)) {
+	display: none;
+}
+
+.dp-section {
+	--dp-section-color: var(--wp--preset--color--navy);
+	border-top: 3px solid var(--dp-section-color);
+	padding-top: 0.75rem;
+}
+
+.dp-section--plava {
+	--dp-section-color: var(--wp--preset--color--plava-chip);
+}
+
+.dp-section--narandza {
+	--dp-section-color: var(--wp--preset--color--narandza-chip);
+}
+
+.dp-section-heading {
+	margin: 0 0 1rem;
+	font-family: var(--dp-display);
+	font-optical-sizing: none;
+	font-variation-settings: "opsz" 24;
+	font-weight: 500;
+	font-size: 1.375rem;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.dp-section-heading a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.dp-section-heading a:hover {
+	color: var(--dp-section-color);
+}
+
+.dp-section-list > li {
+	margin: 0;
+	padding: 0.8rem 0;
+	border-bottom: var(--dp-line);
+}
+
+.dp-section-list > li:first-child {
+	padding-top: 0;
+}
+
+.dp-section-list > li:last-child {
+	border-bottom: 0;
+}
+
+.dp-section-list .wp-block-post-title {
+	margin: 0 0 0.3rem;
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+.dp-section-list .dp-section-image {
+	margin: 0 0 0.75rem;
+}
+
+.dp-section-list > li:not(:first-child) .dp-section-image {
+	display: none;
+}
+
+.dp-section-list > li:first-child .wp-block-post-title {
+	font-size: 1.5rem !important;
+}
+
+.dp-list-author {
+	font-size: var(--wp--preset--font-size--small);
 }
 
 /* ---------- Mišljenje: kolumne, ime autora prvo ---------- */
@@ -552,7 +673,7 @@ p {
 
 .dp-archive-list > li {
 	display: grid;
-	grid-template-columns: 96px 1fr;
+	grid-template-columns: 96px minmax(0, 1fr);
 	gap: 1rem;
 	align-items: start;
 	margin: 0.75rem 0 0;
@@ -594,10 +715,26 @@ p {
 	text-decoration: underline;
 }
 
+/* Na naslovnici su rubrike jedan kratak red linkova. */
+.dp-rubrike-module .dp-rubrike {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.25rem 1.5rem;
+}
+
+.dp-rubrike-module .dp-rubrike li {
+	border: 0;
+}
+
 .dp-rubrike-module .dp-rubrike a {
+	padding: 0.2rem 0;
 	font-family: var(--dp-serif);
 	font-weight: 400;
 	font-size: 1.1875rem;
+	text-decoration: underline;
+	text-decoration-color: var(--wp--preset--color--linija);
+	text-underline-offset: 0.25em;
 }
 
 /* ---------- Podnožje ---------- */
@@ -857,7 +994,7 @@ p {
 
 .dp-read-more-list > li {
 	display: grid;
-	grid-template-columns: 1fr 96px;
+	grid-template-columns: minmax(0, 1fr) 96px;
 	grid-template-rows: auto auto 1fr;
 	column-gap: 1rem;
 	row-gap: 0.4rem;
@@ -1133,13 +1270,23 @@ body:not(.paged) .dp-river--first-big > li:first-child .wp-block-post-title {
 	}
 
 	.dp-features-list > li:nth-child(3) {
-		grid-template-columns: 1fr 88px;
+		grid-template-columns: minmax(0, 1fr) 88px;
 	}
 
 	.dp-list {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		column-gap: 3rem;
+	}
+
+	.dp-list--thumbs {
+		grid-template-columns: repeat(3, 1fr);
+		column-gap: 2.5rem;
+	}
+
+	.dp-sections {
+		grid-template-columns: repeat(3, 1fr);
+		column-gap: 2.5rem;
 	}
 
 	.dp-opinion-list {

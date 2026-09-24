@@ -25,6 +25,16 @@ const DP_QUERY_ARCHIVE   = 5; // "Iz arhive".
 const DP_QUERY_READ_MORE = 9; // "Pročitajte još" ispod članka.
 
 /*
+ * Rubrike na naslovnici: queryId => slug kategorije. Da promijenite koja se
+ * rubrika prikazuje, promijenite slug ovdje i naslov/link u šablonu naslovnice.
+ */
+const DP_HOME_SECTIONS = array(
+	6 => 'vijestiskola',
+	7 => 'sport',
+	8 => 'kultura',
+);
+
+/*
  * Rubrike: slug kategorije => boja oznake (slug boje iz theme.json).
  * Slugovi su isti kao na starom sajtu da stari linkovi rade.
  * Nova kategorija koja nije ovdje dobija navy oznaku.
@@ -518,8 +528,16 @@ function dp_home_layout() {
 	$shown    = array_merge( $shown, $opinions );
 
 	// Najnovije.
-	$latest = dp_post_ids( array( 'numberposts' => 5, 'post__not_in' => $shown ) );
+	$latest = dp_post_ids( array( 'numberposts' => 6, 'post__not_in' => $shown ) );
 	$shown  = array_merge( $shown, $latest );
+
+	// Rubrike: po tri teksta iz svake, bez onih koji su već gore.
+	$sections = array();
+	foreach ( DP_HOME_SECTIONS as $query_id => $slug ) {
+		$term                  = get_term_by( 'slug', $slug, 'category' );
+		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
+		$shown                 = array_merge( $shown, $sections[ $query_id ] );
+	}
 
 	// Iz arhive.
 	$old_args = array(
@@ -539,7 +557,7 @@ function dp_home_layout() {
 		DP_QUERY_LATEST   => $latest,
 		DP_QUERY_OPINION  => $opinions,
 		DP_QUERY_ARCHIVE  => $archive,
-	);
+	) + $sections;
 
 	return $layout;
 }
@@ -566,7 +584,7 @@ function dp_query_vars( $query, $block ) {
 
 	if ( DP_QUERY_READ_MORE === $query_id ) {
 		$ids = is_singular( 'post' ) ? dp_read_more_ids( get_queried_object_id() ) : dp_post_ids( array( 'numberposts' => 3 ) );
-	} elseif ( in_array( $query_id, array( DP_QUERY_LEAD, DP_QUERY_FEATURES, DP_QUERY_LATEST, DP_QUERY_OPINION, DP_QUERY_ARCHIVE ), true ) ) {
+	} elseif ( in_array( $query_id, array_merge( array( DP_QUERY_LEAD, DP_QUERY_FEATURES, DP_QUERY_LATEST, DP_QUERY_OPINION, DP_QUERY_ARCHIVE ), array_keys( DP_HOME_SECTIONS ) ), true ) ) {
 		$layout = dp_home_layout();
 		$ids    = $layout[ $query_id ];
 	}
