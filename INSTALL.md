@@ -61,6 +61,8 @@ Dobar kandidat za prvi citat: tekst "Održan performans u Drugoj gimnaziji s por
 
 Stranica **/igre** je sada početna za sve igre, u stilu kockaste sveske: naslov od pločica sa slovima, a ispod kartica za svaku igru. Svaka igra je posebna stranica ispod stranice Igre (npr. `/igre/rijec/`).
 
+Igru **Riječ** pravi dodatak **DP igre** (`dp-igre.zip`, izvorni kod u folderu `dp-igre/`). Ako još nije instaliran: **Dodaci → Dodaj novi → Otpremi dodatak** → izaberite `dp-igre.zip` → **Instaliraj** → **Aktiviraj**. Kontrolni panel je u meniju **Riječ dana** (posebne riječi za određeni dan, liste riječi, igrači, Google prijava). Detaljne upute su u `dp-igre/README.md`.
+
 **Jednom, poslije instalacije teme: premjestite Wordle na njegovu stranicu**
 
 1. **Stranice → Dodaj novu.** Naslov: **Riječ** (ili kako god želite da se igra zove).
