@@ -1,71 +1,140 @@
 <!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
 
-<!-- wp:group {"tagName":"main","className":"dp-home","style":{"spacing":{"padding":{"top":"var:preset|spacing|40"},"blockGap":"0"}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
-<main class="wp-block-group dp-home" style="padding-top:var(--wp--preset--spacing--40)">
+<!-- wp:group {"tagName":"main","className":"dp-home","style":{"spacing":{"blockGap":"0"}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
+<main class="wp-block-group dp-home">
 	<!-- wp:heading {"level":1,"className":"screen-reader-text"} -->
 	<h1 class="wp-block-heading screen-reader-text">Druga perspektiva, učeničke novine Druge gimnazije Sarajevo</h1>
 	<!-- /wp:heading -->
 
-	<!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-lead dp-min-1","metadata":{"name":"Glavna priča"}} -->
+	<!-- wp:group {"className":"dp-top","metadata":{"name":"Vrh naslovnice"},"layout":{"type":"default"}} -->
+	<div class="wp-block-group dp-top">
+	<!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-lead dp-min-1","metadata":{"name":"Glavna priča (zakačeni članak)"}} -->
 	<div class="wp-block-query dp-lead dp-min-1">
 		<!-- wp:post-template {"className":"dp-lead-list"} -->
-			<!-- wp:group {"className":"dp-lead-card","layout":{"type":"default"}} -->
-			<div class="wp-block-group dp-lead-card">
-				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"4/3","className":"dp-lead-image"} /-->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","sizeSlug":"large","className":"dp-lead-image"} /-->
+			<!-- wp:group {"className":"dp-lead-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-lead-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":2,"isLink":true,"className":"dp-lead-title"} /-->
+				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-lead-dek"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-lead-author"} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+	<!-- wp:query {"queryId":2,"query":{"perPage":2,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-side dp-min-1","metadata":{"name":"Lijevo od glavne priče"}} -->
+	<div class="wp-block-query dp-side dp-min-1">
+		<!-- wp:post-template {"className":"dp-side-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","sizeSlug":"medium_large","className":"dp-side-image"} /-->
+			<!-- wp:group {"className":"dp-side-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-side-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-side-title"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-card-author"} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+	<!-- wp:query {"queryId":3,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-latest dp-min-2","metadata":{"name":"Najnovije"}} -->
+	<div class="wp-block-query dp-latest dp-min-2">
+		<!-- wp:heading {"level":2,"className":"dp-latest-heading"} -->
+		<h2 class="wp-block-heading dp-latest-heading">Najnovije</h2>
+		<!-- /wp:heading -->
 
-				<!-- wp:group {"className":"dp-lead-text","style":{"spacing":{"blockGap":"1rem"}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"center"}} -->
-				<div class="wp-block-group dp-lead-text">
-					<!-- wp:post-terms {"term":"category","className":"dp-chip"} /-->
-					<!-- wp:post-title {"level":2,"isLink":true,"textAlign":"center","className":"dp-lead-title","fontSize":"display"} /-->
-					<!-- wp:post-excerpt {"moreText":"","textAlign":"center","className":"dp-standfirst dp-lead-dek"} /-->
-					<!-- wp:post-author-name {"isLink":true,"className":"dp-lead-author"} /-->
-				</div>
-				<!-- /wp:group -->
+		<!-- wp:post-template {"className":"dp-latest-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"1","sizeSlug":"medium","className":"dp-thumb"} /-->
+			<!-- wp:group {"className":"dp-latest-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-latest-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-latest-title"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-card-author"} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":6,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-sec dp-sec--split dp-sec--dated dp-min-1","metadata":{"name":"Rubrika: Vijesti"}} -->
+	<div class="wp-block-query dp-sec dp-sec--split dp-sec--dated dp-min-1">
+		<!-- wp:group {"className":"dp-sec-head","layout":{"type":"default"}} -->
+		<div class="wp-block-group dp-sec-head">
+			<!-- wp:heading {"level":2,"className":"dp-sec-title"} -->
+			<h2 class="wp-block-heading dp-sec-title"><a href="/category/vijesti/">Vijesti</a></h2>
+			<!-- /wp:heading -->
+			<!-- wp:paragraph {"className":"dp-sec-sub"} -->
+			<p class="dp-sec-sub">Šta se dešava u školi i u gradu.</p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+		<!-- wp:post-template {"className":"dp-card-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","sizeSlug":"large","className":"dp-card-image"} /-->
+			<!-- wp:group {"className":"dp-card-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-card-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-card-title"} /-->
+				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-card-dek"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-card-author"} /-->
+				<!-- wp:post-date {"format":"j. F Y.","className":"dp-card-date"} /-->
 			</div>
 			<!-- /wp:group -->
 		<!-- /wp:post-template -->
 	</div>
 	<!-- /wp:query -->
 
-	<!-- wp:query {"queryId":2,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-features dp-min-2","metadata":{"name":"Izdvojeno"}} -->
-	<div class="wp-block-query dp-features dp-min-2">
-		<!-- wp:post-template {"className":"dp-features-list"} -->
-			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","className":"dp-feature-image"} /-->
-
-			<!-- wp:group {"className":"dp-feature-text","style":{"spacing":{"blockGap":"0.6rem"}},"layout":{"type":"flex","orientation":"vertical"}} -->
-			<div class="wp-block-group dp-feature-text">
-				<!-- wp:post-terms {"term":"category","className":"dp-chip"} /-->
-				<!-- wp:post-title {"level":2,"isLink":true,"className":"dp-feature-title","fontSize":"naslov-m"} /-->
-				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-feature-dek","fontSize":"body"} /-->
-				<!-- wp:post-author-name {"isLink":true} /-->
-			</div>
-			<!-- /wp:group -->
+	<!-- wp:query {"queryId":4,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-sec dp-sec--opinion dp-min-2","metadata":{"name":"Mišljenje"}} -->
+	<div class="wp-block-query dp-sec dp-sec--opinion dp-min-2">
+		<!-- wp:group {"className":"dp-sec-head","layout":{"type":"default"}} -->
+		<div class="wp-block-group dp-sec-head">
+			<!-- wp:heading {"level":2,"className":"dp-sec-title"} -->
+			<h2 class="wp-block-heading dp-sec-title"><a href="/category/opinion/">Mišljenje</a></h2>
+			<!-- /wp:heading -->
+			<!-- wp:paragraph {"className":"dp-sec-sub"} -->
+			<p class="dp-sec-sub">Stavovi, kolumne i eseji naših autora.</p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+		<!-- wp:post-template {"className":"dp-opinion-list"} -->
+			<!-- wp:post-author-name {"isLink":true,"className":"dp-opinion-author"} /-->
+			<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-opinion-title"} /-->
+			<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-card-dek"} /-->
 		<!-- /wp:post-template -->
 	</div>
 	<!-- /wp:query -->
 
 	<!-- wp:pattern {"slug":"druga-perspektiva/igre-tile"} /-->
 
-	<!-- wp:query {"queryId":3,"query":{"perPage":8,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-latest dp-min-3","metadata":{"name":"Najnovije"}} -->
-	<div class="wp-block-query dp-latest dp-min-3">
-		<!-- wp:heading {"level":2,"className":"dp-module-heading"} -->
-		<h2 class="wp-block-heading dp-module-heading">Najnovije</h2>
-		<!-- /wp:heading -->
-
-		<!-- wp:post-template {"className":"dp-list dp-list--thumbs"} -->
-			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"1","className":"dp-list-thumb"} /-->
-			<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
-			<!-- wp:group {"className":"dp-list-meta","style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-			<div class="wp-block-group dp-list-meta">
-				<!-- wp:post-author-name /-->
-				<!-- wp:post-date {"format":"j. F Y."} /-->
+	<!-- wp:query {"queryId":8,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-sec dp-sec--split dp-sec--flip dp-min-1","metadata":{"name":"Rubrika: Umjetnost i kultura"}} -->
+	<div class="wp-block-query dp-sec dp-sec--split dp-sec--flip dp-min-1">
+		<!-- wp:group {"className":"dp-sec-head","layout":{"type":"default"}} -->
+		<div class="wp-block-group dp-sec-head">
+			<!-- wp:heading {"level":2,"className":"dp-sec-title"} -->
+			<h2 class="wp-block-heading dp-sec-title"><a href="/category/kultura/">Kultura</a></h2>
+			<!-- /wp:heading -->
+			<!-- wp:paragraph {"className":"dp-sec-sub"} -->
+			<p class="dp-sec-sub">Predstave, koncerti, serije i knjige.</p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+		<!-- wp:post-template {"className":"dp-card-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","sizeSlug":"large","className":"dp-card-image"} /-->
+			<!-- wp:group {"className":"dp-card-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-card-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-card-title"} /-->
+				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-card-dek"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-card-author"} /-->
+				<!-- wp:post-date {"format":"j. F Y.","className":"dp-card-date"} /-->
 			</div>
 			<!-- /wp:group -->
 		<!-- /wp:post-template -->
 	</div>
 	<!-- /wp:query -->
 
-	<!-- wp:group {"className":"dp-citat","metadata":{"name":"Citat (iz najnovijeg izdvojenog citata u člancima)"},"layout":{"type":"constrained","contentSize":"900px"}} -->
+	<!-- wp:group {"className":"dp-citat","metadata":{"name":"Citat (iz najnovijeg izdvojenog citata u člancima)"},"layout":{"type":"default"}} -->
 	<div class="wp-block-group dp-citat">
 		<!-- wp:paragraph -->
 		<p>Ovdje se automatski prikazuje najnoviji istaknuti citat (blok "Pullquote") iz nekog članka. Ako nijedan članak nema istaknuti citat, ovaj dio se ne prikazuje.</p>
@@ -73,106 +142,89 @@
 	</div>
 	<!-- /wp:group -->
 
-	<!-- wp:group {"className":"dp-sections","layout":{"type":"default"}} -->
-	<div class="wp-block-group dp-sections">
-		<!-- wp:query {"queryId":6,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-section dp-section--plava dp-min-2","metadata":{"name":"Rubrika: Vijesti"}} -->
-		<div class="wp-block-query dp-section dp-section--plava dp-min-2">
-			<!-- wp:heading {"level":2,"className":"dp-section-heading"} -->
-			<h2 class="wp-block-heading dp-section-heading"><a href="/category/vijesti/">Vijesti</a></h2>
+	<!-- wp:group {"className":"dp-duo","layout":{"type":"default"}} -->
+	<div class="wp-block-group dp-duo">
+	<!-- wp:query {"queryId":7,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-sec dp-sec--stack dp-min-1","metadata":{"name":"Rubrika: Sport"}} -->
+	<div class="wp-block-query dp-sec dp-sec--stack dp-min-1">
+		<!-- wp:group {"className":"dp-sec-head","layout":{"type":"default"}} -->
+		<div class="wp-block-group dp-sec-head">
+			<!-- wp:heading {"level":2,"className":"dp-sec-title"} -->
+			<h2 class="wp-block-heading dp-sec-title"><a href="/category/sport/">Sport</a></h2>
 			<!-- /wp:heading -->
-
-			<!-- wp:post-template {"className":"dp-section-list"} -->
-				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","className":"dp-section-image"} /-->
-				<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
-				<!-- wp:post-author-name {"className":"dp-list-author"} /-->
-			<!-- /wp:post-template -->
-		</div>
-		<!-- /wp:query -->
-
-		<!-- wp:query {"queryId":7,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-section dp-section--narandza dp-min-2","metadata":{"name":"Rubrika: Sport"}} -->
-		<div class="wp-block-query dp-section dp-section--narandza dp-min-2">
-			<!-- wp:heading {"level":2,"className":"dp-section-heading"} -->
-			<h2 class="wp-block-heading dp-section-heading"><a href="/category/sport/">Sport</a></h2>
-			<!-- /wp:heading -->
-
-			<!-- wp:post-template {"className":"dp-section-list"} -->
-				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","className":"dp-section-image"} /-->
-				<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
-				<!-- wp:post-author-name {"className":"dp-list-author"} /-->
-			<!-- /wp:post-template -->
-		</div>
-		<!-- /wp:query -->
-
-		<!-- wp:query {"queryId":8,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-section dp-section--narandza dp-min-2","metadata":{"name":"Rubrika: Umjetnost i kultura"}} -->
-		<div class="wp-block-query dp-section dp-section--narandza dp-min-2">
-			<!-- wp:heading {"level":2,"className":"dp-section-heading"} -->
-			<h2 class="wp-block-heading dp-section-heading"><a href="/category/kultura/">Kultura</a></h2>
-			<!-- /wp:heading -->
-
-			<!-- wp:post-template {"className":"dp-section-list"} -->
-				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","className":"dp-section-image"} /-->
-				<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
-				<!-- wp:post-author-name {"className":"dp-list-author"} /-->
-			<!-- /wp:post-template -->
-		</div>
-		<!-- /wp:query -->
-	</div>
-	<!-- /wp:group -->
-
-	<!-- wp:query {"queryId":4,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"align":"full","className":"dp-opinion dp-min-2","metadata":{"name":"Mišljenje"}} -->
-	<div class="wp-block-query alignfull dp-opinion dp-min-2">
-		<!-- wp:group {"className":"dp-opinion-inner","layout":{"type":"constrained","contentSize":"1240px"}} -->
-		<div class="wp-block-group dp-opinion-inner">
-			<!-- wp:heading {"level":2,"className":"dp-module-heading"} -->
-			<h2 class="wp-block-heading dp-module-heading"><a href="/category/opinion/">Mišljenje</a></h2>
-			<!-- /wp:heading -->
-
-			<!-- wp:post-template {"className":"dp-opinion-list"} -->
-				<!-- wp:post-author-name {"className":"dp-opinion-author"} /-->
-				<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
-				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst","fontSize":"body"} /-->
-			<!-- /wp:post-template -->
+			<!-- wp:paragraph {"className":"dp-sec-sub"} -->
+			<p class="dp-sec-sub">Utakmice, turniri i naši sportisti.</p>
+			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:group -->
+		<!-- wp:post-template {"className":"dp-card-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","sizeSlug":"large","className":"dp-card-image"} /-->
+			<!-- wp:group {"className":"dp-card-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-card-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-card-title"} /-->
+				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-card-dek"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-card-author"} /-->
+				<!-- wp:post-date {"format":"j. F Y.","className":"dp-card-date"} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
 	</div>
 	<!-- /wp:query -->
-
-	<!-- wp:group {"className":"dp-bottom","layout":{"type":"default"}} -->
-	<div class="wp-block-group dp-bottom">
-		<!-- wp:query {"queryId":5,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-archive dp-min-1","metadata":{"name":"Iz arhive"}} -->
-		<div class="wp-block-query dp-archive dp-min-1">
-			<!-- wp:heading {"level":2,"className":"dp-module-heading"} -->
-			<h2 class="wp-block-heading dp-module-heading">Iz arhive</h2>
+	<!-- wp:query {"queryId":10,"query":{"perPage":4,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-sec dp-sec--stack dp-min-1","metadata":{"name":"Rubrika: Nauka i tehnologija"}} -->
+	<div class="wp-block-query dp-sec dp-sec--stack dp-min-1">
+		<!-- wp:group {"className":"dp-sec-head","layout":{"type":"default"}} -->
+		<div class="wp-block-group dp-sec-head">
+			<!-- wp:heading {"level":2,"className":"dp-sec-title"} -->
+			<h2 class="wp-block-heading dp-sec-title"><a href="/category/nauka/">Nauka</a></h2>
 			<!-- /wp:heading -->
-
-			<!-- wp:post-template {"className":"dp-archive-list"} -->
-				<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"1","width":"96px","className":"dp-archive-image"} /-->
-				<!-- wp:group {"className":"dp-archive-text","style":{"spacing":{"blockGap":"0.4rem"}},"layout":{"type":"flex","orientation":"vertical"}} -->
-				<div class="wp-block-group dp-archive-text">
-					<!-- wp:post-title {"level":3,"isLink":true,"fontSize":"naslov-s"} /-->
-					<!-- wp:group {"className":"dp-list-meta","style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-					<div class="wp-block-group dp-list-meta">
-						<!-- wp:post-author-name /-->
-						<!-- wp:post-date {"format":"Y."} /-->
-					</div>
-					<!-- /wp:group -->
-				</div>
-				<!-- /wp:group -->
-			<!-- /wp:post-template -->
-		</div>
-		<!-- /wp:query -->
-
-		<!-- wp:group {"className":"dp-rubrike-module","layout":{"type":"default"}} -->
-		<div class="wp-block-group dp-rubrike-module">
-			<!-- wp:heading {"level":2,"className":"dp-module-heading"} -->
-			<h2 class="wp-block-heading dp-module-heading">Rubrike</h2>
-			<!-- /wp:heading -->
-
-			<!-- wp:categories {"showPostCounts":false,"showHierarchy":false,"showEmpty":false,"className":"dp-rubrike"} /-->
+			<!-- wp:paragraph {"className":"dp-sec-sub"} -->
+			<p class="dp-sec-sub">Nauka i tehnologija, objašnjene jednostavno.</p>
+			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:group -->
+		<!-- wp:post-template {"className":"dp-card-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","sizeSlug":"large","className":"dp-card-image"} /-->
+			<!-- wp:group {"className":"dp-card-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-card-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-card-title"} /-->
+				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-card-dek"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-card-author"} /-->
+				<!-- wp:post-date {"format":"j. F Y.","className":"dp-card-date"} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
 	</div>
 	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":5,"query":{"perPage":3,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false},"className":"dp-sec dp-sec--cards dp-sec--dated dp-min-1","metadata":{"name":"Iz arhive"}} -->
+	<div class="wp-block-query dp-sec dp-sec--cards dp-sec--dated dp-min-1">
+		<!-- wp:group {"className":"dp-sec-head","layout":{"type":"default"}} -->
+		<div class="wp-block-group dp-sec-head">
+			<!-- wp:heading {"level":2,"className":"dp-sec-title"} -->
+			<h2 class="wp-block-heading dp-sec-title">Iz arhive</h2>
+			<!-- /wp:heading -->
+			<!-- wp:paragraph {"className":"dp-sec-sub"} -->
+			<p class="dp-sec-sub">Tekstovi koje vrijedi ponovo pročitati.</p>
+			<!-- /wp:paragraph -->
+		</div>
+		<!-- /wp:group -->
+		<!-- wp:post-template {"className":"dp-card-list"} -->
+			<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"3/2","sizeSlug":"large","className":"dp-card-image"} /-->
+			<!-- wp:group {"className":"dp-card-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group dp-card-text">
+				<!-- wp:post-terms {"term":"category","className":"dp-chip dp-kicker"} /-->
+				<!-- wp:post-title {"level":3,"isLink":true,"className":"dp-card-title"} /-->
+				<!-- wp:post-excerpt {"moreText":"","className":"dp-standfirst dp-card-dek"} /-->
+				<!-- wp:post-author-name {"isLink":true,"className":"dp-card-author"} /-->
+				<!-- wp:post-date {"format":"j. F Y.","className":"dp-card-date"} /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+	</div>
+	<!-- /wp:query -->
 </main>
 <!-- /wp:group -->
 

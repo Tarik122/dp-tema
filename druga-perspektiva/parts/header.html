@@ -1,24 +1,24 @@
-<!-- wp:group {"className":"dp-header","style":{"spacing":{"padding":{"top":"0.75rem","bottom":"0.75rem"}},"border":{"bottom":{"color":"var:preset|color|linija","width":"1px","style":"solid"}}},"layout":{"type":"constrained","contentSize":"1240px"}} -->
-<div class="wp-block-group dp-header" style="border-bottom-color:var(--wp--preset--color--linija);border-bottom-style:solid;border-bottom-width:1px;padding-top:0.75rem;padding-bottom:0.75rem">
-	<!-- wp:group {"className":"dp-header-row","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
-	<div class="wp-block-group dp-header-row">
-		<!-- wp:site-logo {"width":64,"shouldSyncIcon":false,"className":"dp-logo"} /-->
+<!-- wp:group {"className":"dp-header","layout":{"type":"constrained","contentSize":"1240px"}} -->
+<div class="wp-block-group dp-header">
+	<!-- wp:group {"className":"dp-masthead","layout":{"type":"default"}} -->
+	<div class="wp-block-group dp-masthead">
+		<!-- wp:paragraph {"className":"dp-danas"} -->
+		<p class="dp-danas">Današnji datum</p>
+		<!-- /wp:paragraph -->
 
-		<!-- wp:group {"className":"dp-header-tools","style":{"spacing":{"blockGap":"1.25rem"}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"right","verticalAlignment":"center"}} -->
-		<div class="wp-block-group dp-header-tools">
-			<!-- wp:navigation {"className":"dp-nav","overlayMenu":"mobile","hasIcon":false,"overlayBackgroundColor":"papir","overlayTextColor":"tinta","layout":{"type":"flex","justifyContent":"right","flexWrap":"nowrap"},"style":{"spacing":{"blockGap":"1.5rem"}}} -->
-				<!-- wp:navigation-link {"label":"Vijesti","url":"/category/vijesti/","kind":"custom","isTopLevelLink":true} /-->
-				<!-- wp:navigation-link {"label":"Mišljenje","url":"/category/opinion/","kind":"custom","isTopLevelLink":true} /-->
-				<!-- wp:navigation-link {"label":"Sport","url":"/category/sport/","kind":"custom","isTopLevelLink":true} /-->
-				<!-- wp:navigation-link {"label":"Kultura","url":"/category/kultura/","kind":"custom","isTopLevelLink":true} /-->
-				<!-- wp:navigation-link {"label":"Nauka","url":"/category/nauka/","kind":"custom","isTopLevelLink":true} /-->
-				<!-- wp:navigation-link {"label":"Igre","url":"/igre/","kind":"custom","isTopLevelLink":true,"className":"dp-nav-igre"} /-->
-			<!-- /wp:navigation -->
+		<!-- wp:site-logo {"width":96,"shouldSyncIcon":false,"className":"dp-logo"} /-->
 
-			<!-- wp:search {"label":"Pretraži","showLabel":false,"placeholder":"Pretraži članke","buttonText":"Pretraži","buttonPosition":"button-only","buttonUseIcon":true,"isSearchFieldHidden":true,"className":"dp-header-search"} /-->
-		</div>
-		<!-- /wp:group -->
+		<!-- wp:search {"label":"Pretraži","showLabel":false,"placeholder":"Pretraži članke","buttonText":"Pretraži","buttonPosition":"button-only","buttonUseIcon":true,"isSearchFieldHidden":true,"className":"dp-header-search"} /-->
 	</div>
 	<!-- /wp:group -->
+
+	<!-- wp:navigation {"className":"dp-nav","overlayMenu":"never","layout":{"type":"flex","justifyContent":"center","flexWrap":"nowrap"},"style":{"spacing":{"blockGap":"2rem"}}} -->
+		<!-- wp:navigation-link {"label":"Vijesti","url":"/category/vijesti/","kind":"custom","isTopLevelLink":true} /-->
+		<!-- wp:navigation-link {"label":"Mišljenje","url":"/category/opinion/","kind":"custom","isTopLevelLink":true} /-->
+		<!-- wp:navigation-link {"label":"Kultura","url":"/category/kultura/","kind":"custom","isTopLevelLink":true} /-->
+		<!-- wp:navigation-link {"label":"Sport","url":"/category/sport/","kind":"custom","isTopLevelLink":true} /-->
+		<!-- wp:navigation-link {"label":"Nauka","url":"/category/nauka/","kind":"custom","isTopLevelLink":true} /-->
+		<!-- wp:navigation-link {"label":"Igre","url":"/igre/","kind":"custom","isTopLevelLink":true,"className":"dp-nav-igre"} /-->
+	<!-- /wp:navigation -->
 </div>
 <!-- /wp:group -->

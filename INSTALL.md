@@ -29,7 +29,7 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 
 ## 5. Sitnice koje popravljaju izgled
 
-- **Izvodi (podnaslovi):** u `excerpts.md` je gotov izvod za svaki članak. Otvorite članak → desna kolona **Članak → Izvod** → zalijepite → **Ažuriraj**. Izvod se prikazuje kao kurzivni podnaslov ispod naslova. Bez njega podnaslova nema.
+- **Izvodi (podnaslovi):** u `excerpts.md` je gotov izvod za svaki članak. Otvorite članak → desna kolona **Članak → Izvod** → zalijepite → **Ažuriraj**. Izvod se prikazuje kao kurzivni podnaslov ispod naslova, a na naslovnici, u rubrikama i u pretrazi kao kratak opis ispod naslova. **Novi izgled se najviše oslanja na izvode**, pa ih zalijepite u sve članke. Bez izvoda članak ima samo naslov.
 - **Članak "Druga gimnazija odnijela pobjedu u pripremnoj utakmici…"** ima autora "admin". Promijenite autora u pravo ime.
 - **Opis i autor fotografije:** u **Mediji** kliknite sliku i u polje **Opis slike** (Caption) upišite npr. "Učenici na Igmanu. Foto: Ime Prezime". Tema to prikazuje ispod naslovne fotografije članka.
 - **Slike iz Google Docsa:** članak o Gimnazijadi ima 3 slike zalijepljene direktno iz Google Docsa. Takve slike mogu prestati raditi. Preuzmite ih i ponovo ubacite kroz **Dodaj medij**.
@@ -39,10 +39,11 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 ## 6. Kako naslovnica bira članke
 
 - **Glavna priča:** najnoviji članak. **Vi birate drugu:** otvorite članak → desna kolona **Članak** → uključite **Postavi na vrh bloga** (u novijim verzijama piše **Sticky** ili **Zalijepi**) → **Ažuriraj**. Taj članak ostaje glavna priča dok ga ne isključite. Ako ih je uključeno više, gore je najnoviji od njih.
-- **Tri teksta ispod glavne priče i Najnovije:** sljedećih devet članaka, strogo od najnovijeg prema starijem.
-- **Rubrike (Vijesti, Sport, Umjetnost i kultura):** po tri najnovija teksta iz svake rubrike koji već nisu gore. Rubrika bez dovoljno tekstova se ne prikazuje. Koje se rubrike prikazuju mijenja se u `functions.php` (`DP_HOME_SECTIONS`) i u šablonu naslovnice.
+- **Dva teksta lijevo od glavne priče i Najnovije (desno):** sljedećih šest članaka, strogo od najnovijeg prema starijem.
+- **Rubrike (Vijesti, Kultura, Sport, Nauka):** po četiri najnovija teksta iz svake rubrike koji već nisu gore. Prvi je velik, sa fotografijom. Rubrika bez tekstova se ne prikazuje.
+- **Podnaslovi rubrika** (npr. "Šta se dešava u školi i u gradu."): mijenjaju se u **Izgled → Uređivač → Šabloni → Naslovnica**, klikom na tekst. Rubrika bez dovoljno tekstova se ne prikazuje. Koje se rubrike prikazuju mijenja se u `functions.php` (`DP_HOME_SECTIONS`) i u šablonu naslovnice.
 - **Mišljenje:** najnoviji tekstovi iz rubrike Mišljenje koji već nisu gore.
-- **Iz arhive:** jedan stariji tekst iz kategorije **Izdvojeno**, mijenja se svaki dan.
+- **Iz arhive:** tri starija teksta iz kategorije **Izdvojeno**, mijenjaju se svaki dan.
 
 Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 
@@ -52,7 +53,7 @@ Ako neki modul nema dovoljno članaka, ne prikazuje se (nema praznih naslova).
 
 ## 7a. Citat na naslovnici
 
-Naslovnica prikazuje jedan veliki citat ("Rečeno") na narandžastoj traci, iz najnovijeg članka koji ima **istaknuti citat**, pored crno-bijele naslovne fotografije tog članka. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
+Naslovnica prikazuje jedan veliki citat ("Rečeno"), crno-bijelo, između Kulture i Sporta, iz najnovijeg članka koji ima **istaknuti citat**, pored crno-bijele naslovne fotografije tog članka. U članku dodajte blok **Pullquote** (Istaknuti citat), upišite rečenicu i ispod nje ime osobe (npr. "Lejla Sajra Ramović, učenica Druge gimnazije"). Citat se tada pojavi i u članku i na naslovnici, sa linkom na tekst. Ako nijedan članak nema istaknuti citat, taj dio naslovnice se ne prikazuje.
 
 Dobar kandidat za prvi citat: tekst "Održan performans u Drugoj gimnaziji s porukom ljubavi i mira" počinje rečenicom „Ni jedna ljudska duša u sebi istinski ne može da nosi mržnju.“ Pretvorite taj prvi pasus u blok Pullquote.
 

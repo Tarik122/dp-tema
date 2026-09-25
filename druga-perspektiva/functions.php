@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Ako ih mijenjate u šablonima, promijenite ih i ovdje.
  */
 const DP_QUERY_LEAD      = 1; // Glavna priča na naslovnici.
-const DP_QUERY_FEATURES  = 2; // Tri izdvojena teksta ispod glavne priče.
-const DP_QUERY_LATEST    = 3; // "Najnovije", lista naslova.
+const DP_QUERY_FEATURES  = 2; // Dva teksta lijevo od glavne priče.
+const DP_QUERY_LATEST    = 3; // "Najnovije", desno od glavne priče.
 const DP_QUERY_OPINION   = 4; // Blok "Mišljenje".
 const DP_QUERY_ARCHIVE   = 5; // "Iz arhive".
 const DP_QUERY_READ_MORE = 9; // "Pročitajte još" ispod članka.
@@ -40,6 +40,7 @@ const DP_HOME_SECTIONS = array(
 	6 => 'vijesti',
 	7 => 'sport',
 	8 => 'kultura',
+	10 => 'nauka',
 );
 
 /*
@@ -547,16 +548,16 @@ function dp_home_layout() {
 	}
 
 	// Izdvojeni i Najnovije: redom od najnovijeg, bez preskakanja.
-	$stream   = dp_post_ids( array( 'numberposts' => 11, 'post__not_in' => $shown ) );
-	$features = array_slice( $stream, 0, 3 );
-	$latest   = array_slice( $stream, 3, 8 );
+	$stream   = dp_post_ids( array( 'numberposts' => 6, 'post__not_in' => $shown ) );
+	$features = array_slice( $stream, 0, 2 );
+	$latest   = array_slice( $stream, 2, 4 );
 	$shown    = array_merge( $shown, $stream );
 
 	// Mišljenje: najnovije kolumne koje već nisu gore.
 	$opinions = $opinion ? dp_post_ids( array( 'cat' => $opinion->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
 	$shown    = array_merge( $shown, $opinions );
 
-	// Rubrike: po tri teksta iz svake, bez onih koji su već gore.
+	// Rubrike: po četiri teksta iz svake, bez onih koji su već gore.
 	$sections = array();
 	foreach ( DP_HOME_SECTIONS as $query_id => $slug ) {
 		$term                  = get_term_by( 'slug', $slug, 'category' );
@@ -891,7 +892,6 @@ function dp_letter_tiles( $text, $max = 7 ) {
 	return '<span class="dp-tiles" aria-hidden="true">' . $tiles . '</span>';
 }
 
-add_filter( 'render_block_core/query-title', 'dp_heading_tiles', 10, 2 );
 
 /** Naslov sa klasom "dp-tiles-title" (stranica /igre) prikazuje se kao pločice. */
 function dp_tiles_title( $content, $block, $instance ) {
@@ -1007,3 +1007,17 @@ function dp_search_posts_only( $query ) {
 	}
 }
 add_action( 'pre_get_posts', 'dp_search_posts_only' );
+
+/**
+ * Paragraf sa klasom "dp-danas" u zaglavlju prikazuje današnji datum,
+ * npr. "Četvrtak, 24. septembar 2026.".
+ */
+function dp_render_today( $content, $block ) {
+	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-danas' ) ) {
+		return $content;
+	}
+	$date = wp_date( 'l, j. F Y.' );
+	$date = mb_strtoupper( mb_substr( $date, 0, 1 ) ) . mb_substr( $date, 1 );
+	return sprintf( '<p class="dp-danas"><time datetime="%s">%s</time></p>', esc_attr( wp_date( 'Y-m-d' ) ), esc_html( $date ) );
+}
+add_filter( 'render_block_core/paragraph', 'dp_render_today', 10, 2 );
