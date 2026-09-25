@@ -29,7 +29,7 @@ Stranice "Homepage", "Homepage 2…4", "Checkout", "My account" i "Login/Registe
 
 ## 5. Sitnice koje popravljaju izgled
 
-- **Izvodi (podnaslovi):** u `excerpts.md` je gotov izvod za svaki članak. Otvorite članak → desna kolona **Članak → Izvod** → zalijepite → **Ažuriraj**. Izvod se prikazuje kao kurzivni podnaslov ispod naslova, a na naslovnici, u rubrikama i u pretrazi kao kratak opis ispod naslova. **Novi izgled se najviše oslanja na izvode**, pa ih zalijepite u sve članke. Bez izvoda članak ima samo naslov.
+- **Izvodi (podnaslovi):** gotov izvod za svaki članak upisuje dodatak **DP izvodi** (`dp-izvodi.zip`): **Dodaci → Dodaj novi → Otpremi dodatak** → izaberite `dp-izvodi.zip` → **Instaliraj** → **Aktiviraj**. Zatim **Alati → DP izvodi** → **Upiši izvode**. Članci koji već imaju izvod se ne diraju. Poslije toga dodatak možete deaktivirati i obrisati; izvodi ostaju. (Isti izvodi su i u `excerpts.md`, ako ih želite ručno lijepiti.) Izvod se prikazuje kao kurzivni podnaslov ispod naslova, a na naslovnici, u rubrikama i u pretrazi kao kratak opis. **Novi izgled se najviše oslanja na izvode.** Za nove članke izvod pišete sami: članak → desna kolona **Članak → Izvod**.
 - **Članak "Druga gimnazija odnijela pobjedu u pripremnoj utakmici…"** ima autora "admin". Promijenite autora u pravo ime.
 - **Opis i autor fotografije:** u **Mediji** kliknite sliku i u polje **Opis slike** (Caption) upišite npr. "Učenici na Igmanu. Foto: Ime Prezime". Tema to prikazuje ispod naslovne fotografije članka.
 - **Slike iz Google Docsa:** članak o Gimnazijadi ima 3 slike zalijepljene direktno iz Google Docsa. Takve slike mogu prestati raditi. Preuzmite ih i ponovo ubacite kroz **Dodaj medij**.
