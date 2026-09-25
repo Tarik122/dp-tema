@@ -13,7 +13,7 @@
 	];
 	var LETTERS = 'abcčćdđefghijklmnoprsštuvzž';
 	var GUEST_KEY = 'dpig_guest_v1';
-	var EMOJI = ['⬜', '🟦', '🟧'];
+	var EMOJI = ['⬜', '🟧', '🟦'];
 
 	var S = {
 		date: null, number: 0, length: 5, maxGuesses: 6, nextIn: 0, special: false,
