@@ -13,7 +13,7 @@
 	];
 	var LETTERS = 'abcčćdđefghijklmnoprsštuvzž';
 	var GUEST_KEY = 'dpig_guest_v1';
-	var EMOJI = ['⬛', '🟨', '🟩'];
+	var EMOJI = ['⬜', '🟦', '🟧'];
 
 	var S = {
 		date: null, number: 0, length: 5, maxGuesses: 6, nextIn: 0, special: false,
@@ -127,17 +127,29 @@
 
 	/* ---------- layout ---------- */
 
+	var ICONS = {
+		help: '<path d="M9.2 9a3 3 0 1 1 4.3 2.7c-.9.4-1.5 1.1-1.5 2.1v.7"/><circle cx="12" cy="18" r=".6" fill="currentColor"/>',
+		trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>',
+		stats: '<path d="M5 20V12M10 20V6M15 20v-9M20 20V9M3.5 20h18"/>'
+	};
+
+	function iconButton(label, paths, onclick) {
+		var b = h('button', { class: 'dpig-icon', type: 'button', 'aria-label': label, title: label, onclick: onclick });
+		b.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + paths + '</svg>';
+		return b;
+	}
+
 	function build() {
 		root.innerHTML = '';
 		el.title = h('div', { class: 'dpig-title' });
 		el.streak = h('span', { class: 'dpig-streak-badge', title: 'Trenutni niz pobjeda' });
 		var header = h('div', { class: 'dpig-header' }, [
-			h('button', { class: 'dpig-icon', 'aria-label': 'Pravila', title: 'Pravila', onclick: showHelp, text: '?' }),
 			el.title,
 			h('div', { class: 'dpig-header-right' }, [
 				el.streak,
-				h('button', { class: 'dpig-icon', 'aria-label': 'Ljestvica', title: 'Ljestvica', onclick: function () { showLeaderboard('today'); }, text: '🏆' }),
-				h('button', { class: 'dpig-icon', 'aria-label': 'Statistika', title: 'Statistika', onclick: showStats, text: '📊' })
+				iconButton('Pravila', ICONS.help, showHelp),
+				iconButton('Ljestvica', ICONS.trophy, function () { showLeaderboard('today'); }),
+				iconButton('Statistika', ICONS.stats, showStats)
 			])
 		]);
 		el.account = h('div', { class: 'dpig-account' });
@@ -219,6 +231,15 @@
 		}
 		if (!CFG.clientId) {
 			el.account.appendChild(h('span', { text: 'Igraš anonimno.' }));
+			return;
+		}
+		// Na telefonu nema mjesta za Google dugme ispod naslova: prijava je u prozoru Statistika.
+		if (window.innerWidth < 600) {
+			el.account.appendChild(h('span', {}, [
+				'Igraš anonimno. ',
+				h('button', { class: 'dpig-link', type: 'button', onclick: showStats, text: 'Prijavi se' }),
+				' za ljestvicu i niz.'
+			]));
 			return;
 		}
 		el.account.appendChild(h('span', { text: 'Igraš anonimno. Prijavi se školskim mailom za ljestvicu i niz:' }));
@@ -442,12 +463,12 @@
 			var clock = h('div', { class: 'dpig-clock' });
 			body.appendChild(h('div', { class: 'dpig-after' }, [
 				h('div', {}, [h('div', { class: 'dpig-label', text: 'Sljedeća riječ za' }), clock]),
-				h('button', { class: 'dpig-btn dpig-primary', onclick: share, text: 'Podijeli 📤' })
+				h('button', { class: 'dpig-btn dpig-primary', onclick: share, text: 'Podijeli rezultat' })
 			]));
 			countdown(clock);
 		}
 
-		body.appendChild(h('button', { class: 'dpig-btn', onclick: function () { showLeaderboard('today'); }, text: '🏆 Ljestvica' }));
+		body.appendChild(h('button', { class: 'dpig-btn', onclick: function () { showLeaderboard('today'); }, text: 'Ljestvica' }));
 
 		if (S.player) {
 			var toggle = h('input', { type: 'checkbox', id: 'dpig-anon' });
@@ -551,11 +572,23 @@
 			S.game = data.player ? data.game : guest().game;
 			if (!S.game) S.game = { rows: [], status: 'playing' };
 			render();
+			fitOnPhone();
 			if (!store('dpig_seen_help')) { store('dpig_seen_help', 1); showHelp(); }
 		}).catch(function (e) {
 			root.innerHTML = '';
 			root.appendChild(h('p', { class: 'dpig-error', text: 'Igra se nije mogla učitati: ' + e.message }));
 		});
+	}
+
+	/* Na telefonu stranicu pomjeri taman toliko da se vidi cijela tastatura. */
+	var fitted = false;
+	function fitOnPhone() {
+		if (fitted || window.innerWidth >= 600 || window.scrollY > 0) return;
+		fitted = true;
+		var bottom = el.keyboard.getBoundingClientRect().bottom + 12;
+		var top = root.getBoundingClientRect().top;
+		var by = Math.min(bottom - window.innerHeight, top);
+		if (by > 0) window.scrollTo(0, by);
 	}
 
 	build();

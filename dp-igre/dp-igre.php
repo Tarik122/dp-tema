@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Druga Perspektiva – Igre
  * Description:       Dnevna bosanska Wordle igra (Riječ dana) s Google prijavom za školske e-mailove, ljestvicom i nizovima. Ubaci na stranicu kratkim kodom [dp_wordle].
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Druga Perspektiva
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DPIG_VERSION', '1.0.0' );
+define( 'DPIG_VERSION', '1.1.0' );
 define( 'DPIG_DB_VERSION', '1' );
 define( 'DPIG_FILE', __FILE__ );
 define( 'DPIG_DIR', plugin_dir_path( __FILE__ ) );

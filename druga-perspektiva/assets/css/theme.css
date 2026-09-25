@@ -1443,6 +1443,65 @@ body:has(.dp-igre-hub, .dp-igra-page) {
 	font-family: var(--dp-sans);
 }
 
+/*
+ * Na telefonu igra mora stati na ekran: naslov je jedan kratak red
+ * ("Sve igre", pločice, pečat), opis se ne prikazuje (piše u pravilima igre),
+ * a igra stoji direktno na svesci, bez okvira kartice.
+ */
+@media (max-width: 599px) {
+	.dp-igra-page {
+		padding-top: 0.9rem !important;
+	}
+
+	.dp-igra-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem 0.75rem;
+	}
+
+	.dp-igra-back {
+		margin: 0;
+		font-size: 0.8125rem;
+	}
+
+	.dp-igra-back a {
+		padding: 0.25rem 0.6rem;
+	}
+
+	.dp-igra-head .dp-igre-hero-row {
+		flex-wrap: nowrap;
+		gap: 0.6rem !important;
+	}
+
+	.dp-tiles-title--game .dp-tiles {
+		--dp-tile: 1.9rem;
+	}
+
+	.dp-igra-head .dp-stamp {
+		padding: 0.15em 0.4em;
+		border-width: 2px;
+		font-size: 0.75rem;
+	}
+
+	.dp-igra-page-opis {
+		display: none;
+	}
+
+	.dp-igre-game {
+		margin-top: 1rem !important;
+		padding: 0;
+		border: 0;
+		background: none;
+		box-shadow: none;
+	}
+
+	.dp-igre-game::before {
+		display: none;
+	}
+}
+
 .dp-igre-more {
 	margin-top: var(--wp--preset--spacing--60);
 }

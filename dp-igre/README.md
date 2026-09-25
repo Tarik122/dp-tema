@@ -21,7 +21,8 @@ It runs on your existing WordPress hosting, so nothing else needs to be hosted.
   - **Niz:** longest current streak.
   - **Ovaj mjesec** and **Ukupno:** points (6 for a first-try win … 1 for a sixth-try win).
 - **Fair play.** The answer never reaches the browser until the game is over, and a signed-in player gets one game per day.
-- **Sharing.** A share button copies an emoji grid (🟩🟨⬛) that students can paste into chats.
+- **Look.** The game matches the site's Igre pages: notebook-style letter tiles with a black edge, orange for a right letter in the right spot, blue for a right letter in the wrong spot. On phones the board and keyboard size themselves to fit the screen, and the Google sign-in button moves into the Statistika window.
+- **Sharing.** A share button copies an emoji grid (🟧🟦⬜) that students can paste into chats.
 
 ## Control panel (WP admin → "Riječ dana")
 
@@ -49,5 +50,5 @@ It runs on your existing WordPress hosting, so nothing else needs to be hosted.
 
 - **Caching:** if the site uses a caching plugin (LiteSpeed Cache, WP Rocket, etc.), you normally don't need to change anything. All game data comes from `/wp-json/dpig/v1/…`, which is sent with no-cache headers, and the page itself contains no personal data.
 - **Server requirements:** the server must be able to reach `oauth2.googleapis.com`, which is used to verify Google sign-ins. Almost all shared hosting can.
-- **Building the zip:** run `./build.sh` in the repository root to rebuild it after changes.
+- **Building the zip:** from the repository root run `zip -r dp-igre.zip dp-igre` (delete the old zip first).
 - **Word data:** the list of accepted guesses comes from [FrequencyWords](https://github.com/hermitdave/FrequencyWords) (OpenSubtitles, CC-BY-SA 4.0), filtered to 5-letter words.
