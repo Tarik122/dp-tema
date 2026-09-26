@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'DPIG_VERSION', '1.1.1' );
-define( 'DPIG_DB_VERSION', '1' );
+define( 'DPIG_DB_VERSION', '2' );
 define( 'DPIG_FILE', __FILE__ );
 define( 'DPIG_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DPIG_URL', plugin_dir_url( __FILE__ ) );

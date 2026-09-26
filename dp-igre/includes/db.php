@@ -24,6 +24,9 @@ function dpig_activate() {
 	add_option( 'dpig_domain', '2gimnazija.edu.ba' );
 	add_option( 'dpig_client_id', '' );
 	add_option( 'dpig_title', 'Riječ dana' );
+	// Kontekst and Tramvaj number their days from the day they were installed.
+	add_option( 'dpig_kx_start', wp_date( 'Y-m-d' ) );
+	add_option( 'dpig_tv_start', wp_date( 'Y-m-d' ) );
 }
 
 function dpig_maybe_upgrade() {
@@ -82,6 +85,27 @@ function dpig_install_tables() {
 			source varchar(10) NOT NULL DEFAULT 'auto',
 			note varchar(255) NOT NULL DEFAULT '',
 			PRIMARY KEY  (puzzle_date)
+		) $charset;"
+	);
+
+	// Results of the other games (Kontekst, Tramvaj): one row per player, game and day.
+	// data holds the game's own details as JSON; score is what the leaderboard sorts by
+	// (number of guesses for Kontekst, milliseconds for Tramvaj).
+	$results = dpig_table( 'results' );
+	dbDelta(
+		"CREATE TABLE $results (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			player_id bigint(20) unsigned NOT NULL,
+			game varchar(20) NOT NULL,
+			puzzle_date date NOT NULL,
+			data longtext NOT NULL,
+			status varchar(10) NOT NULL DEFAULT 'playing',
+			score int(10) unsigned NOT NULL DEFAULT 0,
+			started_at datetime NOT NULL,
+			finished_at datetime DEFAULT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY player_game_day (player_id,game,puzzle_date),
+			KEY game_day (game,puzzle_date)
 		) $charset;"
 	);
 
