@@ -8,7 +8,7 @@ How `dp-igre/data/kontekst/` was made. You only need this to rebuild the word da
 4. `step4.py`: the final files.
    - `words.txt`: the base words, one per line; the line number is the word id.
    - `vectors.bin`: per word, a float32 (1 / vector length), then 150 bytes holding 300 4-bit values (value + 8). The vectors are randomly rotated first, so the 4 bits are used evenly.
-   - `forms.txt.gz`: `form<TAB>word id`.
+   - `forms.txt`: `form<TAB>word id` for every form and base word, sorted by UTF-8 bytes so the plugin can binary-search the file.
    - `answers.txt`: the daily words in order (from `answers_raw.txt`, shuffled).
 
 Similarity between two words is the dot product of their 4-bit values times both `1 / length` numbers.

@@ -1,6 +1,6 @@
-# Druga Perspektiva – Igre (Riječ dana)
+# Druga Perspektiva – Igre
 
-A daily Bosnian Wordle for drugaperspektiva.org, packaged as a WordPress plugin.
+Daily games for drugaperspektiva.org, packaged as one WordPress plugin: **Riječ dana** (a Bosnian Wordle, `[dp_wordle]`), **Kontekst** (guess the word by meaning, `[dp_kontekst]`) and **Tramvaj** (a line puzzle, `[dp_tramvaj]`). All three share the school Google sign-in, streaks and leaderboards.
 It runs on your existing WordPress hosting, so nothing else needs to be hosted.
 
 ## Features
@@ -24,6 +24,21 @@ It runs on your existing WordPress hosting, so nothing else needs to be hosted.
 - **Look.** The game matches the site's Igre pages: notebook-style letter tiles with a black edge, blue for a right letter in the right spot, orange for a right letter in the wrong spot. On phones the board and keyboard size themselves to fit the screen, and the Google sign-in button moves into the Statistika window.
 - **Sharing.** A share button copies an emoji grid (🟦🟧⬜) that students can paste into chats.
 
+## Kontekst
+
+- **One secret word per day, the same for everyone.** Players type any word, and the game ranks it by meaning: the secret word is #1, the most similar word #2, and so on across about 25,600 words. Blue means hot (up to #300), orange means warm (up to #1500), grey means cold.
+- **Word forms count as the base word**, so "kuće" is the same guess as "kuća".
+- **Pomoć** (a hint) gives a word about twice as close as the best guess so far. **Odustajem** (give up) shows the word, but it breaks the streak. After the game, **Najbliže riječi** lists the 100 closest words.
+- **Leaderboard:** fewest guesses today (hints count as guesses), the longest streak, and most days solved this month.
+- **The words:** the similarity comes from fastText word vectors (Common Crawl Croatian, CC-BY-SA 3.0). Word forms are grouped with the LibreOffice bs/hr/sr spelling dictionaries, and slurs and swearing are left out. `tools/kontekst/README.md` explains how the data in `data/kontekst/` was built. There are 384 daily words (about a year), after which they repeat.
+- **Speed:** the day's ranking is worked out once (about a quarter of a second), stored in the options table, and scheduled just after midnight.
+
+## Tramvaj
+
+- **Draw one tram line that passes through every square exactly once and visits the numbered stops in order.** Thick black lines are walls. It is played by dragging with a finger or the mouse, or with the arrow keys and Backspace.
+- **The puzzle stays hidden until the player presses "Kreni".** For signed-in players the server keeps the time from that moment, so the leaderboard (fastest today) is fair.
+- **Puzzles:** 1,100 puzzles (about three years) are in `data/tramvaj/puzzles.json`, 6×6 and 7×7, many with walls. Each has exactly one solution. `tools/tramvaj/generate.mjs` makes them, and `tools/tramvaj/check.mjs` checks that each has exactly one solution.
+
 ## Control panel (WP admin → "Riječ dana")
 
 - **Raspored riječi.** Pick a date and set a special word for it, with an optional message shown after the game ("Sretan Dan škole!"). The table shows past and upcoming days and how many played and solved each day.
@@ -37,7 +52,7 @@ It runs on your existing WordPress hosting, so nothing else needs to be hosted.
 
 1. Download `dp-igre.zip` from this repository.
 2. WordPress admin → **Plugins → Add New → Upload Plugin**, choose the zip, then **Activate**.
-3. Create a page (for example "Igre") and put this shortcode in it: `[dp_wordle]`
+3. Create a page for each game (for example "Riječ", "Kontekst", "Tramvaj" under "Igre") and put its shortcode in it: `[dp_wordle]`, `[dp_kontekst]` or `[dp_tramvaj]`.
 4. **Settings → General → Timezone:** choose **Sarajevo**.
 5. Set up Google sign-in. Until you do, the game works but anonymous play only.
    1. Go to <https://console.cloud.google.com/apis/credentials>. It's best to use a school Google account.

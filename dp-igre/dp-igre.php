@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       Druga Perspektiva – Igre
- * Description:       Dnevna bosanska Wordle igra (Riječ dana) s Google prijavom za školske e-mailove, ljestvicom i nizovima. Ubaci na stranicu kratkim kodom [dp_wordle].
- * Version:           1.1.1
+ * Description:       Dnevne igre Druge perspektive s Google prijavom za školske e-mailove, ljestvicama i nizovima: Riječ dana [dp_wordle], Kontekst [dp_kontekst] i Tramvaj [dp_tramvaj]. Svaku igru ubacite na stranicu njenim kratkim kodom.
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Druga Perspektiva
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DPIG_VERSION', '1.1.1' );
+define( 'DPIG_VERSION', '1.2.0' );
 define( 'DPIG_DB_VERSION', '2' );
 define( 'DPIG_FILE', __FILE__ );
 define( 'DPIG_DIR', plugin_dir_path( __FILE__ ) );
@@ -28,7 +28,11 @@ require_once DPIG_DIR . 'includes/auth.php';
 require_once DPIG_DIR . 'includes/game.php';
 require_once DPIG_DIR . 'includes/rest.php';
 require_once DPIG_DIR . 'includes/shortcode.php';
+require_once DPIG_DIR . 'includes/results.php';
+require_once DPIG_DIR . 'includes/kontekst.php';
+require_once DPIG_DIR . 'includes/tramvaj.php';
 require_once DPIG_DIR . 'includes/admin.php';
 
 register_activation_hook( __FILE__, 'dpig_activate' );
+register_deactivation_hook( __FILE__, 'dpig_deactivate' );
 add_action( 'plugins_loaded', 'dpig_maybe_upgrade' );

@@ -9,7 +9,7 @@
 	--dpig-paper: #ffffff;
 	--dpig-muted: #5e5e5e;
 	--dpig-empty: #c9cfe8;
-	--dpig-hit: var(--wp--preset--color--plava, #5271fe);
+	--dpig-hit: var(--wp--preset--color--plava-chip, #3b57e8);
 	--dpig-near: var(--wp--preset--color--narandza, #ee8031);
 	--dpig-miss: #77776f;
 	--dpig-note: #fff3b0;
@@ -650,4 +650,80 @@
 		border-width: 1.5px;
 		border-radius: 6px;
 	}
+}
+
+/* ---------- Zajedničko za Kontekst i Tramvaj ---------- */
+
+/* Poruke na vrhu ekrana, da ne pokrivaju igru. */
+.dpig-kx .dpig-toasts,
+.dpig-tv .dpig-toasts {
+	position: fixed;
+	top: 14px;
+	z-index: 99999;
+}
+
+.dpig-sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+.dpig .dpig-pill {
+	padding: 5px 12px;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 999px;
+	background: var(--dpig-paper);
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.dpig .dpig-pill:hover {
+	background: var(--dpig-note);
+}
+
+.dpig .dpig-pill[hidden] {
+	display: none;
+}
+
+.dpig-stamp {
+	display: inline-block;
+	padding: 4px 14px;
+	border: 3px solid var(--dpig-hit);
+	border-radius: 8px;
+	color: var(--dpig-hit);
+	font-size: 26px;
+	font-weight: 800;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	transform: rotate(-4deg);
+}
+
+.dpig-stamp.is-lost {
+	border-color: var(--dpig-muted);
+	color: var(--dpig-muted);
+	font-size: 20px;
+}
+
+.dpig-done-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 12px;
+}
+
+.dpig .dpig-done-buttons .dpig-btn {
+	width: auto;
+	margin: 0;
+	padding: 10px 16px;
+}
+
+.dpig-small-note {
+	margin: 12px 0 0;
+	color: var(--dpig-muted);
+	font-size: 14px;
+	text-align: center;
 }

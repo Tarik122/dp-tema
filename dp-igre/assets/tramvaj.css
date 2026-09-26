@@ -1,0 +1,243 @@
+/* Tramvaj. Base styles (zaglavlje, prozori, dugmad) come from wordle.css. */
+
+.dpig-tv-body {
+	padding-top: 4px;
+}
+
+.dpig-tv-timer:not(:empty) {
+	min-width: 52px;
+	padding: 4px 8px;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 8px;
+	background: var(--dpig-paper);
+	font-size: 16px;
+	font-weight: 800;
+	font-variant-numeric: tabular-nums;
+	text-align: center;
+}
+
+.dpig-header-extra {
+	display: flex;
+}
+
+/* Broj linije i stanice, kao na tabli na stanici. */
+.dpig-tv-route {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin: 0 0 12px;
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.dpig-tv-line-no {
+	display: grid;
+	place-items: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background: var(--dpig-near);
+	color: var(--dpig-ink);
+	font-size: 14px;
+	font-weight: 800;
+}
+
+/* ---------- Tabla ---------- */
+
+.dpig-tv-wrap {
+	position: relative;
+	width: min(100%, 440px, calc(100svh - 250px));
+	min-width: min(100%, 280px);
+	margin: 0 auto;
+}
+
+.dpig-tv-board {
+	--n: 7;
+	--cell: calc(min(100vw - 40px, 440px) / var(--n));
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(var(--n), 1fr);
+	aspect-ratio: 1;
+	border: 3px solid var(--dpig-ink);
+	border-radius: 10px;
+	background: var(--dpig-paper);
+	box-shadow: 0 4px 0 var(--dpig-ink);
+	overflow: hidden;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+	cursor: pointer;
+}
+
+.dpig-tv-board:focus-visible {
+	outline: 3px solid var(--dpig-hit);
+	outline-offset: 4px;
+}
+
+.dpig-tv-cell {
+	position: relative;
+	display: grid;
+	place-items: center;
+	border-right: 1px solid #d9e0fb;
+	border-bottom: 1px solid #d9e0fb;
+}
+
+.dpig-tv-cell.is-on {
+	background: #e9edff;
+}
+
+.dpig-tv-stop {
+	position: relative;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	width: 68%;
+	aspect-ratio: 1;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 50%;
+	background: var(--dpig-paper);
+	font-size: clamp(14px, calc(var(--cell, 50px) * 0.36), 22px);
+	font-weight: 800;
+	line-height: 1;
+}
+
+.dpig-tv-stop.is-done {
+	background: var(--dpig-hit);
+	color: #fff;
+}
+
+/* Sljedeća stanica je narandžasta. */
+.dpig-tv-stop.is-next {
+	background: var(--dpig-near);
+}
+
+.dpig-tv-svg {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+	pointer-events: none;
+}
+
+.dpig-tv-line {
+	fill: none;
+	stroke: var(--dpig-hit);
+	stroke-width: 0.36;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.dpig-tv-wall {
+	stroke: var(--dpig-ink);
+	stroke-width: 0.12;
+	stroke-linecap: round;
+}
+
+.dpig-tv-head {
+	fill: var(--dpig-paper);
+	stroke: var(--dpig-ink);
+	stroke-width: 0.07;
+}
+
+/* Prije starta tabla je prazna i blijeda, sa karticom "Kreni!" preko nje. */
+.dpig-tv-board.is-idle {
+	opacity: 0.35;
+	cursor: default;
+}
+
+.dpig-tv-start {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	display: grid;
+	place-items: center;
+	padding: 16px;
+}
+
+.dpig-tv-start[hidden] {
+	display: none;
+}
+
+.dpig-tv-card {
+	padding: 20px 22px 14px;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 8px;
+	background: var(--dpig-paper);
+	box-shadow: 6px 6px 0 var(--dpig-near);
+	text-align: center;
+	transform: rotate(-1.5deg);
+}
+
+.dpig-tv-card p {
+	margin: 0;
+}
+
+.dpig-tv-card-title {
+	color: var(--dpig-muted);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.dpig-tv-card-route {
+	margin: 4px 0 14px !important;
+	font-size: 20px;
+	font-weight: 800;
+}
+
+.dpig .dpig-tv-go {
+	width: 100%;
+	padding: 12px 28px;
+	font-size: 20px;
+}
+
+.dpig-tv-card .dpig-label {
+	margin-top: 8px;
+}
+
+/* ---------- Ispod table ---------- */
+
+.dpig-tv-tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	width: min(100%, 440px);
+	margin: 16px auto 0;
+	font-size: 13px;
+}
+
+.dpig-tv-tools[hidden] {
+	display: none;
+}
+
+.dpig-tv-progress {
+	color: var(--dpig-muted);
+	font-weight: 700;
+}
+
+.dpig-tv-buttons {
+	display: flex;
+	gap: 8px;
+}
+
+.dpig-tv-done:not(:empty) {
+	margin: 18px 0 4px;
+	text-align: center;
+}
+
+.dpig-tv-done p {
+	margin: 0 0 8px;
+}
+
+.dpig-tv-rules {
+	margin: 0 0 10px;
+	padding-left: 20px;
+}
+
+.dpig-tv-rules li + li {
+	margin-top: 4px;
+}

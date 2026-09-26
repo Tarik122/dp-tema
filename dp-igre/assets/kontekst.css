@@ -1,0 +1,213 @@
+/* Kontekst. Base styles (zaglavlje, prozori, dugmad) come from wordle.css. */
+
+.dpig-kx-body {
+	padding-top: 6px;
+}
+
+/* ---------- Upis ---------- */
+
+.dpig-kx-form {
+	display: flex;
+	gap: 8px;
+}
+
+.dpig-kx-form[hidden] {
+	display: none;
+}
+
+.dpig .dpig-kx-input {
+	flex: 1;
+	min-width: 0;
+	height: 52px;
+	margin: 0;
+	padding: 0 14px;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 8px;
+	background: var(--dpig-paper);
+	box-shadow: 0 3px 0 var(--dpig-ink);
+	color: var(--dpig-ink);
+	font: 700 20px/1 var(--dpig-sans);
+	/* 16px or more stops iPhones from zooming in on the field. */
+}
+
+.dpig .dpig-kx-input::placeholder {
+	color: #8a8a84;
+	font-weight: 400;
+}
+
+.dpig .dpig-kx-input:focus {
+	outline: 3px solid var(--dpig-hit);
+	outline-offset: 2px;
+}
+
+.dpig .dpig-kx-send {
+	flex: none;
+	height: 52px;
+	padding: 0 18px;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 8px;
+	background: var(--dpig-hit);
+	box-shadow: 0 3px 0 var(--dpig-ink);
+	color: #fff;
+	font-size: 17px;
+	font-weight: 800;
+}
+
+.dpig .dpig-kx-send:active {
+	box-shadow: 0 1px 0 var(--dpig-ink);
+	transform: translateY(2px);
+}
+
+.dpig .dpig-kx-send:disabled {
+	opacity: 0.6;
+}
+
+.dpig-kx-tools {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	min-height: 34px;
+	margin: 12px 0 8px;
+	font-size: 14px;
+}
+
+.dpig-kx-count {
+	color: var(--dpig-muted);
+	font-weight: 700;
+}
+
+.dpig-kx-buttons {
+	display: flex;
+	gap: 8px;
+}
+
+.dpig-kx-empty {
+	margin: 18px 0 0;
+	padding: 14px 16px;
+	background: var(--dpig-note);
+	font-size: 15px;
+	transform: rotate(-1deg);
+}
+
+.dpig-kx-empty[hidden] {
+	display: none;
+}
+
+/* ---------- Pokušaji ---------- */
+
+.dpig-kx-list {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.dpig-kx-last:not(:empty) {
+	margin-bottom: 14px;
+	padding-bottom: 14px;
+	border-bottom: 2px dashed var(--dpig-ink);
+}
+
+.dpig-kx-row {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	min-height: 42px;
+	margin: 0;
+	padding: 0 12px;
+	overflow: hidden;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 7px;
+	background: var(--dpig-paper);
+	font-size: 17px;
+	font-weight: 700;
+}
+
+/* Traka iza riječi: što je duža, to je riječ bliže. */
+.dpig-kx-bar {
+	position: absolute;
+	inset: 0 auto 0 0;
+	background: #d6d6d0;
+}
+
+.dpig-kx-row.is-hot .dpig-kx-bar { background: var(--dpig-hit); }
+.dpig-kx-row.is-warm .dpig-kx-bar { background: var(--dpig-near); }
+
+.dpig-kx-word,
+.dpig-kx-rank {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	padding: 3px 7px;
+	border-radius: 4px;
+	background: var(--dpig-paper);
+	white-space: nowrap;
+}
+
+.dpig-kx-word {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-left: -7px;
+}
+
+.dpig-kx-rank {
+	flex: none;
+	margin-right: -7px;
+	font-variant-numeric: tabular-nums;
+}
+
+.dpig-kx-tag {
+	padding: 1px 6px;
+	border: 1.5px solid var(--dpig-ink);
+	border-radius: 999px;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.dpig-kx-row.is-new {
+	outline: 3px solid var(--dpig-ink);
+	outline-offset: 1px;
+}
+
+.dpig-kx-row.is-win {
+	background: var(--dpig-hit);
+}
+
+.dpig-kx-row.is-win .dpig-kx-word,
+.dpig-kx-row.is-win .dpig-kx-rank {
+	background: var(--dpig-paper);
+}
+
+.dpig-kx-example {
+	margin: 4px 0 12px;
+}
+
+/* ---------- Kraj igre ---------- */
+
+.dpig-kx-done:not(:empty) {
+	margin: 4px 0 18px;
+	text-align: center;
+}
+
+.dpig-kx-done p {
+	margin: 0 0 8px;
+}
+
+@media (max-width: 420px) {
+	.dpig .dpig-kx-input,
+	.dpig .dpig-kx-send {
+		height: 48px;
+	}
+
+	.dpig-kx-row {
+		min-height: 40px;
+		font-size: 16px;
+	}
+}

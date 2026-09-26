@@ -83,7 +83,20 @@ Isto kao koraci 1 do 5: nova stranica, roditelj **Igre**, izvod, objavi. Tema je
 - stavi oznaku **Novo** prvih 30 dana,
 - ispod svake igre prikaže **Više igara**.
 
-**Redoslijed i boje:** igre idu redom kojim su objavljene, pa nova igra ide na kraj. Kartice su redom plava, narandžasta, zelena i navy. Za drugi redoslijed koristite polje **Redoslijed** (Order) u postavkama stranice: manji broj ide prvi.
+**Kontekst i Tramvaj (nove igre u dodatku DP igre 1.2)**
+
+Prvo ažurirajte dodatak: **Dodaci → Dodaj novi → Otpremi dodatak** → `dp-igre.zip` → **Zamijeni postojeći**. Dodatak je sada oko 4 MB (u njemu je rječnik za Kontekst). Ako WordPress kaže da je fajl prevelik, pitajte hosting da povećaju "upload_max_filesize" (dovoljno je 16 MB).
+
+Zatim za svaku igru napravite stranicu kao u koracima 1 do 5 iznad:
+
+| Naslov | Kratki kod | Izvod (za karticu) |
+|---|---|---|
+| Kontekst | `[dp_kontekst]` | Pogodi tajnu riječ po značenju. |
+| Tramvaj | `[dp_tramvaj]` | Provuci tramvaj kroz sve stanice, redom. |
+
+Roditeljska stranica je **Igre**, a šablon **Igre: jedna igra**. Obje igre rade same: nova riječ i nova linija stižu svaki dan u ponoć (riječi ima za oko godinu dana, linija za tri godine, a onda kreću ispočetka). Brojanje (#1, #2…) počinje od dana kad ste ažurirali dodatak. Prijava školskim mailom, ljestvice i nizovi rade isto kao u Riječi, bez dodatnog podešavanja.
+
+**Redoslijed i boje:** igre idu redom kojim su objavljene, pa nova igra ide na kraj. Kartice su redom plava, narandžasta, zelena i crna. Za drugi redoslijed koristite polje **Redoslijed** (Order) u postavkama stranice: manji broj ide prvi.
 
 ## 8. Uređivanje izgleda
 

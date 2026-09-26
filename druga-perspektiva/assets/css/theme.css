@@ -1250,7 +1250,7 @@ body:has(.dp-igre-hub, .dp-igra-page) {
 }
 
 .dp-igra-visual--tiles .dp-tiles {
-	--dp-tile: clamp(2.25rem, 11cqi, 3.75rem);
+	--dp-tile: clamp(1.5rem, calc(68cqi / var(--dp-n, 5)), 3.75rem);
 }
 
 /* Naljepnica "Novo!". */
@@ -1350,7 +1350,7 @@ body:has(.dp-igre-hub, .dp-igra-page) {
 	}
 
 	.dp-igra-visual--tiles .dp-tiles {
-		--dp-tile: clamp(3rem, 8cqi, 5rem);
+		--dp-tile: clamp(2.5rem, calc(40cqi / var(--dp-n, 5)), 5rem);
 	}
 
 	.dp-igra-text {
@@ -1519,7 +1519,7 @@ body:has(.dp-igre-hub, .dp-igra-page) {
 }
 
 .dp-igre-cards--small .dp-igra-visual--tiles .dp-tiles {
-	--dp-tile: clamp(1.75rem, 8cqi, 2.75rem);
+	--dp-tile: clamp(1.25rem, calc(40cqi / var(--dp-n, 5)), 2.75rem);
 }
 
 .dp-igre-cards--small .dp-igra-title {

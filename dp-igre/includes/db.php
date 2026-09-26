@@ -27,6 +27,14 @@ function dpig_activate() {
 	// Kontekst and Tramvaj number their days from the day they were installed.
 	add_option( 'dpig_kx_start', wp_date( 'Y-m-d' ) );
 	add_option( 'dpig_tv_start', wp_date( 'Y-m-d' ) );
+	// Work out Kontekst's ranking just after midnight, so the first player of the day does not wait.
+	if ( ! wp_next_scheduled( 'dpig_kx_warm' ) ) {
+		wp_schedule_event( ( new DateTimeImmutable( 'tomorrow', wp_timezone() ) )->getTimestamp() + 60, 'daily', 'dpig_kx_warm' );
+	}
+}
+
+function dpig_deactivate() {
+	wp_clear_scheduled_hook( 'dpig_kx_warm' );
 }
 
 function dpig_maybe_upgrade() {

@@ -872,7 +872,7 @@ function dp_game_ids( $parent_id, $limit = 50, $exclude = 0 ) {
  * Slova naziva kao pločice iz igre (prva riječ, najviše 7 slova). Prvo i
  * zadnje slovo su "pogođena" (narandžasta), treće je bijelo, ostala prazna.
  */
-function dp_letter_tiles( $text, $max = 7 ) {
+function dp_letter_tiles( $text, $max = 9 ) {
 	$text  = html_entity_decode( wp_strip_all_tags( $text ), ENT_QUOTES, 'UTF-8' );
 	$words = preg_split( '/[^\p{L}]+/u', $text, -1, PREG_SPLIT_NO_EMPTY );
 	$chars = $words ? mb_str_split( mb_substr( mb_strtoupper( $words[0] ), 0, $max ) ) : array();
@@ -889,7 +889,8 @@ function dp_letter_tiles( $text, $max = 7 ) {
 		$tiles .= sprintf( '<span%s>%s</span>', $class, esc_html( $char ) );
 	}
 
-	return '<span class="dp-tiles" aria-hidden="true">' . $tiles . '</span>';
+	// --dp-n lets the tiles on game cards shrink for longer names.
+	return '<span class="dp-tiles" style="--dp-n:' . max( 5, $count ) . '" aria-hidden="true">' . $tiles . '</span>';
 }
 
 

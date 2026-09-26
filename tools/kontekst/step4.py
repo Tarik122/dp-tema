@@ -1,4 +1,4 @@
-import pickle, numpy as np, gzip, re, random, struct, os
+import pickle, numpy as np, re, random, struct, os
 d = pickle.load(open('forms.pkl','rb')); freq = d['freq']
 L = pickle.load(open('lemmas.pkl','rb')); groups = L['groups']; tot = L['tot']
 lemmas_all = pickle.load(open('lemma_list.pkl','rb'))
@@ -46,8 +46,12 @@ seen = set(); uniq = []
 for f_, i in sorted(rows):
     if f_ in seen or f_ in vid: continue
     seen.add(f_); uniq.append(f'{f_}\t{i}')
-with gzip.open(f'{out}/forms.txt.gz', 'wt', encoding='utf-8', compresslevel=9) as g:
-    g.write('\n'.join(uniq) + '\n')
+# forms.txt: every form and base word, sorted by UTF-8 bytes (the plugin binary-searches it).
+rows_all = {line.split('\t')[0]: int(line.split('\t')[1]) for line in uniq}
+for i, w in enumerate(vocab): rows_all[w] = i
+with open(f'{out}/forms.txt', 'wb') as g:
+    for f_, i in sorted((f.encode('utf-8'), i) for f, i in rows_all.items()):
+        g.write(f_ + b'\t' + str(i).encode() + b'\n')
 
 random.Random(2026).shuffle(answers)
 open(f'{out}/answers.txt', 'w').write('\n'.join(answers) + '\n')
