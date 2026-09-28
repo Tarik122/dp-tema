@@ -1,4 +1,4 @@
-// Renders story.html into five 1080×1920 PNGs, with and without the link placeholder.
+// Renders story.html into 1080×1920 PNGs, with and without the link placeholder.
 // Run from the repo root: node promo/igre-story/render.mjs
 import { chromium } from 'playwright';
 import { fileURLToPath } from 'node:url';
@@ -12,6 +12,9 @@ for (const clean of [false, true]) {
 	await p.evaluate((c) => document.body.classList.toggle('clean', c), clean);
 	for (let i = 1; i <= 5; i++) {
 		await p.locator('#f' + i).screenshot({ path: `${dir}story-${i}${clean ? '-bez-okvira' : ''}.png` });
+	}
+	for (let i = 1; i <= 3; i++) {
+		await p.locator('#lj' + i).screenshot({ path: `${dir}ljestvice-${i}${clean ? '-bez-okvira' : ''}.png` });
 	}
 }
 await b.close();

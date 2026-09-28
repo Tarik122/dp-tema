@@ -10,6 +10,14 @@ Five story frames (1080 × 1920) that introduce the games.
 | `story-4.png` | Ljestve: an example ladder |
 | `story-5.png` | Ko je danas prvi na ljestvici: call to play |
 
+Plus three frames about leaderboards and streaks:
+
+| Frame | What it shows |
+|---|---|
+| `ljestvice-1.png` | Ko je danas prvi: the daily leaderboard |
+| `ljestvice-2.png` | Ne prekidaj niz: the streak |
+| `ljestvice-3.png` | Ko će biti prvi do kraja mjeseca: the monthly podium |
+
 ## Posting
 
 1. Upload the frames as stories, in order.

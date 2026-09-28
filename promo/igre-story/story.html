@@ -262,6 +262,46 @@ h1 {
 
 /* Bez okvira: čista verzija za kad naljepnica ne pokrije cijeli okvir. */
 .clean .link-slot { visibility: hidden; }
+
+/* ---------- Ljestvice i nizovi ---------- */
+.card {
+	margin-top: 70px;
+	border: 5px solid var(--tinta);
+	border-radius: 22px;
+	background: #fff;
+	box-shadow: 0 10px 0 var(--plava);
+	color: var(--tinta);
+	overflow: hidden;
+}
+.tabs { display: flex; gap: 12px; padding: 28px 30px 22px; border-bottom: 3px solid var(--tinta); }
+.tabs span { padding: 10px 22px 12px; border: 3px solid var(--tinta); border-radius: 999px; font-size: 32px; font-weight: 700; }
+.tabs span.on { background: var(--tinta); color: #fff; }
+.lb { margin: 0; padding: 0; list-style: none; }
+.lb li { display: grid; grid-template-columns: 70px 1fr auto; align-items: center; gap: 16px; padding: 32px 34px; border-top: 2px solid #d9d9d6; font-size: 44px; }
+.lb li:first-child { border-top: 0; }
+.lb li b { font-weight: 700; }
+.lb li .n { color: var(--siva); font-weight: 700; }
+.lb li .x { color: var(--siva); font-size: 36px; }
+.lb li.you { background: var(--plava-chip); color: #fff; }
+.lb li.you .n, .lb li.you .x { color: #fff; }
+
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 14px; margin-top: 80px; }
+.day { display: flex; flex-direction: column; align-items: center; gap: 16px; font-size: 30px; font-weight: 700; }
+.day .tile { width: 112px; height: 112px; font-size: 64px; background: var(--narandza); }
+.day.today .tile { border-style: dashed; background: #fff; box-shadow: none; color: var(--plava-chip); }
+
+.big-streak { display: flex; align-items: center; gap: 40px; margin-top: 90px; }
+.big-streak .flame { font-size: 190px; line-height: 1; }
+.big-streak b { display: block; font-size: 220px; line-height: 0.9; }
+.big-streak span { font-size: 46px; }
+
+.podium { display: flex; align-items: flex-end; justify-content: center; gap: 18px; margin-top: 70px; }
+.podium div { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.podium i { font-style: normal; font-size: 40px; font-weight: 700; }
+.podium .step { display: grid; place-items: start center; width: 250px; padding-top: 22px; border: 5px solid var(--tinta); border-radius: 18px 18px 0 0; box-shadow: 0 8px 0 var(--tinta); font-size: 110px; font-weight: 700; }
+.podium .p1 .step { height: 420px; background: var(--plava-chip); color: #fff; }
+.podium .p2 .step { height: 320px; background: var(--narandza); }
+.podium .p3 .step { height: 240px; background: #fff; }
 </style>
 </head>
 <body>
@@ -336,6 +376,60 @@ h1 {
 	<h1>Ko je danas prvi na ljestvici?</h1>
 	<p class="dek">Prijavi se školskim mailom, čuvaj svoj niz i uporedi se s drugima. Može i bez prijave.</p>
 	<div class="streak"><span class="flame">🔥</span><div><b>7</b><span>dana zaredom</span></div></div>
+	<p class="url">drugaperspektiva.org/igre</p>
+	<div class="link-slot"><div>Ovdje ide link<small>naljepnica Link</small></div></div>
+	<img class="logo" src="../../logo/Untitled_design_14-removebg-preview.png" alt="">
+</section>
+
+
+<!-- Ljestvice i nizovi: 1. Danas -->
+<section class="frame is-ink" id="lj1">
+	<span class="chip">Ljestvica</span>
+	<h1>Ko je danas prvi?</h1>
+	<div class="card">
+		<div class="tabs"><span class="on">Danas</span><span>Niz</span><span>Ovaj mjesec</span></div>
+		<ol class="lb">
+			<li class="you"><span class="n">1</span><b>Tvoje ime?</b><span class="x">2/6</span></li>
+			<li><span class="n">2</span><b>A. H.</b><span class="x">3/6</span></li>
+			<li><span class="n">3</span><b>Anonimni igrač</b><span class="x">3/6</span></li>
+			<li><span class="n">4</span><b>M. K.</b><span class="x">4/6</span></li>
+			<li><span class="n">5</span><b>Anonimni igrač</b><span class="x">5/6</span></li>
+		</ol>
+	</div>
+	<p class="note">Prijavi se školskim mailom i tvoje ime ide na ljestvicu. Ako ne želiš, sakrij ga jednim klikom.</p>
+	<div class="link-slot"><div>Ovdje ide link<small>naljepnica Link</small></div></div>
+	<img class="logo" src="../../logo/Untitled_design_14-removebg-preview.png" alt="">
+</section>
+
+<!-- 2. Niz -->
+<section class="frame is-blue" id="lj2">
+	<span class="chip is-ink">Niz</span>
+	<h1>Ne prekidaj niz.</h1>
+	<div class="week">
+		<div class="day"><span class="tile">🔥</span>pon</div>
+		<div class="day"><span class="tile">🔥</span>uto</div>
+		<div class="day"><span class="tile">🔥</span>sri</div>
+		<div class="day"><span class="tile">🔥</span>čet</div>
+		<div class="day"><span class="tile">🔥</span>pet</div>
+		<div class="day"><span class="tile">🔥</span>sub</div>
+		<div class="day today"><span class="tile">?</span>danas</div>
+	</div>
+	<div class="big-streak"><span class="flame">🔥</span><div><b>12</b><span>dana zaredom</span></div></div>
+	<p class="note">Riješi igru svaki dan i niz raste. Jedan propušten dan i kreće se od nule.</p>
+	<div class="link-slot"><div>Ovdje ide link<small>naljepnica Link</small></div></div>
+	<img class="logo" src="../../logo/Untitled_design_14-removebg-preview.png" alt="">
+</section>
+
+<!-- 3. Mjesec -->
+<section class="frame is-grey" id="lj3">
+	<span class="chip is-orange">Ovaj mjesec</span>
+	<h1>Ko će biti prvi do kraja mjeseca?</h1>
+	<div class="podium">
+		<div class="p2"><i>?</i><span class="step">2</span></div>
+		<div class="p1"><i>Ti?</i><span class="step">1</span></div>
+		<div class="p3"><i>?</i><span class="step">3</span></div>
+	</div>
+	<p class="note">Svaki riješen dan donosi bodove. Nova ljestvica kreće prvog u mjesecu.</p>
 	<p class="url">drugaperspektiva.org/igre</p>
 	<div class="link-slot"><div>Ovdje ide link<small>naljepnica Link</small></div></div>
 	<img class="logo" src="../../logo/Untitled_design_14-removebg-preview.png" alt="">
