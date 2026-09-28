@@ -10,14 +10,6 @@ Five story frames (1080 × 1920) that introduce the games.
 | `story-4.png` | Ljestve: an example ladder |
 | `story-5.png` | Ko je danas prvi na ljestvici: call to play |
 
-Plus three frames about leaderboards and streaks:
-
-| Frame | What it shows |
-|---|---|
-| `ljestvice-1.png` | Ko je danas prvi: the daily leaderboard |
-| `ljestvice-2.png` | Ne prekidaj niz: the streak |
-| `ljestvice-3.png` | Ko će biti prvi do kraja mjeseca: the monthly podium |
-
 ## Posting
 
 1. Upload the frames as stories, in order.
@@ -30,3 +22,7 @@ Suggested sticker text: **Igraj ovdje**. Add the stories to a "Igre" highlight s
 ## Changing the text
 
 Edit `story.html` and run `node promo/igre-story/render.mjs` from the repo root (needs Playwright).
+
+## School display (16:9)
+
+`ekran-igre.png` is a 1920 × 1080 slide for the school LED display, in the same look, with a QR code that opens `https://drugaperspektiva.org/igre/`. The QR code itself is `qr-igre.svg` (it was checked by scanning the finished image). If the display has a different size, the slide can be scaled; keep the QR code at least about a fifth of the screen height so it scans from a few metres away.

@@ -1,4 +1,4 @@
-// Renders story.html into 1080×1920 PNGs, with and without the link placeholder.
+// Renders story.html into five 1080×1920 PNGs, with and without the link placeholder.
 // Run from the repo root: node promo/igre-story/render.mjs
 import { chromium } from 'playwright';
 import { fileURLToPath } from 'node:url';
@@ -13,8 +13,13 @@ for (const clean of [false, true]) {
 	for (let i = 1; i <= 5; i++) {
 		await p.locator('#f' + i).screenshot({ path: `${dir}story-${i}${clean ? '-bez-okvira' : ''}.png` });
 	}
-	for (let i = 1; i <= 3; i++) {
-		await p.locator('#lj' + i).screenshot({ path: `${dir}ljestvice-${i}${clean ? '-bez-okvira' : ''}.png` });
-	}
 }
 await b.close();
+
+// 16:9 slide for the school display (1920 × 1080).
+const b2 = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
+const p2 = await b2.newPage({ viewport: { width: 1920, height: 1080 } });
+await p2.goto('file://' + dir + 'ekran.html');
+await p2.evaluate(() => document.fonts.ready);
+await p2.locator('#ekran').screenshot({ path: `${dir}ekran-igre.png` });
+await b2.close();
