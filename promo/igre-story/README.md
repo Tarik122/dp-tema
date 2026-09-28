@@ -5,7 +5,7 @@ Five story frames (1080 × 1920) that introduce the games.
 | Frame | What it shows |
 |---|---|
 | `story-1.png` | Svaki dan nova zagonetka: the three games |
-| `story-2.png` | Riječ dana: an example board |
+| `story-2.png` | Riječle: an example board |
 | `story-3.png` | Kontekst: an example ranking |
 | `story-4.png` | Ljestve: an example ladder |
 | `story-5.png` | Ko je danas prvi na ljestvici: call to play |
