@@ -1,4 +1,4 @@
-/* Shared pieces for Kontekst and Tramvaj: requests, windows, messages, sign-in and leaderboards. */
+/* Shared pieces for the newer games (Kontekst): requests, windows, messages, sign-in and leaderboards. */
 window.DPIG = (function () {
 	'use strict';
 
@@ -32,7 +32,10 @@ window.DPIG = (function () {
 			opts.headers['Content-Type'] = 'application/json';
 			opts.body = JSON.stringify(body);
 		}
-		return fetch(CFG.api + path, opts).then(function (r) {
+		// A unique address for every read, so no cache can hand back an old day.
+		var url = CFG.api + path + (body ? '' : (path.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now());
+		opts.cache = 'no-store';
+		return fetch(url, opts).then(function (r) {
 			return r.json().catch(function () { return {}; }).then(function (data) {
 				if (!r.ok) {
 					var err = new Error(data.message || 'Greška. Pokušaj ponovo.');

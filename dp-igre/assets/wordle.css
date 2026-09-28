@@ -652,11 +652,10 @@
 	}
 }
 
-/* ---------- Zajedničko za Kontekst i Tramvaj ---------- */
+/* ---------- Zajedničko za novije igre (Kontekst) ---------- */
 
 /* Poruke na vrhu ekrana, da ne pokrivaju igru. */
-.dpig-kx .dpig-toasts,
-.dpig-tv .dpig-toasts {
+.dpig-kx .dpig-toasts {
 	position: fixed;
 	top: 14px;
 	z-index: 99999;
@@ -674,6 +673,7 @@
 
 .dpig .dpig-pill {
 	padding: 5px 12px;
+	white-space: nowrap;
 	border: 2px solid var(--dpig-ink);
 	border-radius: 999px;
 	background: var(--dpig-paper);

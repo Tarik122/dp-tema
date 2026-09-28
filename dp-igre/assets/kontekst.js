@@ -15,6 +15,19 @@
 	var el = {};
 	var shell;
 
+	/* ---------- score: each hint costs twice the one before (2, 4, 8…) ---------- */
+
+	function hintCount() { return S.guesses.filter(function (g) { return g.h; }).length; }
+	function typedCount() { return S.guesses.length - hintCount(); }
+	function hintCost(k) { return Math.pow(2, k); }
+	function score() { var k = hintCount(); return typedCount() + (k ? Math.pow(2, k + 1) - 2 : 0); }
+
+	/* "12 pokušaja" or "12 pokušaja, 2 pomoći" */
+	function summary() {
+		var n = typedCount(), k = hintCount();
+		return n + ' ' + D.plural(n, 'pokušaj', 'pokušaja') + (k ? ', ' + k + ' ' + D.plural(k, 'pomoć', 'pomoći') : '');
+	}
+
 	/* ---------- guest storage ---------- */
 
 	function guest() {
@@ -30,7 +43,7 @@
 		g.guesses = S.guesses;
 		g.status = S.status;
 		g.answer = S.answer;
-		if (S.status !== 'playing') D.guestFinished(g.stats, S.date, S.status === 'won', S.guesses.length);
+		if (S.status !== 'playing') D.guestFinished(g.stats, S.date, S.status === 'won', score());
 		D.store(GUEST_KEY, g);
 	}
 
@@ -48,7 +61,7 @@
 			onLogin: function () { load(); },
 			getPlayer: function () { return S.player; },
 			boardHints: {
-				today: 'Najmanje pokušaja danas.',
+				today: 'Najbolji rezultat danas (pokušaji plus cijena pomoći).',
 				streak: 'Najduži niz dana zaredom (odustajanje prekida niz).',
 				month: 'Najviše pogođenih dana ovog mjeseca.'
 			}
@@ -81,7 +94,7 @@
 		var li = h('li', { class: 'dpig-kx-row is-' + band(g.r) + (highlight ? ' is-new' : '') + (g.r === 1 ? ' is-win' : '') }, [
 			h('span', { class: 'dpig-kx-bar', style: 'width:' + pct + '%', 'aria-hidden': 'true' }),
 			h('span', { class: 'dpig-kx-word' }, [g.w, g.h ? h('span', { class: 'dpig-kx-tag', text: 'pomoć' }) : null]),
-			h('span', { class: 'dpig-kx-rank', text: g.r === 1 ? 'Pogođeno!' : '#' + g.r.toLocaleString('bs') })
+			h('span', { class: 'dpig-kx-rank', text: g.r === 1 ? 'Pogođeno!' : '#' + String(g.r).replace(/\B(?=(\d{3})+(?!\d))/g, '.') })
 		]);
 		return li;
 	}
@@ -92,8 +105,9 @@
 		shell.renderAccount(S.player);
 
 		var n = S.guesses.length;
-		var hints = S.guesses.filter(function (g) { return g.h; }).length;
-		el.count.textContent = n + ' ' + D.plural(n, 'pokušaj', 'pokušaja') + (hints ? ', ' + hints + ' ' + D.plural(hints, 'pomoć', 'pomoći') : '');
+		el.count.textContent = hintCount() ? summary() + ' = rezultat ' + score() : summary();
+		el.hint.textContent = 'Pomoć (+' + hintCost(hintCount() + 1) + ')';
+		el.hint.setAttribute('aria-label', 'Pomoć, košta ' + hintCost(hintCount() + 1) + ' pokušaja');
 
 		var over = S.status !== 'playing';
 		el.form.hidden = over;
@@ -154,7 +168,7 @@
 			saveGuest();
 			render();
 		}).catch(function (e) {
-			if (e.code === 'dpig_new_day') { shell.toast(e.message, 4000); return; }
+			if (e.code === 'dpig_new_day') { load().then(function () { shell.toast('Stigla je nova riječ!', 2500); }); return; }
 			shell.toast(e.message, 2600);
 			el.input.select();
 		}).then(function () {
@@ -174,7 +188,10 @@
 			saveGuest();
 			render();
 			shell.toast('Pomoć: „' + g.w + '“ je #' + g.r + '.', 2400);
-		}).catch(function (e) { shell.toast(e.message, 2600); }).then(function () { S.busy = false; });
+		}).catch(function (e) {
+			if (e.code === 'dpig_new_day') { load(); return; }
+			shell.toast(e.message, 2600);
+		}).then(function () { S.busy = false; });
 	}
 
 	function confirmGiveUp() {
@@ -215,7 +232,8 @@
 			list,
 			h('p', { text: 'Plavo znači vruće (do #' + HOT + '), narandžasto toplo (do #' + WARM + '), sivo hladno.' }),
 			h('p', { text: 'Redoslijed je izračunao računar iz miliona tekstova na našem jeziku: riječi koje se koriste u sličnim rečenicama su blizu. Zato je ponekad iznenađujući.' }),
-			h('p', { text: 'Oblici riječi se računaju kao osnovna riječ: „kuće“ je isto što i „kuća“. Ako zapneš, klikni Pomoć. Nova riječ stiže svaki dan u ponoć.' })
+			h('p', { text: 'Oblici riječi se računaju kao osnovna riječ: „kuće“ je isto što i „kuća“. Nova riječ stiže svaki dan u ponoć.' }),
+			h('p', { text: 'Ako zapneš, klikni Pomoć: dobiješ riječ duplo bližu od tvoje najbolje. Svaka pomoć košta duplo više od prethodne: prva 2 pokušaja, druga 4, treća 8… Rezultat je broj pokušaja plus cijena pomoći, i po njemu ide ljestvica.' })
 		]));
 	}
 
@@ -224,9 +242,10 @@
 		var over = S.status !== 'playing';
 		var body = h('div', {});
 		if (over) {
-			var n = S.guesses.length;
 			body.appendChild(h('p', { class: 'dpig-note', text: S.status === 'won'
-				? 'Pogodio/la si „' + S.answer + '“ iz ' + n + '. pokušaja!'
+				? (hintCount()
+					? 'Pogodio/la si „' + S.answer + '“! Rezultat: ' + score() + ' (' + summary() + ').'
+					: 'Pogodio/la si „' + S.answer + '“ iz ' + typedCount() + '. pokušaja!')
 				: 'Riječ je bila „' + S.answer + '“.' }));
 		}
 		body.appendChild(D.nums([
@@ -236,7 +255,7 @@
 			[st.maxStreak, 'Najduži niz']
 		]));
 		if (st.best) {
-			body.appendChild(h('p', { class: 'dpig-small-note', text: 'Najbolje: ' + st.best + ' ' + D.plural(st.best, 'pokušaj', 'pokušaja') + '. Prosjek: ' + st.average + '.' }));
+			body.appendChild(h('p', { class: 'dpig-small-note', text: 'Najbolji rezultat: ' + st.best + '. Prosjek: ' + st.average + '.' }));
 		}
 		if (over) {
 			var clock = h('div', { class: 'dpig-clock' });
@@ -269,10 +288,8 @@
 	function shareResult() {
 		var c = { hot: 0, warm: 0, cold: 0 };
 		S.guesses.forEach(function (g) { if (g.r > 1) c[band(g.r)]++; });
-		var n = S.guesses.length;
-		var hints = S.guesses.filter(function (g) { return g.h; }).length;
 		var text = 'Kontekst #' + S.number + '\n' +
-			'Pogodak iz ' + n + '. pokušaja' + (hints ? ' (' + hints + ' ' + D.plural(hints, 'pomoć', 'pomoći') + ')' : '') + '\n' +
+			(hintCount() ? 'Rezultat ' + score() + ' (' + summary() + ')' : 'Pogodak iz ' + typedCount() + '. pokušaja') + '\n' +
 			'🟦 ' + c.hot + '  🟧 ' + c.warm + '  ⬜ ' + c.cold + '\n' + (D.CFG.pageUrl || location.href);
 		D.share(shell, text);
 	}

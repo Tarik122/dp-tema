@@ -14,15 +14,22 @@ add_action(
 	}
 );
 
+function dpp_admin_tabs() {
+	return array(
+		'naslovnica' => 'Naslovnica',
+		'clanak'     => 'Članak',
+		'podnozje'   => 'Podnožje',
+		'kategorije' => 'Kategorije',
+		'opcije'     => 'Opcije',
+		'ciscenje'   => 'Čišćenje',
+	);
+}
+
 function dpp_admin_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
-	$tabs = array(
-		'naslovnica' => 'Naslovnica',
-		'opcije'     => 'Opcije',
-		'ciscenje'   => 'Čišćenje',
-	);
+	$tabs = dpp_admin_tabs();
 	$tab  = isset( $_GET['tab'], $tabs[ $_GET['tab'] ] ) ? sanitize_key( $_GET['tab'] ) : 'naslovnica';
 	$msg  = sanitize_key( $_GET['dpp_msg'] ?? '' );
 
@@ -30,8 +37,12 @@ function dpp_admin_page() {
 	if ( 'druga-perspektiva' !== get_template() ) {
 		echo '<div class="notice notice-warning"><p>Tema <strong>Druga perspektiva</strong> nije uključena, pa postavke s ovih stranica neće imati efekta.</p></div>';
 	}
-	if ( 'saved' === $msg ) {
-		echo '<div class="notice notice-success is-dismissible"><p>Spremljeno. <a href="' . esc_url( home_url( '/' ) ) . '" target="_blank">Pogledaj naslovnicu</a></p></div>';
+	if ( 'saved' === $msg || 'reset' === $msg ) {
+		printf(
+			'<div class="notice notice-success is-dismissible"><p>%s <a href="%s" target="_blank">Pogledaj sajt</a></p></div>',
+			'saved' === $msg ? 'Spremljeno.' : 'Vraćene su postavke teme.',
+			esc_url( home_url( '/' ) )
+		);
 	}
 	echo '<nav class="nav-tab-wrapper">';
 	foreach ( $tabs as $key => $label ) {
@@ -54,13 +65,33 @@ function dpp_form_open( $tab ) {
 	wp_nonce_field( 'dpp_save' );
 }
 
+/** Save button, and a separate small form to go back to the theme's defaults. */
+function dpp_form_close( $tab ) {
+	submit_button( 'Spremi' );
+	echo '</form>';
+	echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return confirm(\'Vratiti postavke teme na ovoj kartici?\');">';
+	echo '<input type="hidden" name="action" value="dpp_reset"><input type="hidden" name="tab" value="' . esc_attr( $tab ) . '">';
+	wp_nonce_field( 'dpp_reset' );
+	echo '<button type="submit" class="button-link dpp-reset">Vrati postavke teme za ovu karticu</button></form>';
+}
+
+function dpp_category_select( $name, $selected, $placeholder = '' ) {
+	$terms = get_terms( array( 'taxonomy' => 'category', 'hide_empty' => false ) );
+	$html  = '<select name="' . esc_attr( $name ) . '">';
+	foreach ( is_array( $terms ) ? $terms : array() as $t ) {
+		$html .= sprintf( '<option value="%s" %s>%s (%d)</option>', esc_attr( $t->slug ), selected( $selected, $t->slug, false ), esc_html( $t->name ), (int) $t->count );
+	}
+	return $html . '</select>';
+}
+
 /* ---------- Naslovnica ---------- */
 
 function dpp_admin_tab_naslovnica() {
-	$s     = dpp_settings();
-	$posts = get_posts( array( 'numberposts' => 60, 'post_status' => 'publish' ) );
-	$subs  = dpp_subtitles();
-	$names = dpp_parts();
+	$s       = dpp_settings();
+	$posts   = get_posts( array( 'numberposts' => 60, 'post_status' => 'publish' ) );
+	$subs    = dpp_subtitles();
+	$names   = dpp_parts();
+	$sources = dpp_sources();
 
 	dpp_form_open( 'naslovnica' );
 
@@ -71,10 +102,11 @@ function dpp_admin_tab_naslovnica() {
 		printf( '<option value="%d" %s>%s (%s)</option>', (int) $p->ID, selected( (int) $s['lead_id'], (int) $p->ID, false ), esc_html( get_the_title( $p ) ), esc_html( get_the_date( 'j. n. Y.', $p ) ) );
 	}
 	echo '</select>';
+	printf( '<p><label><input type="checkbox" name="show_latest" value="1" %s> Stupac "Najnovije" desno od glavne priče (samo na većim ekranima)</label></p>', checked( $s['show_latest'], true, false ) );
 
 	echo '<h2>Rubrike na naslovnici</h2>';
-	echo '<p>Redoslijed mijenjate strelicama. Rubrika bez kvačice se ne prikazuje. Vrh naslovnice (glavna priča i tekstovi pored nje) je uvijek prvi.</p>';
-	echo '<table class="widefat dpp-parts"><thead><tr><th>Prikaži</th><th>Rubrika</th><th>Podnaslov</th><th>Redoslijed</th></tr></thead><tbody>';
+	echo '<p>Redoslijed mijenjate strelicama. Rubrika bez kvačice se ne prikazuje. Vrh naslovnice je uvijek prvi. Prazan podnaslov znači da ostaje tekst iz teme.</p>';
+	echo '<table class="widefat dpp-parts"><thead><tr><th>Prikaži</th><th>Rubrika</th><th>Kategorija i broj članaka</th><th>Podnaslov</th><th>Redoslijed</th></tr></thead><tbody>';
 	foreach ( $s['order'] as $key ) {
 		if ( ! isset( $names[ $key ] ) ) {
 			continue;
@@ -82,26 +114,32 @@ function dpp_admin_tab_naslovnica() {
 		echo '<tr>';
 		printf( '<td><input type="checkbox" name="shown[]" value="%1$s" %2$s aria-label="Prikaži %3$s"><input type="hidden" name="order[]" value="%1$s"></td>', esc_attr( $key ), checked( ! in_array( $key, (array) $s['hidden'], true ), true, false ), esc_attr( $names[ $key ] ) );
 		echo '<td><strong>' . esc_html( $names[ $key ] ) . '</strong></td><td>';
+		foreach ( dpp_part_sources( $key ) as $src ) {
+			$info = $sources[ $src ];
+			echo '<div class="dpp-src">';
+			if ( count( dpp_part_sources( $key ) ) > 1 ) {
+				echo '<span class="dpp-src-label">' . esc_html( $info[0] ) . ':</span> ';
+			}
+			echo dpp_category_select( 'cats[' . $src . ']', $s['cats'][ $src ] ?? $info[1] ); // phpcs:ignore WordPress.Security.EscapeOutput
+			printf( ' <input type="number" min="1" max="12" name="counts[%s]" value="%d" class="small-text" aria-label="Broj članaka"> čl.', esc_attr( $src ), (int) ( $s['counts'][ $src ] ?? $info[2] ) );
+			echo '</div>';
+		}
+		if ( 'igre' === $key ) {
+			echo '<span class="description">Igre sa stranice Igre</span>';
+		} elseif ( 'citat' === $key ) {
+			echo '<span class="description">Najnoviji istaknuti citat (blok Pullquote)</span>';
+		}
+		echo '</td><td>';
 		$sub_keys = 'sportnauka' === $key ? array( 'sport', 'nauka' ) : ( isset( $subs[ $key ] ) ? array( $key ) : array() );
 		foreach ( $sub_keys as $sk ) {
-			printf(
-				'<label class="dpp-sub">%s<input type="text" class="regular-text" name="subtitles[%s]" value="%s" placeholder="%s"></label>',
-				'sportnauka' === $key ? esc_html( ucfirst( $sk ) ) . ': ' : '',
-				esc_attr( $sk ),
-				esc_attr( $s['subtitles'][ $sk ] ?? '' ),
-				esc_attr( $subs[ $sk ] )
-			);
+			printf( '<input type="text" class="regular-text dpp-sub" name="subtitles[%s]" value="%s" placeholder="%s" aria-label="Podnaslov">', esc_attr( $sk ), esc_attr( $s['subtitles'][ $sk ] ?? '' ), esc_attr( $subs[ $sk ] ) );
 		}
 		echo '</td><td class="dpp-move"><button type="button" class="button dpp-up" aria-label="Pomjeri gore">↑</button> <button type="button" class="button dpp-down" aria-label="Pomjeri dole">↓</button></td></tr>';
 	}
 	echo '</tbody></table>';
-	echo '<p class="description">Prazan podnaslov znači da ostaje tekst iz teme (sivi tekst u polju).</p>';
+	printf( '<p><label>"Iz arhive" uzima tekstove starije od <input type="number" min="0" max="60" name="archive_months" value="%d" class="small-text"> mjeseci. Izbor se mijenja svaki dan.</label></p>', (int) $s['archive_months'] );
 
-	echo '<h2>Najnovije</h2>';
-	printf( '<label><input type="checkbox" name="show_latest" value="1" %s> Prikaži stupac "Najnovije" desno od glavne priče (samo na većim ekranima)</label>', checked( $s['show_latest'], true, false ) );
-
-	submit_button( 'Spremi' );
-	echo '</form>';
+	dpp_form_close( 'naslovnica' );
 	?>
 	<script>
 	document.querySelectorAll('.dpp-parts .dpp-up, .dpp-parts .dpp-down').forEach(function (b) {
@@ -116,6 +154,64 @@ function dpp_admin_tab_naslovnica() {
 	<?php
 }
 
+/* ---------- Članak ---------- */
+
+function dpp_admin_tab_clanak() {
+	$s = dpp_settings();
+	dpp_form_open( 'clanak' );
+	echo '<h2>Dijelovi članka</h2><fieldset>';
+	foreach ( dpp_article_options() as $key => $label ) {
+		printf( '<p><label><input type="checkbox" name="article[%s]" value="1" %s> %s</label></p>', esc_attr( $key ), checked( ! empty( $s['article'][ $key ] ), true, false ), esc_html( $label ) );
+	}
+	echo '</fieldset>';
+	printf( '<p><label>"Pročitajte još" prikazuje <input type="number" min="1" max="9" name="read_more_count" value="%d" class="small-text"> članka (prvo iz iste rubrike, pa najnovije).</label></p>', (int) $s['read_more_count'] );
+	echo '<p class="description">Autor piše svoju biografiju za okvir o autoru u <a href="' . esc_url( admin_url( 'profile.php' ) ) . '">Korisnici → Profil → Biografske informacije</a>.</p>';
+	dpp_form_close( 'clanak' );
+}
+
+/* ---------- Podnožje ---------- */
+
+function dpp_admin_tab_podnozje() {
+	$s     = dpp_settings();
+	$links = $s['footer_links'] ? $s['footer_links'] : array(
+		array( 'label' => 'Igre', 'url' => home_url( '/igre/' ) ),
+		array( 'label' => 'Instagram: @drugaperspektiva.dgs', 'url' => 'https://www.instagram.com/drugaperspektiva.dgs/' ),
+	);
+	$links = array_pad( $links, 5, array( 'label' => '', 'url' => '' ) );
+	dpp_form_open( 'podnozje' );
+	echo '<table class="form-table"><tbody>';
+	printf( '<tr><th scope="row"><label for="dpp-about">Tekst o novinama</label></th><td><textarea id="dpp-about" name="footer_about" rows="3" class="large-text" placeholder="%s">%s</textarea><p class="description">Prazno znači da ostaje tekst iz teme.</p></td></tr>', esc_attr( 'Urednički i finansijski nezavisne novine koje pišu i uređuju učenici Druge gimnazije Sarajevo. Novine je pokrenuo Tarik Bećarević.' ), esc_textarea( $s['footer_about'] ) );
+	echo '<tr><th scope="row">Linkovi</th><td><table class="dpp-links"><thead><tr><th>Tekst</th><th>Adresa</th></tr></thead><tbody>';
+	foreach ( $links as $i => $l ) {
+		printf( '<tr><td><input type="text" name="footer_links[%1$d][label]" value="%2$s" class="regular-text" aria-label="Tekst linka"></td><td><input type="url" name="footer_links[%1$d][url]" value="%3$s" class="regular-text" aria-label="Adresa linka" placeholder="https://"></td></tr>', (int) $i, esc_attr( $l['label'] ), esc_attr( $l['url'] ) );
+	}
+	echo '</tbody></table><p class="description">Prazni redovi se preskaču. Npr. Instagram, e-mail redakcije (mailto:ime@primjer.ba), TikTok.</p></td></tr>';
+	printf( '<tr><th scope="row"><label for="dpp-note">Mala poruka na dnu</label></th><td><input type="text" id="dpp-note" name="footer_note" value="%s" class="large-text" placeholder="%s"></td></tr>', esc_attr( $s['footer_note'] ), esc_attr( 'Imate priču ili prijedlog? Pišite nam na Instagramu.' ) );
+	echo '</tbody></table>';
+	echo '<p class="description">Rubrike u podnožju se prikazuju same (samo one koje imaju članke).</p>';
+	dpp_form_close( 'podnozje' );
+}
+
+/* ---------- Kategorije ---------- */
+
+function dpp_admin_tab_kategorije() {
+	$s     = dpp_settings();
+	$terms = get_terms( array( 'taxonomy' => 'category', 'hide_empty' => false, 'parent' => 0 ) );
+	dpp_form_open( 'kategorije' );
+	echo '<p>Boja oznake rubrike iznad naslova (kao na Instagramu). Podrubrike dobijaju boju svoje rubrike.</p>';
+	echo '<table class="widefat dpp-colors"><thead><tr><th>Kategorija</th><th>Boja</th><th>Izgled</th></tr></thead><tbody>';
+	foreach ( is_array( $terms ) ? $terms : array() as $t ) {
+		$current = $s['colors'][ $t->term_id ] ?? ( function_exists( 'dp_category_color' ) ? dp_category_color( $t ) : 'tinta' );
+		echo '<tr><td><strong>' . esc_html( $t->name ) . '</strong> <span class="description">(' . (int) $t->count . ')</span></td><td><select name="colors[' . (int) $t->term_id . ']">';
+		foreach ( dpp_colors() as $slug => $name ) {
+			printf( '<option value="%s" %s>%s</option>', esc_attr( $slug ), selected( $current, $slug, false ), esc_html( $name ) );
+		}
+		printf( '</select></td><td><span class="dpp-chip" style="background:var(--wp--preset--color--%1$s, %2$s)">%3$s</span></td></tr>', esc_attr( $current ), esc_attr( array( 'plava-chip' => '#3B57E8', 'narandza-chip' => '#B34E0F', 'zelena' => '#1F6B4F', 'tinta' => '#141414' )[ $current ] ?? '#141414' ), esc_html( $t->name ) );
+	}
+	echo '</tbody></table>';
+	dpp_form_close( 'kategorije' );
+}
+
 /* ---------- Opcije ---------- */
 
 function dpp_admin_tab_opcije() {
@@ -125,14 +221,13 @@ function dpp_admin_tab_opcije() {
 	printf( '<tr><th scope="row">Datum u zaglavlju</th><td><label><input type="checkbox" name="show_date" value="1" %s> Prikaži današnji datum lijevo od logotipa (na većim ekranima)</label></td></tr>', checked( $s['show_date'], true, false ) );
 	printf( '<tr><th scope="row"><label for="dpp-new-days">Oznaka "Novo!" na igrama</label></th><td><input type="number" min="0" max="365" id="dpp-new-days" name="new_days" value="%d" class="small-text"> dana nakon objave igre (0 = nikad)</td></tr>', (int) $s['new_days'] );
 	echo '</tbody></table>';
-	submit_button( 'Spremi' );
-	echo '</form>';
+	dpp_form_close( 'opcije' );
 
 	echo '<h2>Gdje je ostalo?</h2><ul class="ul-disc">';
-	echo '<li><strong>Meni, zaglavlje i podnožje:</strong> <a href="' . esc_url( admin_url( 'site-editor.php' ) ) . '">Izgled → Editor</a>.</li>';
+	echo '<li><strong>Meni i logo:</strong> <a href="' . esc_url( admin_url( 'site-editor.php' ) ) . '">Izgled → Editor</a> → Zaglavlje.</li>';
 	echo '<li><strong>Izvodi (sažeci) članaka:</strong> u samom članku, desna kolona → Izvod.</li>';
 	if ( dpp_plugin_active( 'dp-igre' ) ) {
-		echo '<li><strong>Igre (Riječ dana, Kontekst, Tramvaj):</strong> <a href="' . esc_url( admin_url( 'admin.php?page=dpig' ) ) . '">Riječ dana</a>.</li>';
+		echo '<li><strong>Igre (Riječ dana, Kontekst):</strong> <a href="' . esc_url( admin_url( 'admin.php?page=dpig' ) ) . '">Riječ dana</a>.</li>';
 	}
 	echo '</ul>';
 }
@@ -204,7 +299,14 @@ function dpp_admin_styles() {
 	.dpp h2 { margin-top: 2em; }
 	.dpp-parts td { vertical-align: middle; }
 	.dpp-parts .dpp-sub { display: block; margin: 2px 0; }
+	.dpp-src { margin: 2px 0; white-space: nowrap; }
+	.dpp-src-label { display: inline-block; min-width: 3.5em; }
 	.dpp-move { white-space: nowrap; }
+	.dpp-reset { margin-top: -10px; color: #b32d2e; }
+	.dpp-links th { padding: 0 8px 4px 0; font-weight: 400; }
+	.dpp-links td { padding: 0 8px 6px 0; }
+	.dpp-colors { max-width: 700px; }
+	.dpp-chip { display: inline-block; padding: 3px 8px; color: #fff; font-weight: 700; font-size: 12px; }
 	.dpp-groups { display: grid; gap: 12px; max-width: 900px; margin: 16px 0; }
 	.dpp-group { padding: 12px 16px; background: #fff; border: 1px solid #dcdcde; border-left: 4px solid #d63638; }
 	.dpp-group.is-empty { border-left-color: #00a32a; opacity: 0.75; }

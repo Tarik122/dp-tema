@@ -24,9 +24,8 @@ function dpig_activate() {
 	add_option( 'dpig_domain', '2gimnazija.edu.ba' );
 	add_option( 'dpig_client_id', '' );
 	add_option( 'dpig_title', 'Riječ dana' );
-	// Kontekst and Tramvaj number their days from the day they were installed.
+	// Kontekst numbers its days from the day it was installed.
 	add_option( 'dpig_kx_start', wp_date( 'Y-m-d' ) );
-	add_option( 'dpig_tv_start', wp_date( 'Y-m-d' ) );
 	// Work out Kontekst's ranking just after midnight, so the first player of the day does not wait.
 	if ( ! wp_next_scheduled( 'dpig_kx_warm' ) ) {
 		wp_schedule_event( ( new DateTimeImmutable( 'tomorrow', wp_timezone() ) )->getTimestamp() + 60, 'daily', 'dpig_kx_warm' );
@@ -96,9 +95,9 @@ function dpig_install_tables() {
 		) $charset;"
 	);
 
-	// Results of the other games (Kontekst, Tramvaj): one row per player, game and day.
+	// Results of the newer games (Kontekst): one row per player, game and day.
 	// data holds the game's own details as JSON; score is what the leaderboard sorts by
-	// (number of guesses for Kontekst, milliseconds for Tramvaj).
+	// (for Kontekst: guesses plus the cost of hints).
 	$results = dpig_table( 'results' );
 	dbDelta(
 		"CREATE TABLE $results (

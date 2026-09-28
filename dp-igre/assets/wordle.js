@@ -67,7 +67,10 @@
 			opts.headers['Content-Type'] = 'application/json';
 			opts.body = JSON.stringify(body);
 		}
-		return fetch(CFG.api + path, opts).then(function (r) {
+		// A unique address for every read, so no cache can hand back an old day.
+		var url = CFG.api + path + (body ? '' : (path.indexOf('?') < 0 ? '?' : '&') + '_=' + Date.now());
+		opts.cache = 'no-store';
+		return fetch(url, opts).then(function (r) {
 			return r.json().catch(function () { return {}; }).then(function (data) {
 				if (!r.ok) {
 					var err = new Error(data.message || 'Greška. Pokušaj ponovo.');
@@ -344,7 +347,7 @@
 			});
 		}).catch(function (e) {
 			S.busy = false;
-			if (e.code === 'dpig_new_day') { toast(e.message, 3000); setTimeout(load, 1500); return; }
+			if (e.code === 'dpig_new_day') { newDay(); return; }
 			shake(e.message);
 		});
 	}
@@ -558,6 +561,14 @@
 	}
 
 	/* ---------- start ---------- */
+
+	/* The day changed while the page was open: load the new word by itself. */
+	function newDay() {
+		var old = S.date;
+		load().then(function () {
+			if (S.date !== old) toast('Stigla je nova riječ!', 2500);
+		});
+	}
 
 	function load() {
 		return api('state').then(function (data) {

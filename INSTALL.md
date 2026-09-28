@@ -83,18 +83,19 @@ Isto kao koraci 1 do 5: nova stranica, roditelj **Igre**, izvod, objavi. Tema je
 - stavi oznaku **Novo** prvih 30 dana,
 - ispod svake igre prikaže **Više igara**.
 
-**Kontekst i Tramvaj (nove igre u dodatku DP igre 1.2)**
+**Kontekst (nova igra u dodatku DP igre)**
 
 Prvo ažurirajte dodatak: **Dodaci → Dodaj novi → Otpremi dodatak** → `dp-igre.zip` → **Zamijeni postojeći**. Dodatak je sada oko 4 MB (u njemu je rječnik za Kontekst). Ako WordPress kaže da je fajl prevelik, pitajte hosting da povećaju "upload_max_filesize" (dovoljno je 16 MB).
 
-Zatim za svaku igru napravite stranicu kao u koracima 1 do 5 iznad:
+Zatim napravite stranicu kao u koracima 1 do 5 iznad:
 
 | Naslov | Kratki kod | Izvod (za karticu) |
 |---|---|---|
 | Kontekst | `[dp_kontekst]` | Pogodi tajnu riječ po značenju. |
-| Tramvaj | `[dp_tramvaj]` | Provuci tramvaj kroz sve stanice, redom. |
 
-Roditeljska stranica je **Igre**, a šablon **Igre: jedna igra**. Obje igre rade same: nova riječ i nova linija stižu svaki dan u ponoć (riječi ima za oko godinu dana, linija za tri godine, a onda kreću ispočetka). Brojanje (#1, #2…) počinje od dana kad ste ažurirali dodatak. Prijava školskim mailom, ljestvice i nizovi rade isto kao u Riječi, bez dodatnog podešavanja.
+Roditeljska stranica je **Igre**, a šablon **Igre: jedna igra**. Igra radi sama: nova riječ stiže svaki dan u ponoć (riječi ima za oko godinu dana, a onda kreću ispočetka). Brojanje (#1, #2…) počinje od dana kad ste ažurirali dodatak. Pomoć košta sve više: prva 2 pokušaja, druga 4, treća 8.
+
+Ako ste napravili stranicu **Tramvaj**, obrišite je: ta igra je izbačena. Prijava školskim mailom, ljestvice i nizovi rade isto kao u Riječi, bez dodatnog podešavanja.
 
 **Redoslijed i boje:** igre idu redom kojim su objavljene, pa nova igra ide na kraj. Kartice su redom plava, narandžasta, zelena i crna. Za drugi redoslijed koristite polje **Redoslijed** (Order) u postavkama stranice: manji broj ide prvi.
 
@@ -103,11 +104,19 @@ Roditeljska stranica je **Igre**, a šablon **Igre: jedna igra**. Obje igre rade
 Dodatak **DP postavke** (`dp-postavke.zip`) daje više kontrole nad temom bez diranja koda. Instalacija: **Dodaci → Dodaj novi → Otpremi dodatak** → `dp-postavke.zip` → **Instaliraj** → **Aktiviraj**. U meniju se pojavi **Druga perspektiva**.
 
 - **Naslovnica:**
-  - **Glavna priča:** birate članak iz liste, bez zakačivanja. "Automatski" znači zakačeni članak, a ako ga nema, najnoviji.
-  - **Rubrike:** strelicama mijenjate redoslijed (Igre, Mišljenje, Vijesti, Kultura, Rečeno, Sport i Nauka, Iz arhive), a kvačicom ih sakrivate.
-  - **Podnaslovi rubrika:** upišete novi tekst. Prazno polje znači da ostaje tekst iz teme.
-  - **Najnovije:** uključujete ili isključujete stupac desno od glavne priče (vidi se samo na većim ekranima).
+  - **Glavna priča:** birate članak iz liste, bez zakačivanja.
+  - **Najnovije:** uključujete ili isključujete stupac desno od glavne priče.
+  - **Rubrike:** za svaku birate redoslijed, prikaz, iz koje kategorije uzima članke, koliko ih prikazuje i podnaslov.
+  - **Iz arhive:** birate koliko stari tekstovi dolaze.
+- **Članak:** uključujete ili isključujete:
+  - veliko početno slovo i DP znak na kraju;
+  - vrijeme čitanja i okvir o autoru;
+  - "Pročitajte još", i birate koliko članaka prikazuje.
+- **Podnožje:** tekst o novinama, linkovi (Instagram, e-mail, TikTok…) i mala poruka na dnu.
+- **Kategorije:** boja oznake za svaku rubriku (plava, narandžasta, zelena, crna).
 - **Opcije:** datum u zaglavlju, i koliko dana igre nose oznaku "Novo!".
+
+Svaka kartica ima link **Vrati postavke teme za ovu karticu**, ako nešto želite vratiti na početno.
 - **Čišćenje:** briše ono što je ostalo od stare teme:
   - demo stranice ("Homepage", "Checkout", "My account"…);
   - demo slike koje nijedan članak ne koristi;

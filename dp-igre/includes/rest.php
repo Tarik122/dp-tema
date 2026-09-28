@@ -44,9 +44,29 @@ function dpig_rest_permission( WP_REST_Request $request ) {
 
 function dpig_response( $data, $status = 200 ) {
 	$response = new WP_REST_Response( $data, $status );
-	$response->header( 'Cache-Control', 'no-store, private' );
+	// Game data is personal and changes every day: no cache may keep it.
+	$response->header( 'Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private' );
+	$response->header( 'Pragma', 'no-cache' );
+	$response->header( 'X-LiteSpeed-Cache-Control', 'no-cache' );
 	return $response;
 }
+
+/**
+ * Tell caching plugins (LiteSpeed Cache, WP Rocket, W3 Total Cache, WP Super
+ * Cache…) not to store any of the game requests. A stored answer from an
+ * earlier day made the game ask for a refresh again and again.
+ */
+function dpig_no_cache_for_games( $result, $server, $request ) {
+	if ( 0 === strpos( $request->get_route(), '/dpig/v1/' ) ) {
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true );
+		}
+		do_action( 'litespeed_control_set_nocache', 'dp-igre' );
+		nocache_headers();
+	}
+	return $result;
+}
+add_filter( 'rest_pre_dispatch', 'dpig_no_cache_for_games', 10, 3 );
 
 function dpig_error_response( WP_Error $error ) {
 	return dpig_response(

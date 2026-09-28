@@ -1,6 +1,6 @@
 <?php
 /**
- * Results, statistics, streaks and leaderboards for Kontekst and Tramvaj.
+ * Results, statistics, streaks and leaderboards for the newer games (Kontekst).
  *
  * Riječ dana keeps its own table (dpig_games). The newer games share
  * dpig_results: one row per player, game and day.
@@ -74,14 +74,9 @@ function dpig_result_save( $player_id, $game, $date, array $data, $status = 'pla
 	}
 }
 
-/** How a score is written: guesses for Kontekst, minutes and seconds for Tramvaj. */
+/** How a score is written on the leaderboard. */
 function dpig_result_format( $game, $score ) {
-	$score = (int) $score;
-	if ( 'tramvaj' === $game ) {
-		$s = (int) round( $score / 1000 );
-		return sprintf( '%d:%02d', intdiv( $s, 60 ), $s % 60 );
-	}
-	return (string) $score;
+	return (string) (int) round( (float) $score );
 }
 
 function dpig_result_stats( $player_id, $game ) {
@@ -117,7 +112,7 @@ function dpig_result_stats( $player_id, $game ) {
 }
 
 /**
- * @param string $game kontekst | tramvaj
+ * @param string $game kontekst
  * @param string $type today | streak | month
  */
 function dpig_result_leaderboard( $game, $type ) {
@@ -136,7 +131,7 @@ function dpig_result_leaderboard( $game, $type ) {
 	if ( 'today' === $type ) {
 		$found = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT p.id, p.name, p.anonymous, r.score
+				"SELECT p.id, p.name, p.anonymous, r.score, r.data
 				FROM $results r JOIN $players p ON p.id = r.player_id
 				WHERE r.game = %s AND r.puzzle_date = %s AND r.status = 'won' AND p.hidden = 0
 				ORDER BY r.score ASC, r.finished_at ASC LIMIT 100",
@@ -146,11 +141,19 @@ function dpig_result_leaderboard( $game, $type ) {
 			ARRAY_A
 		);
 		foreach ( $found as $r ) {
-			$rows[] = array(
+			$row = array(
 				'id'    => (int) $r['id'],
 				'name'  => dpig_display_name( $r ),
 				'value' => dpig_result_format( $game, $r['score'] ),
 			);
+			if ( 'kontekst' === $game && function_exists( 'dpig_kx_hint_count' ) ) {
+				$data  = json_decode( (string) $r['data'], true );
+				$hints = dpig_kx_hint_count( $data['g'] ?? array() );
+				if ( $hints ) {
+					$row['extra'] = $hints . ' ' . ( 1 === $hints ? 'pomoć' : 'pomoći' );
+				}
+			}
+			$rows[] = $row;
 		}
 	} elseif ( 'streak' === $type ) {
 		$found     = $wpdb->get_results(
@@ -222,7 +225,7 @@ function dpig_result_leaderboard( $game, $type ) {
 /** GET /board?game=kontekst&type=today */
 function dpig_rest_board( WP_REST_Request $request ) {
 	$game = $request->get_param( 'game' );
-	if ( ! in_array( $game, array( 'kontekst', 'tramvaj' ), true ) ) {
+	if ( ! in_array( $game, array( 'kontekst' ), true ) ) {
 		return dpig_error_response( new WP_Error( 'dpig_game', 'Nepoznata igra.' ) );
 	}
 	$type = $request->get_param( 'type' );
@@ -240,7 +243,7 @@ function dpig_rest_board( WP_REST_Request $request ) {
 	return dpig_response( array( 'type' => $type, 'rows' => $rows ) );
 }
 
-/** The player part of a state response for Kontekst or Tramvaj. */
+/** The player part of a state response for Kontekst. */
 function dpig_result_player_payload( $player, $game ) {
 	if ( ! $player ) {
 		return null;

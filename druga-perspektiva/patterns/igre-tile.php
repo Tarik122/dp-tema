@@ -17,7 +17,7 @@
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"className":"dp-igre-text"} -->
-		<p class="dp-igre-text">Svaki dan nova riječ, nova linija i nova zagonetka. Za veliki odmor i put do kuće.</p>
+		<p class="dp-igre-text">Svaki dan nove zagonetke od redakcije. Za veliki odmor i put do kuće.</p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:paragraph {"className":"dp-igre-cta"} -->

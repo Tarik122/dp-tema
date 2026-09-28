@@ -43,6 +43,14 @@ const DP_HOME_SECTIONS = array(
 	10 => 'nauka',
 );
 
+/** Ključ svake rubrike (za dodatak DP postavke): queryId => ključ. */
+const DP_HOME_SECTION_KEYS = array(
+	6  => 'vijesti',
+	7  => 'sport',
+	8  => 'kultura',
+	10 => 'nauka',
+);
+
 /*
  * Rubrike: slug kategorije => boja oznake (slug boje iz theme.json).
  * Slugovi su isti kao na starom sajtu da stari linkovi rade.
@@ -250,16 +258,18 @@ function dp_primary_category( $post_id ) {
 
 /** Boja oznake za kategoriju (slug boje iz theme.json). */
 function dp_category_color( $term ) {
+	$color = 'tinta';
 	if ( $term && isset( DP_CATEGORY_COLORS[ $term->slug ] ) ) {
-		return DP_CATEGORY_COLORS[ $term->slug ];
-	}
-	if ( $term && $term->parent ) {
+		$color = DP_CATEGORY_COLORS[ $term->slug ];
+	} elseif ( $term && $term->parent ) {
 		$parent = get_term( $term->parent, 'category' );
 		if ( $parent && ! is_wp_error( $parent ) && isset( DP_CATEGORY_COLORS[ $parent->slug ] ) ) {
-			return DP_CATEGORY_COLORS[ $parent->slug ];
+			$color = DP_CATEGORY_COLORS[ $parent->slug ];
 		}
 	}
-	return 'tinta';
+	// Boju može promijeniti dodatak DP postavke (slug boje iz theme.json).
+	$color = (string) apply_filters( 'dp_category_color', $color, $term );
+	return in_array( $color, array( 'tinta', 'plava-chip', 'narandza-chip', 'zelena' ), true ) ? $color : 'tinta';
 }
 
 /**
@@ -528,9 +538,7 @@ function dp_home_layout() {
 		return $layout;
 	}
 
-	$featured = get_term_by( 'slug', DP_FEATURED_CATEGORY, 'category' );
-	$opinion  = get_term_by( 'slug', DP_OPINION_CATEGORY, 'category' );
-	$shown    = array();
+	$shown = array();
 
 	// Glavna priča: izabrana u dodatku DP postavke, inače zakačeni, inače najnoviji članak.
 	$lead   = (int) apply_filters( 'dp_home_lead_id', 0 );
@@ -558,22 +566,26 @@ function dp_home_layout() {
 	$shown    = array_merge( $shown, $stream );
 
 	// Mišljenje: najnovije kolumne koje već nisu gore.
-	$opinions = $opinion ? dp_post_ids( array( 'cat' => $opinion->term_id, 'numberposts' => 3, 'post__not_in' => $shown ) ) : array();
+	$opinion  = get_term_by( 'slug', dp_section_category( 'misljenje', DP_OPINION_CATEGORY ), 'category' );
+	$opinions = $opinion ? dp_post_ids( array( 'cat' => $opinion->term_id, 'numberposts' => dp_section_count( 'misljenje', 3 ), 'post__not_in' => $shown ) ) : array();
 	$shown    = array_merge( $shown, $opinions );
 
 	// Rubrike: po četiri teksta iz svake, bez onih koji su već gore.
 	$sections = array();
 	foreach ( DP_HOME_SECTIONS as $query_id => $slug ) {
-		$term                  = get_term_by( 'slug', $slug, 'category' );
-		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => 4, 'post__not_in' => $shown ) ) : array();
+		$key                   = DP_HOME_SECTION_KEYS[ $query_id ];
+		$term                  = get_term_by( 'slug', dp_section_category( $key, $slug ), 'category' );
+		$sections[ $query_id ] = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => dp_section_count( $key, 4 ), 'post__not_in' => $shown ) ) : array();
 		$shown                 = array_merge( $shown, $sections[ $query_id ] );
 	}
 
 	// Iz arhive.
+	$featured = get_term_by( 'slug', dp_section_category( 'arhiva', DP_FEATURED_CATEGORY ), 'category' );
+	$months   = max( 0, (int) apply_filters( 'dp_archive_months', 6 ) );
 	$old_args = array(
 		'numberposts'  => 50,
 		'post__not_in' => $shown,
-		'date_query'   => array( array( 'before' => '6 months ago' ) ),
+		'date_query'   => array( array( 'before' => $months . ' months ago' ) ),
 	);
 	$pool     = $featured ? dp_post_ids( array_merge( $old_args, array( 'cat' => $featured->term_id ) ) ) : array();
 	if ( ! $pool ) {
@@ -583,7 +595,7 @@ function dp_home_layout() {
 	$archive = array();
 	if ( $pool ) {
 		$start = (int) floor( time() / DAY_IN_SECONDS ) % count( $pool );
-		for ( $i = 0; $i < min( 3, count( $pool ) ); $i++ ) {
+		for ( $i = 0; $i < min( dp_section_count( 'arhiva', 3 ), count( $pool ) ); $i++ ) {
 			$archive[] = $pool[ ( $start + $i ) % count( $pool ) ];
 		}
 	}
@@ -604,11 +616,12 @@ function dp_home_layout() {
  * dopunjava se najnovijim člancima.
  */
 function dp_read_more_ids( $post_id ) {
+	$want = max( 1, (int) apply_filters( 'dp_read_more_count', 3 ) );
 	$term = dp_primary_category( $post_id );
-	$ids  = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => 3, 'post__not_in' => array( $post_id ) ) ) : array();
+	$ids  = $term ? dp_post_ids( array( 'cat' => $term->term_id, 'numberposts' => $want, 'post__not_in' => array( $post_id ) ) ) : array();
 
-	if ( count( $ids ) < 3 ) {
-		$ids = array_merge( $ids, dp_post_ids( array( 'numberposts' => 3 - count( $ids ), 'post__not_in' => array_merge( array( $post_id ), $ids ) ) ) );
+	if ( count( $ids ) < $want ) {
+		$ids = array_merge( $ids, dp_post_ids( array( 'numberposts' => $want - count( $ids ), 'post__not_in' => array_merge( array( $post_id ), $ids ) ) ) );
 	}
 
 	return $ids;
@@ -816,8 +829,13 @@ function dp_end_mark( $content, $block ) {
 		return $content;
 	}
 
-	$content = dp_drop_cap( $content, $m );
-	preg_match_all( '#<p(?:\s[^>]*)?>(.*?)</p>#s', $content, $m, PREG_OFFSET_CAPTURE );
+	if ( dp_option( 'dropcap' ) ) {
+		$content = dp_drop_cap( $content, $m );
+		preg_match_all( '#<p(?:\s[^>]*)?>(.*?)</p>#s', $content, $m, PREG_OFFSET_CAPTURE );
+	}
+	if ( ! dp_option( 'endmark' ) ) {
+		return $content;
+	}
 
 	for ( $i = count( $m[0] ) - 1; $i >= 0; $i-- ) {
 		if ( '' !== trim( wp_strip_all_tags( $m[1][ $i ][0] ), " \t\n\r\0\x0B\xC2\xA0" ) ) {
@@ -1096,3 +1114,91 @@ function dp_section_subtitle( $content, $block ) {
 	return sprintf( '<p class="%s">%s</p>', esc_attr( 'dp-sec-sub dp-sub-' . $m[1] ), esc_html( $text ) );
 }
 add_filter( 'render_block_core/paragraph', 'dp_section_subtitle', 10, 2 );
+
+/* -------------------------------------------------------------------------
+ * Postavke iz dodatka "DP postavke". Bez dodatka vrijede vrijednosti teme.
+ * ---------------------------------------------------------------------- */
+
+/** Slug kategorije iz koje rubrika uzima članke. */
+function dp_section_category( $key, $default ) {
+	$slug = (string) apply_filters( 'dp_home_section_category', $default, $key );
+	return '' !== $slug ? $slug : $default;
+}
+
+/** Koliko članaka rubrika prikazuje. */
+function dp_section_count( $key, $default ) {
+	return max( 1, min( 12, (int) apply_filters( 'dp_home_section_count', $default, $key ) ) );
+}
+
+/** Opcije članka: dropcap, endmark, reading_time, author_box, read_more. Sve su uključene dok se ne isključe. */
+function dp_option( $key ) {
+	return (bool) apply_filters( 'dp_article_option', true, $key );
+}
+
+/** Isključeni dijelovi članka se ne prikazuju. */
+function dp_hide_article_parts( $content, $block ) {
+	$class = $block['attrs']['className'] ?? '';
+	if ( '' === $class ) {
+		return $content;
+	}
+	$parts = array(
+		'dp-reading-time' => 'reading_time',
+		'dp-author-box'   => 'author_box',
+		'dp-read-more'    => 'read_more',
+	);
+	foreach ( $parts as $needle => $key ) {
+		if ( false !== strpos( $class, $needle ) && ! dp_option( $key ) ) {
+			return '';
+		}
+	}
+	return $content;
+}
+add_filter( 'render_block', 'dp_hide_article_parts', 9, 2 );
+
+/** Naslov rubrike vodi na kategoriju koja je izabrana za tu rubriku. */
+function dp_section_heading_link( $content, $block ) {
+	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-sec-title' ) ) {
+		return $content;
+	}
+	return preg_replace_callback(
+		'#href="/category/([a-z0-9-]+)/"#',
+		function ( $m ) {
+			$keys = array( 'vijesti' => 'vijesti', 'opinion' => 'misljenje', 'kultura' => 'kultura', 'sport' => 'sport', 'nauka' => 'nauka' );
+			if ( ! isset( $keys[ $m[1] ] ) ) {
+				return $m[0];
+			}
+			$term = get_term_by( 'slug', dp_section_category( $keys[ $m[1] ], $m[1] ), 'category' );
+			return $term ? 'href="' . esc_url( get_category_link( $term ) ) . '"' : $m[0];
+		},
+		$content
+	);
+}
+add_filter( 'render_block_core/heading', 'dp_section_heading_link', 10, 2 );
+
+/** Tekstovi u podnožju iz dodatka DP postavke, ako su upisani. */
+function dp_footer_texts( $content, $block ) {
+	$class = $block['attrs']['className'] ?? '';
+	if ( false !== strpos( $class, 'dp-footer-about' ) ) {
+		$text = trim( (string) apply_filters( 'dp_footer_about', '' ) );
+		return '' === $text ? $content : '<p class="dp-footer-about has-body-font-size">' . esc_html( $text ) . '</p>';
+	}
+	if ( false !== strpos( $class, 'dp-footer-small' ) ) {
+		$text = trim( (string) apply_filters( 'dp_footer_note', '' ) );
+		return '' === $text ? $content : '<p class="dp-footer-small has-small-font-size">' . esc_html( $text ) . '</p>';
+	}
+	if ( false !== strpos( $class, 'dp-footer-links' ) ) {
+		$links = apply_filters( 'dp_footer_links', null );
+		if ( ! is_array( $links ) ) {
+			return $content;
+		}
+		$html = '';
+		foreach ( $links as $link ) {
+			if ( ! empty( $link['url'] ) && ! empty( $link['label'] ) ) {
+				$html .= sprintf( '<a href="%s">%s</a> ', esc_url( $link['url'] ), esc_html( $link['label'] ) );
+			}
+		}
+		return $html ? '<p class="dp-footer-links">' . trim( $html ) . '</p>' : '';
+	}
+	return $content;
+}
+add_filter( 'render_block_core/paragraph', 'dp_footer_texts', 10, 2 );

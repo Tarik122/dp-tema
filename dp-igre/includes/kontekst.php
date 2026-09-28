@@ -164,6 +164,28 @@ function dpig_kx_order( array $day ) {
 	return $order;
 }
 
+/**
+ * Score for the leaderboard: every typed guess counts 1, and each hint costs
+ * twice the one before it (2, 4, 8, 16…). One hint when stuck is cheap;
+ * clicking Pomoć again and again is not.
+ */
+function dpig_kx_score( array $guesses ) {
+	$typed = 0;
+	$hints = 0;
+	foreach ( $guesses as $g ) {
+		if ( ! empty( $g[2] ) ) {
+			$hints++;
+		} else {
+			$typed++;
+		}
+	}
+	return $typed + ( $hints ? ( 2 ** ( $hints + 1 ) ) - 2 : 0 );
+}
+
+function dpig_kx_hint_count( array $guesses ) {
+	return count( array_filter( $guesses, function ( $g ) { return ! empty( $g[2] ); } ) );
+}
+
 function dpig_kx_guess_payload( $id, $rank, $hint = false ) {
 	return array(
 		'w' => dpig_kx_word( $id ),
@@ -250,7 +272,7 @@ function dpig_rest_kx_guess( WP_REST_Request $request ) {
 			}
 		}
 		$guesses[] = array( $id, $rank, 0 );
-		dpig_result_save( $player['id'], 'kontekst', $date, array( 'g' => $guesses ), $status, count( $guesses ) );
+		dpig_result_save( $player['id'], 'kontekst', $date, array( 'g' => $guesses ), $status, dpig_kx_score( $guesses ) );
 	}
 
 	$response = array(
@@ -299,7 +321,7 @@ function dpig_rest_kx_hint( WP_REST_Request $request ) {
 	if ( $player ) {
 		$guesses   = $result['data']['g'] ?? array();
 		$guesses[] = array( $id, $target, 1 );
-		dpig_result_save( $player['id'], 'kontekst', $date, array( 'g' => $guesses ), 'playing', count( $guesses ) );
+		dpig_result_save( $player['id'], 'kontekst', $date, array( 'g' => $guesses ), 'playing', dpig_kx_score( $guesses ) );
 	}
 	return dpig_response( array( 'guess' => dpig_kx_guess_payload( $id, $target, true ) ) );
 }
@@ -316,7 +338,7 @@ function dpig_rest_kx_giveup( WP_REST_Request $request ) {
 		$result = dpig_result_get( $player['id'], 'kontekst', $date );
 		if ( ! $result || 'playing' === $result['status'] ) {
 			$guesses = $result['data']['g'] ?? array();
-			dpig_result_save( $player['id'], 'kontekst', $date, array( 'g' => $guesses ), 'lost', count( $guesses ) );
+			dpig_result_save( $player['id'], 'kontekst', $date, array( 'g' => $guesses ), 'lost', dpig_kx_score( $guesses ) );
 		}
 	}
 	return dpig_response(

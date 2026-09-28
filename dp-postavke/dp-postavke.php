@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       DP postavke
  * Description:       Kontrolna ploča za temu Druga perspektiva: glavna priča, redoslijed i podnaslovi rubrika na naslovnici, sitne opcije i čišćenje ostataka stare teme. Meni: Druga perspektiva.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.6
  * Requires PHP:      7.4
  * Author:            Druga perspektiva
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DPP_VERSION', '1.0.0' );
+define( 'DPP_VERSION', '1.1.0' );
 define( 'DPP_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once DPP_DIR . 'includes/settings.php';
