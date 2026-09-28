@@ -71,13 +71,18 @@ h1 {
 	letter-spacing: -0.01em;
 }
 
-/* Imena igara kao kurziv podnaslov (dek), kao na sajtu. */
-.games {
-	margin: 40px 0 0;
-	font-family: "Source Serif 4", serif;
-	font-style: italic;
-	font-size: 64px;
-	line-height: 1.2;
+/* Imena igara na bijelim pločicama, isto kao slova i QR. */
+.games { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 56px; }
+.games span {
+	padding: 16px 30px 20px;
+	border: 5px solid var(--tinta);
+	border-radius: 16px;
+	background: #fff;
+	box-shadow: 0 8px 0 var(--tinta);
+	color: var(--tinta);
+	font-size: 50px;
+	font-weight: 700;
+	line-height: 1;
 }
 
 /* QR kao naljepnica, malo nakrivljen. */
@@ -120,7 +125,7 @@ h1 {
 		<div>
 			<div class="tiles"><span class="tile">I</span><span class="tile">G</span><span class="tile">R</span><span class="tile">E</span></div>
 			<h1>Svaki dan nova zagonetka.</h1>
-			<p class="games">Riječ dana, Kontekst i Ljestve.</p>
+			<div class="games"><span>Riječ dana</span><span>Kontekst</span><span>Ljestve</span></div>
 		</div>
 		<div class="qr">
 			<b>Skeniraj i igraj</b>
