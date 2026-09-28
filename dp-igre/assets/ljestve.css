@@ -1,0 +1,231 @@
+/* Ljestve. Base styles (zaglavlje, prozori, tastatura, dugmad) come from wordle.css. */
+
+.dpig-lj-body {
+	padding-top: 4px;
+}
+
+.dpig-lj-route {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: center;
+	gap: 4px 12px;
+	margin: 0 0 14px;
+	font-size: 16px;
+}
+
+.dpig-lj-par {
+	color: var(--dpig-muted);
+	font-size: 14px;
+	font-weight: 700;
+}
+
+/* ---------- Ljestve: dvije šipke, riječi su prečke ---------- */
+
+.dpig-lj-ladder {
+	--lj-tile: max(38px, min(56px, calc((100vw - 120px) / 4), calc((100svh - 420px) / 5)));
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	width: fit-content;
+	margin: 0 auto;
+	padding: 8px 30px;
+}
+
+.dpig-lj-ladder::before,
+.dpig-lj-ladder::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 6px;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 4px;
+	background: var(--dpig-near);
+}
+
+.dpig-lj-ladder::before {
+	left: 0;
+}
+
+.dpig-lj-ladder::after {
+	right: 0;
+}
+
+.dpig-lj-row {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+/* Prečka iza pločica, od šipke do šipke. */
+.dpig-lj-row::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: -30px;
+	right: -30px;
+	height: 4px;
+	background: var(--dpig-ink);
+	transform: translateY(-50%);
+}
+
+.dpig-lj-label {
+	position: absolute;
+	right: calc(100% + 36px);
+	color: var(--dpig-muted);
+	font-size: 12px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.dpig-lj-tiles {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(4, var(--lj-tile));
+	gap: 6px;
+}
+
+.dpig-lj-ladder .dpig-tile {
+	width: var(--lj-tile);
+	height: var(--lj-tile);
+	margin: 0;
+	padding: 0;
+	border: 2px solid var(--dpig-ink);
+	border-radius: 7px;
+	background: var(--dpig-paper);
+	box-shadow: 0 3px 0 var(--dpig-ink);
+	color: var(--dpig-ink);
+	font-family: var(--dpig-sans);
+	font-size: calc(var(--lj-tile) * 0.44);
+	font-weight: 800;
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+/* Promijenjeno slovo je narandžasto. */
+.dpig-lj-ladder .dpig-tile.is-changed {
+	background: var(--dpig-near);
+}
+
+.dpig-lj-row.is-start .dpig-tile,
+.dpig-lj-row.is-goal .dpig-tile {
+	background: var(--dpig-hit);
+	color: #fff;
+}
+
+.dpig-lj-row.is-hint .dpig-tile {
+	border-style: dashed;
+}
+
+.dpig-lj-row.is-hint .dpig-lj-label {
+	color: var(--dpig-ink);
+}
+
+/* Cilj: isprekidan, blijed. */
+.dpig-lj-row.is-target .dpig-tile {
+	border-style: dashed;
+	background: #eef1ff;
+	box-shadow: none;
+	color: var(--dpig-hit);
+}
+
+/* Red koji se upisuje: izabrano slovo ima debeli okvir. */
+.dpig-lj-row.is-input .dpig-tile {
+	cursor: pointer;
+}
+
+.dpig-lj-row.is-input .dpig-tile.is-selected {
+	outline: 4px solid var(--dpig-hit);
+	outline-offset: 2px;
+	transform: translateY(-2px);
+}
+
+.dpig-lj-row.is-input .dpig-tile:focus-visible {
+	outline: 4px solid var(--dpig-ink);
+	outline-offset: 2px;
+}
+
+.dpig-lj-tip {
+	margin: 12px 0 0;
+	color: var(--dpig-muted);
+	font-size: 13px;
+	text-align: center;
+}
+
+.dpig-lj-tip[hidden],
+.dpig-lj-tools[hidden],
+.dpig-lj-body .dpig-keyboard[hidden] {
+	display: none;
+}
+
+.dpig-lj-tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin: 12px 0 14px;
+	font-size: 14px;
+}
+
+.dpig-lj-count {
+	color: var(--dpig-muted);
+	font-weight: 700;
+}
+
+.dpig-lj-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.dpig .dpig-pill:disabled {
+	opacity: 0.45;
+}
+
+.dpig-lj-done:not(:empty) {
+	margin: 18px 0 6px;
+	text-align: center;
+}
+
+.dpig-lj-done p {
+	margin: 0 0 8px;
+}
+
+.dpig-lj-path-title {
+	color: var(--dpig-muted);
+	font-size: 13px;
+}
+
+.dpig-lj-path {
+	font-weight: 800;
+	letter-spacing: 0.02em;
+}
+
+.dpig-lj-example {
+	--lj-tile: 36px;
+	margin: 6px auto 14px;
+}
+
+@media (max-width: 420px) {
+	.dpig-lj-label {
+		display: none;
+	}
+
+	.dpig-lj-ladder {
+		gap: 8px;
+		padding: 6px 22px;
+	}
+
+	.dpig-lj-row::before {
+		left: -22px;
+		right: -22px;
+	}
+
+	.dpig-lj-tools {
+		justify-content: center;
+	}
+}

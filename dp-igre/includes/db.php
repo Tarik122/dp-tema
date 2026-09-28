@@ -24,8 +24,9 @@ function dpig_activate() {
 	add_option( 'dpig_domain', '2gimnazija.edu.ba' );
 	add_option( 'dpig_client_id', '' );
 	add_option( 'dpig_title', 'Riječ dana' );
-	// Kontekst numbers its days from the day it was installed.
+	// Kontekst and Ljestve number their days from the day they were installed.
 	add_option( 'dpig_kx_start', wp_date( 'Y-m-d' ) );
+	add_option( 'dpig_lj_start', wp_date( 'Y-m-d' ) );
 	// Work out Kontekst's ranking just after midnight, so the first player of the day does not wait.
 	if ( ! wp_next_scheduled( 'dpig_kx_warm' ) ) {
 		wp_schedule_event( ( new DateTimeImmutable( 'tomorrow', wp_timezone() ) )->getTimestamp() + 60, 'daily', 'dpig_kx_warm' );

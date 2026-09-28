@@ -1,6 +1,6 @@
 <?php
 /**
- * Results, statistics, streaks and leaderboards for the newer games (Kontekst).
+ * Results, statistics, streaks and leaderboards for the newer games (Kontekst, Ljestve).
  *
  * Riječ dana keeps its own table (dpig_games). The newer games share
  * dpig_results: one row per player, game and day.
@@ -112,7 +112,7 @@ function dpig_result_stats( $player_id, $game ) {
 }
 
 /**
- * @param string $game kontekst
+ * @param string $game kontekst | ljestve
  * @param string $type today | streak | month
  */
 function dpig_result_leaderboard( $game, $type ) {
@@ -146,12 +146,15 @@ function dpig_result_leaderboard( $game, $type ) {
 				'name'  => dpig_display_name( $r ),
 				'value' => dpig_result_format( $game, $r['score'] ),
 			);
+			$data  = json_decode( (string) $r['data'], true );
+			$hints = 0;
 			if ( 'kontekst' === $game && function_exists( 'dpig_kx_hint_count' ) ) {
-				$data  = json_decode( (string) $r['data'], true );
 				$hints = dpig_kx_hint_count( $data['g'] ?? array() );
-				if ( $hints ) {
-					$row['extra'] = $hints . ' ' . ( 1 === $hints ? 'pomoć' : 'pomoći' );
-				}
+			} elseif ( 'ljestve' === $game ) {
+				$hints = (int) ( $data['k'] ?? 0 );
+			}
+			if ( $hints ) {
+				$row['extra'] = $hints . ' ' . ( 1 === $hints ? 'pomoć' : 'pomoći' );
 			}
 			$rows[] = $row;
 		}
@@ -225,7 +228,7 @@ function dpig_result_leaderboard( $game, $type ) {
 /** GET /board?game=kontekst&type=today */
 function dpig_rest_board( WP_REST_Request $request ) {
 	$game = $request->get_param( 'game' );
-	if ( ! in_array( $game, array( 'kontekst' ), true ) ) {
+	if ( ! in_array( $game, array( 'kontekst', 'ljestve' ), true ) ) {
 		return dpig_error_response( new WP_Error( 'dpig_game', 'Nepoznata igra.' ) );
 	}
 	$type = $request->get_param( 'type' );
@@ -243,7 +246,7 @@ function dpig_rest_board( WP_REST_Request $request ) {
 	return dpig_response( array( 'type' => $type, 'rows' => $rows ) );
 }
 
-/** The player part of a state response for Kontekst. */
+/** The player part of a state response for Kontekst or Ljestve. */
 function dpig_result_player_payload( $player, $game ) {
 	if ( ! $player ) {
 		return null;

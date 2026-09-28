@@ -95,6 +95,16 @@ Zatim napravite stranicu kao u koracima 1 do 5 iznad:
 
 Roditeljska stranica je **Igre**, a šablon **Igre: jedna igra**. Igra radi sama: nova riječ stiže svaki dan u ponoć (riječi ima za oko godinu dana, a onda kreću ispočetka). Brojanje (#1, #2…) počinje od dana kad ste ažurirali dodatak. Pomoć košta sve više: prva 2 pokušaja, druga 4, treća 8.
 
+**Ljestve (nova igra, verzija 1.4.0)**
+
+Ažurirajte dodatak isto kao za Kontekst (`dp-igre.zip` → **Zamijeni postojeći**), pa napravite još jednu stranicu:
+
+| Naslov | Kratki kod | Izvod (za karticu) |
+|---|---|---|
+| Ljestve | `[dp_ljestve]` | Od riječi do riječi, slovo po slovo. |
+
+Roditeljska stranica je **Igre**, šablon **Igre: jedna igra**. Svaki dan su nove ljestve (ima ih za oko dvije godine). Brojanje počinje od dana kad ste ažurirali dodatak.
+
 Ako ste napravili stranicu **Tramvaj**, obrišite je: ta igra je izbačena. Prijava školskim mailom, ljestvice i nizovi rade isto kao u Riječi, bez dodatnog podešavanja.
 
 **Redoslijed i boje:** igre idu redom kojim su objavljene, pa nova igra ide na kraj. Kartice su redom plava, narandžasta, zelena i crna. Za drugi redoslijed koristite polje **Redoslijed** (Order) u postavkama stranice: manji broj ide prvi.

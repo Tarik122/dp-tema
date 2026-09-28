@@ -1,6 +1,6 @@
 # Druga Perspektiva – Igre
 
-Daily games for drugaperspektiva.org, packaged as one WordPress plugin: **Riječ dana** (a Bosnian Wordle, `[dp_wordle]`) and **Kontekst** (guess the word by meaning, `[dp_kontekst]`). Both share the school Google sign-in, streaks and leaderboards.
+Daily games for drugaperspektiva.org, packaged as one WordPress plugin: **Riječ dana** (a Bosnian Wordle, `[dp_wordle]`), **Kontekst** (guess the word by meaning, `[dp_kontekst]`) and **Ljestve** (a word ladder, `[dp_ljestve]`). All three share the school Google sign-in, streaks and leaderboards.
 It runs on your existing WordPress hosting, so nothing else needs to be hosted.
 
 ## Features
@@ -34,8 +34,14 @@ It runs on your existing WordPress hosting, so nothing else needs to be hosted.
 - **The words:** the similarity comes from fastText word vectors (Common Crawl Croatian, CC-BY-SA 3.0). Word forms are grouped with the LibreOffice bs/hr/sr spelling dictionaries, and slurs and swearing are left out. `tools/kontekst/README.md` explains how the data in `data/kontekst/` was built. There are 384 daily words (about a year), after which they repeat.
 - **Speed:** the day's ranking is worked out once (about a quarter of a second), stored in the options table, and scheduled just after midnight.
 
+## Ljestve
 
-## Control panel (WP admin → "Riječ dana")
+- **One ladder per day, the same for everyone.** Get from the start word to the target word (both 4 letters) by changing one letter at a time. Every step must be a real word. LJ, NJ and DŽ count as one letter.
+- **Playing:** tap a letter in the empty row (or use the arrow keys), type the new letter, press Enter. **Vrati korak** undoes the last step.
+- **Any real word counts as a step** (about 4,500 words checked against the bs/hr/sr spelling dictionaries), but the day's shortest ladder and the hints only use about 1,100 common words, so the puzzle is always solvable with everyday words.
+- **Pomoć** fills in the next word of a shortest ladder from where you are. Hints cost 2, 4, 8… steps, as in Kontekst. The score is typed steps plus hint costs; lower is better. **Odustajem** shows a shortest ladder, but it breaks the streak.
+- **Puzzles:** 730 (about two years), with shortest ladders of 4 to 6 steps. `tools/ljestve/generate.py` builds `data/ljestve/`.
+ (WP admin → "Riječ dana")
 
 - **Raspored riječi.** Pick a date and set a special word for it, with an optional message shown after the game ("Sretan Dan škole!"). The table shows past and upcoming days and how many played and solved each day.
   - Words for normal days are picked at random from the word list on the day itself, without repeats.
@@ -48,7 +54,7 @@ It runs on your existing WordPress hosting, so nothing else needs to be hosted.
 
 1. Download `dp-igre.zip` from this repository.
 2. WordPress admin → **Plugins → Add New → Upload Plugin**, choose the zip, then **Activate**.
-3. Create a page for each game (for example "Riječ" and "Kontekst" under "Igre") and put its shortcode in it: `[dp_wordle]` or `[dp_kontekst]`.
+3. Create a page for each game (for example "Riječ", "Kontekst" and "Ljestve" under "Igre") and put its shortcode in it: `[dp_wordle]`, `[dp_kontekst]` or `[dp_ljestve]`.
 4. **Settings → General → Timezone:** choose **Sarajevo**.
 5. Set up Google sign-in. Until you do, the game works but anonymous play only.
    1. Go to <https://console.cloud.google.com/apis/credentials>. It's best to use a school Google account.

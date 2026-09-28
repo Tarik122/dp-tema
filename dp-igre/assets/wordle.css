@@ -655,7 +655,8 @@
 /* ---------- Zajedničko za novije igre (Kontekst) ---------- */
 
 /* Poruke na vrhu ekrana, da ne pokrivaju igru. */
-.dpig-kx .dpig-toasts {
+.dpig-kx .dpig-toasts,
+.dpig-lj .dpig-toasts {
 	position: fixed;
 	top: 14px;
 	z-index: 99999;
