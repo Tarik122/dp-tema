@@ -10,6 +10,7 @@
 
 :root {
 	--plava: #5271fe;
+	--plava-chip: #3b57e8;
 	--narandza: #ee8031;
 	--tinta: #141414;
 }
@@ -18,107 +19,124 @@
 
 body { margin: 0; background: #888; font-family: "Lato", sans-serif; }
 
-/* 16:9, 1920 × 1080. Isti izgled kao Instagram story. */
+/* 16:9, 1920 × 1080. Isti izgled kao Instagram story; kvadratići kao u svesci (kao stranica Igre). */
 .slide {
 	position: relative;
-	display: grid;
-	grid-template-columns: 1fr 580px;
-	align-items: center;
-	gap: 100px;
 	width: 1920px;
 	height: 1080px;
-	padding: 0 120px;
 	overflow: hidden;
-	background: var(--plava);
+	background-color: var(--plava);
+	background-image:
+		linear-gradient(rgba(255, 255, 255, 0.13) 2px, transparent 2px),
+		linear-gradient(90deg, rgba(255, 255, 255, 0.13) 2px, transparent 2px);
+	background-size: 64px 64px;
+	background-position: -2px -2px;
 	color: #fff;
 }
 
-.chip {
-	display: inline-block;
-	padding: 10px 26px 14px;
-	background: var(--tinta);
-	color: #fff;
-	font-size: 56px;
-	font-weight: 700;
-	line-height: 1;
+.main {
+	display: grid;
+	grid-template-columns: 1fr 560px;
+	align-items: center;
+	gap: 90px;
+	height: 930px;
+	padding: 0 120px;
 }
+
+.tiles { display: flex; gap: 24px; }
+
+.tile {
+	display: grid;
+	place-items: center;
+	width: 210px;
+	height: 210px;
+	border: 7px solid var(--tinta);
+	border-radius: 22px;
+	background: #fff;
+	box-shadow: 0 12px 0 var(--tinta);
+	color: var(--tinta);
+	font-size: 120px;
+	font-weight: 700;
+}
+.tile:nth-child(1) { transform: rotate(-4deg); }
+.tile:nth-child(2) { transform: rotate(3deg) translateY(14px); background: var(--narandza); }
+.tile:nth-child(3) { transform: rotate(-2deg); }
+.tile:nth-child(4) { transform: rotate(5deg) translateY(-8px); }
 
 h1 {
-	margin: 36px 0 0;
-	font-size: 124px;
+	margin: 70px 0 0;
+	font-size: 112px;
 	font-weight: 700;
 	line-height: 1.02;
 	letter-spacing: -0.01em;
 }
 
-.dek {
-	margin: 30px 0 0;
-	font-family: "Source Serif 4", serif;
-	font-style: italic;
-	font-size: 52px;
-	line-height: 1.25;
-}
-
-.tiles { display: flex; gap: 18px; margin-top: 60px; }
-
-.tile {
-	display: grid;
-	place-items: center;
-	width: 150px;
-	height: 150px;
-	border: 5px solid var(--tinta);
-	border-radius: 16px;
-	background: #fff;
-	box-shadow: 0 8px 0 var(--tinta);
-	color: var(--tinta);
-	font-size: 80px;
+/* Tri igre kao Instagram kategorije. */
+.chips { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 50px; }
+.chip {
+	padding: 10px 26px 14px;
+	font-size: 50px;
 	font-weight: 700;
+	line-height: 1;
 }
-.tile:nth-child(1) { transform: rotate(-4deg); }
-.tile:nth-child(2) { transform: rotate(3deg) translateY(10px); background: var(--narandza); }
-.tile:nth-child(3) { transform: rotate(-2deg); }
-.tile:nth-child(4) { transform: rotate(5deg) translateY(-6px); }
+.c-blue { background: var(--plava-chip); box-shadow: inset 0 0 0 3px #fff; }
+.c-orange { background: var(--narandza); color: var(--tinta); }
+.c-ink { background: var(--tinta); }
 
-.games { margin: 56px 0 0; font-size: 46px; font-weight: 700; }
-
-/* QR na bijeloj kartici, s crnim okvirom kao pločice u igrama. */
+/* QR kao naljepnica, malo nakrivljen. */
 .qr {
-	padding: 50px 50px 40px;
-	border: 6px solid var(--tinta);
-	border-radius: 28px;
+	padding: 40px 46px 44px;
+	border: 7px solid var(--tinta);
+	border-radius: 30px;
 	background: #fff;
-	box-shadow: 0 12px 0 var(--tinta);
+	box-shadow: 0 14px 0 var(--tinta);
 	color: var(--tinta);
 	text-align: center;
+	transform: rotate(2deg);
 }
+.qr b { display: block; margin-bottom: 30px; font-size: 62px; line-height: 1; }
 .qr img { display: block; width: 100%; height: auto; }
-.qr b { display: block; margin-top: 34px; font-size: 58px; line-height: 1; }
-.qr span { display: block; margin-top: 14px; font-size: 32px; }
 
-.logo {
+/* Crna traka dolje, kao podnožje sajta. */
+.bar {
 	position: absolute;
-	right: 120px;
-	bottom: 36px;
-	width: 110px;
-	filter: invert(1);
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 150px;
+	padding: 0 120px;
+	background: var(--tinta);
 }
+.bar p { margin: 0; font-size: 46px; }
+.bar p b { font-weight: 700; }
+.bar em { font-family: "Source Serif 4", serif; font-size: 44px; color: rgba(255, 255, 255, 0.8); }
+.bar img { height: 104px; filter: invert(1); }
+.bar .left { display: flex; align-items: center; gap: 44px; }
 </style>
 </head>
 <body>
 <section class="slide" id="ekran">
-	<div>
-		<span class="chip">Igre</span>
-		<h1>Svaki dan nova zagonetka.</h1>
-		<p class="dek">Za veliki odmor i put do kuće.</p>
-		<div class="tiles"><span class="tile">I</span><span class="tile">G</span><span class="tile">R</span><span class="tile">E</span></div>
-		<p class="games">Riječ dana, Kontekst i Ljestve</p>
+	<div class="main">
+		<div>
+			<div class="tiles"><span class="tile">I</span><span class="tile">G</span><span class="tile">R</span><span class="tile">E</span></div>
+			<h1>Svaki dan nova zagonetka.</h1>
+			<div class="chips"><span class="chip c-blue">Riječ dana</span><span class="chip c-orange">Kontekst</span><span class="chip c-ink">Ljestve</span></div>
+		</div>
+		<div class="qr">
+			<b>Skeniraj i igraj</b>
+			<img src="qr-igre.svg" alt="QR kod za drugaperspektiva.org/igre">
+		</div>
 	</div>
-	<div class="qr">
-		<img src="qr-igre.svg" alt="QR kod za drugaperspektiva.org/igre">
-		<b>Skeniraj i igraj</b>
-		<span>drugaperspektiva.org/igre</span>
+	<div class="bar">
+		<div class="left">
+			<img src="../../logo/Untitled_design_14-removebg-preview.png" alt="Druga perspektiva">
+			<p><b>drugaperspektiva.org/igre</b></p>
+		</div>
+		<em>Za veliki odmor i put do kuće.</em>
 	</div>
-	<img class="logo" src="../../logo/Untitled_design_14-removebg-preview.png" alt="">
 </section>
 </body>
 </html>
