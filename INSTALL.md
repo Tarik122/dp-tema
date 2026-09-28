@@ -98,6 +98,33 @@ Roditeljska stranica je **Igre**, a šablon **Igre: jedna igra**. Obje igre rade
 
 **Redoslijed i boje:** igre idu redom kojim su objavljene, pa nova igra ide na kraj. Kartice su redom plava, narandžasta, zelena i crna. Za drugi redoslijed koristite polje **Redoslijed** (Order) u postavkama stranice: manji broj ide prvi.
 
+## 9. Dodatak DP postavke (kontrolna ploča teme)
+
+Dodatak **DP postavke** (`dp-postavke.zip`) daje više kontrole nad temom bez diranja koda. Instalacija: **Dodaci → Dodaj novi → Otpremi dodatak** → `dp-postavke.zip` → **Instaliraj** → **Aktiviraj**. U meniju se pojavi **Druga perspektiva**.
+
+- **Naslovnica:**
+  - **Glavna priča:** birate članak iz liste, bez zakačivanja. "Automatski" znači zakačeni članak, a ako ga nema, najnoviji.
+  - **Rubrike:** strelicama mijenjate redoslijed (Igre, Mišljenje, Vijesti, Kultura, Rečeno, Sport i Nauka, Iz arhive), a kvačicom ih sakrivate.
+  - **Podnaslovi rubrika:** upišete novi tekst. Prazno polje znači da ostaje tekst iz teme.
+  - **Najnovije:** uključujete ili isključujete stupac desno od glavne priče (vidi se samo na većim ekranima).
+- **Opcije:** datum u zaglavlju, i koliko dana igre nose oznaku "Novo!".
+- **Čišćenje:** briše ono što je ostalo od stare teme:
+  - demo stranice ("Homepage", "Checkout", "My account"…);
+  - demo slike koje nijedan članak ne koristi;
+  - prazne kategorije i postavke stare teme;
+  - podatke isključenih dodataka uz članke;
+  - po želji još stare menije, stare verzije članaka i Otpad.
+
+  Kako se koristi:
+  1. **Prvo napravite sigurnosnu kopiju baze** (na hostingu ili dodatkom UpdraftPlus).
+  2. Pregledajte listu i otvorite "Pogledaj šta je pronađeno".
+  3. Skinite kvačice sa onoga što želite zadržati.
+  4. Označite "Imam sigurnosnu kopiju baze" i kliknite **Očisti izabrano**.
+
+  Naslovna stranica, jedna politika privatnosti i stranice Igre se nikad ne diraju. Podaci dodataka koji su još uključeni (npr. LiteSpeed Cache) se također ne diraju. Stranice idu u Otpad, a sve ostalo se briše trajno.
+
+Tema radi i bez ovog dodatka; tada vrijede zadane postavke.
+
 ## 8. Uređivanje izgleda
 
 **Izgled → Editor** (Site Editor). Tu se mijenjaju zaglavlje (meni), podnožje (tekst "O nama", linkovi) i rasporedi. Meni je u **Šabloni → Zaglavlje**.

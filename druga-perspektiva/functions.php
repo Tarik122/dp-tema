@@ -532,10 +532,13 @@ function dp_home_layout() {
 	$opinion  = get_term_by( 'slug', DP_OPINION_CATEGORY, 'category' );
 	$shown    = array();
 
-	// Glavna priča.
-	$lead   = 0;
+	// Glavna priča: izabrana u dodatku DP postavke, inače zakačeni, inače najnoviji članak.
+	$lead   = (int) apply_filters( 'dp_home_lead_id', 0 );
+	if ( $lead && ( 'post' !== get_post_type( $lead ) || 'publish' !== get_post_status( $lead ) ) ) {
+		$lead = 0;
+	}
 	$sticky = array_filter( array_map( 'intval', (array) get_option( 'sticky_posts' ) ) );
-	if ( $sticky ) {
+	if ( ! $lead && $sticky ) {
 		$ids  = dp_post_ids( array( 'post__in' => $sticky, 'numberposts' => 1 ) );
 		$lead = $ids ? $ids[0] : 0;
 	}
@@ -548,9 +551,10 @@ function dp_home_layout() {
 	}
 
 	// Izdvojeni i Najnovije: redom od najnovijeg, bez preskakanja.
-	$stream   = dp_post_ids( array( 'numberposts' => 6, 'post__not_in' => $shown ) );
-	$features = array_slice( $stream, 0, 2 );
-	$latest   = array_slice( $stream, 2, 4 );
+	$show_latest = (bool) apply_filters( 'dp_home_show_latest', true );
+	$stream      = dp_post_ids( array( 'numberposts' => $show_latest ? 6 : 2, 'post__not_in' => $shown ) );
+	$features    = array_slice( $stream, 0, 2 );
+	$latest      = $show_latest ? array_slice( $stream, 2, 4 ) : array();
 	$shown    = array_merge( $shown, $stream );
 
 	// Mišljenje: najnovije kolumne koje već nisu gore.
@@ -742,6 +746,9 @@ function dp_render_citat( $content, $block ) {
 	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-citat' ) ) {
 		return $content;
 	}
+	if ( '' === trim( $content ) ) {
+		return ''; // Sakriveno u dodatku DP postavke.
+	}
 
 	foreach ( get_posts( array( 'numberposts' => 30, 'no_found_rows' => true ) ) as $post ) {
 		if ( ! has_block( 'core/pullquote', $post ) ) {
@@ -757,7 +764,7 @@ function dp_render_citat( $content, $block ) {
 		$image = $image ? sprintf( '<a class="dp-citat-photo" href="%s" tabindex="-1" aria-hidden="true">%s</a>', esc_url( get_permalink( $post ) ), $image ) : '';
 
 		return sprintf(
-			'<figure class="wp-block-group dp-citat%1$s">%2$s<div class="dp-citat-body"><p class="dp-citat-label">Rečeno</p><blockquote><p class="dp-citat-text">%3$s</p></blockquote><figcaption>%4$s<p class="dp-citat-source">Iz teksta <a href="%5$s">%6$s</a></p></figcaption></div></figure>',
+			'<figure class="wp-block-group dp-citat dp-part-citat%1$s">%2$s<div class="dp-citat-body"><p class="dp-citat-label">Rečeno</p><blockquote><p class="dp-citat-text">%3$s</p></blockquote><figcaption>%4$s<p class="dp-citat-source">Iz teksta <a href="%5$s">%6$s</a></p></figcaption></div></figure>',
 			$image ? ' has-photo' : '',
 			$image,
 			esc_html( trim( $quote['text'], " \t\n\"„“”" ) ),
@@ -937,7 +944,8 @@ function dp_game_new_badge( $content, $block ) {
 		return $content;
 	}
 	$published = (int) get_post_time( 'U', true );
-	return ( $published && time() - $published < 30 * DAY_IN_SECONDS ) ? $content : '';
+	$days      = (int) apply_filters( 'dp_game_new_days', 30 );
+	return ( $published && time() - $published < $days * DAY_IN_SECONDS ) ? $content : '';
 }
 add_filter( 'render_block_core/paragraph', 'dp_game_new_badge', 10, 2 );
 
@@ -947,12 +955,19 @@ function dp_game_links( $content, $block ) {
 		return $content;
 	}
 
-	$links = '';
+	// A small card per game: letter tiles, name and one line from the excerpt.
+	$cards = '';
 	foreach ( dp_game_ids( dp_games_hub_id(), 5 ) as $id ) {
-		$links .= sprintf( '<a href="%s">%s</a>', esc_url( get_permalink( $id ) ), esc_html( get_the_title( $id ) ) );
+		$cards .= sprintf(
+			'<li><a class="dp-igre-card" href="%1$s">%2$s<span class="dp-igre-card-name">%3$s</span>%4$s</a></li>',
+			esc_url( get_permalink( $id ) ),
+			dp_letter_tiles( get_the_title( $id ) ),
+			esc_html( get_the_title( $id ) ),
+			has_excerpt( $id ) ? '<span class="dp-igre-card-opis">' . esc_html( get_the_excerpt( $id ) ) . '</span>' : ''
+		);
 	}
 
-	return $links ? '<p class="dp-igre-links">' . $links . '</p>' : '';
+	return $cards ? '<ul class="dp-igre-links">' . $cards . '</ul>' : '';
 }
 add_filter( 'render_block_core/paragraph', 'dp_game_links', 10, 2 );
 
@@ -1017,8 +1032,67 @@ function dp_render_today( $content, $block ) {
 	if ( false === strpos( $block['attrs']['className'] ?? '', 'dp-danas' ) ) {
 		return $content;
 	}
+	if ( ! apply_filters( 'dp_show_header_date', true ) ) {
+		return '<p class="dp-danas"></p>'; // Prazno mjesto čuva logo u sredini.
+	}
 	$date = wp_date( 'l, j. F Y.' );
 	$date = mb_strtoupper( mb_substr( $date, 0, 1 ) ) . mb_substr( $date, 1 );
 	return sprintf( '<p class="dp-danas"><time datetime="%s">%s</time></p>', esc_attr( wp_date( 'Y-m-d' ) ), esc_html( $date ) );
 }
 add_filter( 'render_block_core/paragraph', 'dp_render_today', 10, 2 );
+
+/* -------------------------------------------------------------------------
+ * Rubrike na naslovnici: redoslijed, prikaz i podnaslovi. Sve se može
+ * mijenjati u dodatku "DP postavke"; bez njega vrijedi redoslijed ispod.
+ * ---------------------------------------------------------------------- */
+
+/** Rubrike naslovnice redom: ključ => da li se prikazuje. */
+function dp_home_parts() {
+	$defaults = array(
+		'igre'       => true,
+		'misljenje'  => true,
+		'vijesti'    => true,
+		'kultura'    => true,
+		'citat'      => true,
+		'sportnauka' => true,
+		'arhiva'     => true,
+	);
+	$parts = apply_filters( 'dp_home_parts', $defaults );
+	return is_array( $parts ) ? array_intersect_key( $parts, $defaults ) + array_fill_keys( array_keys( array_diff_key( $defaults, $parts ) ), true ) : $defaults;
+}
+
+/** Sakrivena rubrika se uopšte ne prikazuje. */
+function dp_hide_home_part( $content, $block ) {
+	$class = $block['attrs']['className'] ?? '';
+	if ( false === strpos( $class, 'dp-part-' ) || ! preg_match( '/dp-part-([a-z]+)/', $class, $m ) ) {
+		return $content;
+	}
+	$parts = dp_home_parts();
+	return ( isset( $parts[ $m[1] ] ) && ! $parts[ $m[1] ] ) ? '' : $content;
+}
+add_filter( 'render_block', 'dp_hide_home_part', 9, 2 );
+
+/** Redoslijed rubrika: CSS "order" na naslovnici (vrh je uvijek prvi). */
+function dp_home_order_css() {
+	$css = '';
+	$i   = 1;
+	foreach ( array_keys( dp_home_parts() ) as $key ) {
+		$css .= '.dp-home > .dp-part-' . $key . '{order:' . $i++ . '}';
+	}
+	wp_add_inline_style( 'druga-perspektiva', $css );
+}
+add_action( 'wp_enqueue_scripts', 'dp_home_order_css', 20 );
+
+/** Podnaslov rubrike iz dodatka DP postavke, ako je upisan. */
+function dp_section_subtitle( $content, $block ) {
+	$class = $block['attrs']['className'] ?? '';
+	if ( false === strpos( $class, 'dp-sub-' ) || ! preg_match( '/dp-sub-([a-z]+)/', $class, $m ) ) {
+		return $content;
+	}
+	$text = trim( (string) apply_filters( 'dp_section_subtitle', '', $m[1] ) );
+	if ( '' === $text ) {
+		return $content;
+	}
+	return sprintf( '<p class="%s">%s</p>', esc_attr( 'dp-sec-sub dp-sub-' . $m[1] ), esc_html( $text ) );
+}
+add_filter( 'render_block_core/paragraph', 'dp_section_subtitle', 10, 2 );

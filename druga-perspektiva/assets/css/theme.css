@@ -2478,3 +2478,304 @@ nav.dp-nav {
 .dp-article-body .wp-block-pullquote {
 	border-left-color: var(--dp-ink);
 }
+
+/* =========================================================================
+   Izgled 4.1
+   -------------------------------------------------------------------------
+   Najnovije samo na desktopu, sažeci uz dva teksta pored glavne priče,
+   nova traka za igre i redoslijed rubrika koji se bira u dodatku
+   "DP postavke" (sekcije su dp-part-*, redoslijed je CSS "order").
+   ========================================================================= */
+
+.dp-home {
+	display: flex;
+	flex-direction: column;
+}
+
+.dp-home > :not(.screen-reader-text) {
+	width: 100%;
+}
+
+/* ---------- Vrh naslovnice ---------- */
+
+/* Najnovije je mali stupac desno na desktopu; na manjim ekranima ga nema. */
+@media (max-width: 999px) {
+	.dp-top .dp-latest {
+		display: none;
+	}
+}
+
+.dp-home .dp-side-dek {
+	margin-top: 0.45rem;
+	font-size: 0.96875rem;
+	line-height: 1.45;
+}
+
+/* Telefon: fotografija lijevo, naslov desno, sažetak ispod preko cijele širine. */
+@media (max-width: 781px) {
+	.dp-side-list > li {
+		grid-template-columns: minmax(0, 9fr) minmax(0, 10fr);
+		grid-template-areas: "img text" "dek dek";
+		row-gap: 0;
+	}
+
+	.dp-side-list > li .dp-side-text {
+		display: contents;
+	}
+
+	.dp-side-list > li .dp-side-image {
+		grid-area: img;
+	}
+
+	.dp-side-list > li .dp-side-text > :not(.dp-side-dek, .dp-card-author) {
+		grid-column: 2;
+	}
+
+	.dp-side-list > li .dp-kicker {
+		grid-row: 1;
+		align-self: start;
+	}
+
+	.dp-side-list > li .dp-side-title {
+		grid-row: 1;
+		align-self: start;
+		margin-top: 1.5rem;
+	}
+
+	.dp-side-list > li .dp-side-dek,
+	.dp-side-list > li .dp-card-author {
+		grid-column: 1 / -1;
+	}
+
+	.dp-side-list > li .dp-side-dek {
+		margin-top: 0.7rem;
+	}
+
+	.dp-side-list > li:not(:has(.dp-side-image)) .dp-side-text > * {
+		grid-column: 1 / -1;
+	}
+}
+
+/* Tablet: glavna priča preko cijele širine, dva teksta ispod u dvije kolone. */
+@media (min-width: 782px) and (max-width: 999px) {
+	.dp-top {
+		grid-template-areas: "lead lead" "side side";
+	}
+
+	.dp-side-list {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		column-gap: 3rem;
+	}
+
+	.dp-side-list > li + li {
+		margin-top: 0 !important;
+		padding-top: 0;
+		border-top: 0;
+	}
+}
+
+/* ---------- Igre na naslovnici ---------- */
+
+.dp-home .dp-igre-tile {
+	display: grid !important;
+	grid-template-areas: none;
+	gap: 1.5rem;
+	margin-inline: calc(-1 * var(--dp-gutter));
+	padding: 2rem var(--dp-gutter) 2.25rem !important;
+	overflow: hidden;
+}
+
+.dp-home .dp-igre-tile > * {
+	grid-area: auto;
+	margin: 0;
+}
+
+.dp-igre-head > * {
+	margin: 0;
+}
+
+.dp-home .dp-igre-title {
+	font-family: var(--dp-sans);
+	font-size: clamp(2rem, 1.6rem + 1.4vw, 2.75rem);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	text-transform: none;
+}
+
+/* Kartice igara su linkovi same za sebe, pa naslov ne pokriva cijelu traku. */
+.dp-home .dp-igre-title a::after {
+	content: none;
+}
+
+.dp-home .dp-igre-text {
+	max-width: 22rem;
+	margin-top: 0.6rem;
+	font-size: 1.0625rem;
+	line-height: 1.45;
+}
+
+.dp-home .dp-igre-cta {
+	display: inline-block;
+	margin-top: 1rem;
+	padding: 0;
+	border: 0;
+	background: none;
+}
+
+.dp-home .dp-igre-cta a {
+	display: inline-block;
+	padding: 0.5rem 1rem;
+	border: 2px solid var(--dp-ink);
+	border-radius: 6px;
+	background: var(--dp-paper);
+	box-shadow: 3px 3px 0 var(--dp-ink);
+	color: var(--dp-ink);
+	font-family: var(--dp-sans);
+	font-size: var(--wp--preset--font-size--ui);
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.dp-home .dp-igre-cta a:hover {
+	background: var(--wp--preset--color--narandza);
+}
+
+.dp-home .dp-igre-links {
+	position: static;
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: minmax(13.5rem, 72%);
+	gap: 1.25rem;
+	margin: 0 calc(-1 * var(--dp-gutter));
+	padding: 1rem var(--dp-gutter) 1.1rem;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+	list-style: none;
+}
+
+.dp-home .dp-igre-links > li {
+	margin: 0;
+	scroll-snap-align: start;
+	container-type: inline-size;
+}
+
+.dp-igre-tile .dp-igre-links .dp-igre-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 0.45rem;
+	height: 100%;
+	padding: 1.1rem 1.1rem 1rem;
+	border: 2px solid var(--dp-ink);
+	border-radius: 6px;
+	background: var(--dp-paper);
+	box-shadow: 5px 5px 0 var(--dp-ink);
+	color: var(--dp-ink);
+	font-family: var(--dp-sans);
+	text-decoration: none;
+	transform: rotate(-1deg);
+}
+
+.dp-igre-links > li:nth-child(even) .dp-igre-card {
+	transform: rotate(1deg);
+}
+
+/* Selotejp. */
+.dp-igre-tile .dp-igre-card::before {
+	content: "";
+	position: absolute;
+	top: -11px;
+	left: 50%;
+	width: 64px;
+	height: 20px;
+	background: rgba(238, 128, 49, 0.55);
+	transform: translateX(-50%) rotate(-3deg);
+}
+
+.dp-igre-tile .dp-igre-links .dp-igre-card:hover,
+.dp-igre-tile .dp-igre-links .dp-igre-card:focus-visible {
+	background: var(--dp-paper);
+	color: var(--dp-ink);
+	transform: rotate(0) translateY(-2px);
+}
+
+.dp-igre-card .dp-tiles {
+	--dp-tile: clamp(1.1rem, calc(62cqi / var(--dp-n, 5)), 2.1rem);
+	margin: 0.25rem 0 0.35rem;
+}
+
+.dp-igre-card-name {
+	color: var(--dp-ink);
+	font-size: 1.25rem;
+	font-weight: 800;
+	line-height: 1.1;
+}
+
+.dp-igre-card-opis {
+	color: #333;
+	font-weight: 400;
+	font-family: var(--dp-serif);
+	font-size: 0.96875rem;
+	line-height: 1.4;
+}
+
+@media (min-width: 782px) {
+	.dp-home .dp-igre-tile {
+		grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+		align-items: center;
+		column-gap: 2.5rem;
+		margin-inline: 0;
+		padding: 2.25rem 2.5rem 2.5rem !important;
+	}
+
+	.dp-home .dp-igre-links {
+		grid-auto-flow: row;
+		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+		grid-auto-columns: auto;
+		margin: 0;
+		padding: 0.75rem 0 0;
+		overflow: visible;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dp-igre-tile .dp-igre-links .dp-igre-card {
+		transition: none;
+	}
+}
+
+/* ---------- Meni na telefonu: sve rubrike uvijek vidljive ---------- */
+
+@media (max-width: 599px) {
+	nav.dp-nav {
+		overflow: visible;
+	}
+
+	.dp-nav .wp-block-navigation__container {
+		flex-wrap: wrap !important;
+		justify-content: center;
+		row-gap: 0.35rem !important;
+		column-gap: 1rem !important;
+	}
+}
+
+/* Mali telefoni: malo manja slova i razmaci, da svih šest rubrika stane u red. */
+@media (max-width: 389px) {
+	nav.dp-nav {
+		font-size: 0.8125rem;
+	}
+
+	.dp-nav .wp-block-navigation__container {
+		column-gap: 0.7rem !important;
+	}
+}
+
+/* Bez stupca Najnovije: glavna priča je šira. */
+@media (min-width: 1000px) {
+	.dp-top:not(:has(.dp-latest)) {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+		grid-template-areas: "side lead";
+	}
+}
