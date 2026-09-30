@@ -460,50 +460,43 @@
 			return;
 		}
 
-		// DP moderni: fotografija, crni prelaz, sve centrirano; naš tim ima oznaku u boji.
-		var base = H - (story ? 300 : 72);
-		var ns = story ? 46 : 42, big = story ? 280 : 250;
-		ctx.font = font(SANS, 700, ns);
-		var hl = wrapBalanced(ctx, s.home || '', nameW), al = wrapBalanced(ctx, s.away || '', nameW);
-		var nLines = Math.max(hl.length, al.length, 1), nameLH = ns * 1.25;
-		var y = base;
-		var detailY = null;
-		if (s.detail) { detailY = y; y -= 34 + 40; }
-		var namesTop = y - (nLines - 1) * nameLH - ns;
-		var numBase = namesTop - 46;
-		var chipBottom = numBase - big * 0.74 - 40;
+		// DP moderni: kao naslovna. Fotografija, crni prelaz, sve dolje lijevo;
+		// rezultat kao semafor u dva reda, naš tim bijel s narandžastom crticom, protivnik blijeđi.
+		var M = 64, base = H - (story ? 300 : 72);
+		var rowH = story ? 190 : 168, ns = story ? 64 : 58, big = story ? 178 : 158;
+		var sbBottom = base - (s.logo ? 104 : (s.detail ? 56 : 10));
+		var sbTop = sbBottom - 2 * rowH;
 		var cs = story ? 42 : 38, ch = Math.round(cs * 1.45);
-		var top = s.chip ? chipBottom - ch : chipBottom;
-		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.1, top - H * 0.2), s.darken);
+		var chipTop = sbTop - 34 - ch;
+		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.08, (s.chip ? chipTop : sbTop) - H * 0.3), Math.min(1, s.darken * 1.12));
 
-		if (s.chip) {
-			ctx.font = font(SANS, 700, cs);
-			var cw = ctx.measureText(s.chip).width + cs * 0.9;
-			ctx.fillStyle = orange; ctx.fillRect(W / 2 - cw / 2, top, cw, ch);
-			ctx.fillStyle = '#ffffff'; ctx.fillText(s.chip, W / 2 - cw / 2 + cs * 0.45, top + ch * 0.7);
-		}
+		if (s.chip) chipBlock(ctx, s.chip, orange, cs, 700, 0, M).draw(chipTop);
+
 		ctx.font = font(SANS, 900, big); track(ctx, -big * 0.02);
-		ctx.fillStyle = '#ffffff';
-		centerText(ctx, s.homeScore || '', colL, numBase);
-		centerText(ctx, s.awayScore || '', colR, numBase);
+		var scoreW = Math.max(ctx.measureText(s.homeScore || '').width, ctx.measureText(s.awayScore || '').width);
 		track(ctx, 0);
-		// Dvotačka: dvije tačke između rezultata.
-		ctx.beginPath();
-		ctx.arc(W / 2, numBase - big * 0.52, big * 0.055, 0, Math.PI * 2);
-		ctx.arc(W / 2, numBase - big * 0.14, big * 0.055, 0, Math.PI * 2);
-		ctx.fill();
-		[[hl, colL, 'home'], [al, colR, 'away']].forEach(function (t) {
-			ctx.font = font(SANS, 700, ns);
-			t[0].forEach(function (l, i) {
-				var ly = namesTop + ns * 0.8 + i * nameLH, w = ctx.measureText(l.text).width;
-				if (ours === t[2]) { ctx.fillStyle = orange; ctx.fillRect(t[1] - w / 2 - 14, ly - ns * 0.86, w + 28, ns * 1.2); }
-				ctx.fillStyle = '#ffffff';
-				centerText(ctx, l.text, t[1], ly);
-			});
+		var nameMax = W - 2 * M - 28 - scoreW - 40;
+		[[s.home, s.homeScore, 'home'], [s.away, s.awayScore, 'away']].forEach(function (t, i) {
+			var top = sbTop + i * rowH, mid = top + rowH / 2;
+			var mine = ours === t[2], muted = ours && !mine;
+			if (i) { ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(M, top, W - 2 * M, 2); }
+			if (mine) { ctx.fillStyle = orange; ctx.fillRect(M, mid - rowH * 0.24, 8, rowH * 0.48); }
+			var size = ns;
+			ctx.font = font(SANS, 700, size); track(ctx, -size * 0.015);
+			while (ctx.measureText(t[0] || '').width > nameMax && size > 32) { size -= 2; ctx.font = font(SANS, 700, size); track(ctx, -size * 0.015); }
+			ctx.fillStyle = muted ? 'rgba(255,255,255,.72)' : '#ffffff';
+			ctx.fillText(t[0] || '', M + 28, mid + size * 0.36);
+			ctx.font = font(SANS, 900, big); track(ctx, -big * 0.02);
+			var sw = ctx.measureText(t[1] || '').width;
+			ctx.fillText(t[1] || '', W - M - sw, mid + big * 0.36);
+			track(ctx, 0);
 		});
-		if (detailY) { ctx.font = font(SANS, 400, 30); ctx.fillStyle = 'rgba(255,255,255,.82)'; centerText(ctx, s.detail, W / 2, detailY); }
-		var lg = drawLogo(ctx, s, W, H, format, false, { w: 100, right: 64, bottom: H - base });
-		if (s.credit) sideCredit(ctx, s.credit, W, (s.logo ? lg.y : base) - 28, false);
+		if (s.detail) {
+			ctx.font = font(SANS, 400, 28); ctx.fillStyle = 'rgba(255,255,255,.86)';
+			ctx.fillText(s.detail, M, base);
+		}
+		var lg = drawLogo(ctx, s, W, H, format, false, { w: 100, right: M, bottom: H - base });
+		if (s.credit) sideCredit(ctx, s.credit, W, (s.chip ? chipTop : sbTop) - 28, false);
 	}
 
 	/** Redovi rasporeda: "lijevo | desno"; zvjezdica na početku ističe red. */
@@ -567,29 +560,42 @@
 			return;
 		}
 
-		// DP moderni: datum kao oznaka, velik naslov, pa redovi preko cijele širine.
-		y = topY;
-		if (s.sub) { var c = chipBlock(ctx, s.sub, cell, story ? 42 : 38, 700, 0, M); c.draw(y); y += c.h + 22; }
+		// DP moderni: datum kao oznaka, velik naslov, pa lista s tankim linijama.
+		// Samo istaknuti red dobije traku u boji (jedan naglasak).
+		if (any) { ctx.fillStyle = 'rgba(0,0,0,' + (0.3 + s.darken * 0.35).toFixed(3) + ')'; ctx.fillRect(0, 0, W, H); }
+		M = 72;
+		y = story ? 250 : 110;
+		if (s.sub) { var c = chipBlock(ctx, s.sub, cell, story ? 42 : 38, 700, 0, M); c.draw(y); y += c.h + 24; }
 		if (s.title) {
-			var ts = fitTitle(ctx, SANS, 700, story ? 120 : 108, 56, 2, s.title, W - 2 * M, -0.022);
+			var ts = fitTitle(ctx, SANS, 700, story ? 124 : 112, 56, 2, s.title, W - 2 * M, -0.022);
 			var tb = textBlock(ctx, font(SANS, 700, ts), ts, ts * 1.02, s.title, W - 2 * M, -ts * 0.022, ink, 0, M, W);
 			tb.draw(y); y += tb.h;
 		}
-		y += story ? 80 : 56;
-		var n2 = rows.length || 1, g = 10, lw = (W - 2 * M - g) * 0.5;
-		var rh2 = Math.min(88, (bottomY - y - g * (n2 - 1)) / n2), fs2 = Math.min(40, rh2 * 0.46);
+		y += story ? 90 : 62;
+		var listBottom = H - (story ? 300 : 72) - (s.logo ? 120 : 0);
+		var n2 = rows.length || 1;
+		var rh2 = Math.min(story ? 108 : 94, (listBottom - y) / n2), fs2 = Math.min(story ? 50 : 44, rh2 * 0.46);
+		var line = dark ? 'rgba(20,20,20,.18)' : 'rgba(255,255,255,.24)';
+		var soft = dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.84)';
 		rows.forEach(function (r, i) {
-			var ry = y + i * (rh2 + g), base2 = ry + rh2 / 2 + fs2 * 0.36;
-			var fill = r.hi ? '#ffffff' : cell, txt = r.hi ? '#141414' : '#ffffff';
-			ctx.fillStyle = fill;
-			if (r.b) { ctx.fillRect(M, ry, lw, rh2); ctx.fillRect(M + lw + g, ry, lw, rh2); }
-			else ctx.fillRect(M, ry, lw * 2 + g, rh2);
-			ctx.fillStyle = txt;
-			ctx.font = font(SANS, 700, fs2);
-			ctx.fillText(r.a, M + 26, base2);
-			if (r.b) { ctx.font = font(SANS, 400, fs2); ctx.fillText(r.b, M + lw + g + 26, base2); }
+			var ry = y + i * rh2, bl = ry + rh2 / 2 + fs2 * 0.36;
+			if (r.hi) {
+				ctx.fillStyle = cell; ctx.fillRect(M - 22, ry + 3, W - 2 * M + 44, rh2 - 6);
+			} else if (!(i && rows[i - 1].hi)) {
+				ctx.fillStyle = line; ctx.fillRect(M, ry, W - 2 * M, 2);
+			}
+			if (i === rows.length - 1 && !r.hi) { ctx.fillStyle = line; ctx.fillRect(M, ry + rh2, W - 2 * M, 2); }
+			ctx.font = font(SANS, 700, fs2); track(ctx, -fs2 * 0.01);
+			ctx.fillStyle = r.hi ? '#ffffff' : ink;
+			ctx.fillText(r.a, M, bl);
+			track(ctx, 0);
+			if (r.b) {
+				ctx.font = font(SANS, 400, fs2);
+				ctx.fillStyle = r.hi ? '#ffffff' : soft;
+				ctx.fillText(r.b, W - M - ctx.measureText(r.b).width, bl);
+			}
 		});
-		var lg = drawLogo(ctx, s, W, H, format, dark, { w: 100, right: 64, bottom: story ? 300 : 72 });
+		var lg = drawLogo(ctx, s, W, H, format, dark, { w: 100, right: M, bottom: story ? 300 : 72 });
 		if (s.credit && any) sideCredit(ctx, s.credit, W, lg.y - 28, false);
 	}
 
