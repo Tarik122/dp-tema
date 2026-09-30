@@ -131,3 +131,12 @@
 	.dpo-main { grid-template-columns: 1fr; }
 	.dpo-stage { position: static; }
 }
+
+.dpo-over {
+	padding: 10px 12px;
+	background: #fcf0e6;
+	border-left: 4px solid #ee8031;
+}
+
+.dpo-over[hidden] { display: none; }
+.dpo-over .button { margin-top: 6px; }

@@ -44,11 +44,26 @@
 		return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) > 170;
 	}
 
+	/**
+	 * Bosanska tipografija pri crtanju (tekst u poljima se ne mijenja):
+	 * navodnici „…“, tri tačke …, crtica –, i jednoslovne riječi (i, u, s, k, a, o…)
+	 * vezane za sljedeću riječ da ne ostanu same na kraju reda.
+	 */
+	function typo(t) {
+		return String(t || '')
+			.replace(/\.\.\./g, '…')
+			.replace(/(^|[\s(\[\u00A0])["“”″˝]/g, '$1„')
+			.replace(/["“”″˝]/g, '“')
+			.replace(/([A-Za-zčćđšžČĆĐŠŽ])'([A-Za-zčćđšžČĆĐŠŽ])/g, '$1’$2')
+			.replace(/ - /g, ' – ')
+			.replace(/(?<=^|[\s\u00A0(„])([aiouskvzAIOUSKVZ]) +/g, '$1\u00A0');
+	}
+
 	/** Prelama tekst u redove zadate širine; poštuje nove redove koje je autor upisao. */
 	function wrap(ctx, text, maxW) {
 		var lines = [];
 		String(text || '').split('\n').forEach(function (para) {
-			var words = para.split(/\s+/).filter(Boolean), line = '';
+			var words = para.split(/[ \t]+/).filter(Boolean), line = '';
 			if (!words.length) { lines.push({ text: '', end: true }); return; }
 			words.forEach(function (w) {
 				var test = line ? line + ' ' + w : w;
@@ -77,7 +92,7 @@
 		var words = [];
 		track(ctx, 0);
 		runs.forEach(function (r) {
-			String(r.text || '').split(/\s+/).filter(Boolean).forEach(function (w) { words.push({ text: w, font: r.font, color: r.color }); });
+			String(r.text || '').split(/[ \t]+/).filter(Boolean).forEach(function (w) { words.push({ text: w, font: r.font, color: r.color }); });
 		});
 		var lines = [], line = [], width = 0;
 		words.forEach(function (w) {
@@ -139,13 +154,36 @@
 	}
 
 	/** DP znak dolje desno. Vraća njegovu gornju ivicu, da tekst ne ide preko. */
-	function drawLogo(ctx, s, W, H, format, dark) {
+	function drawLogo(ctx, s, W, H, format, dark, opt) {
 		var story = format === 'story';
-		var w = story ? 124 : 108, img = logos[dark ? 'black' : 'white'];
+		opt = opt || {};
+		var w = opt.w || (story ? 124 : 108), img = logos[dark ? 'black' : 'white'];
 		var h = img && img.naturalWidth ? w * img.naturalHeight / img.naturalWidth : w * 0.84;
-		var y = H - h - (story ? 96 : 40);
-		if (s.logo && img && img.complete && img.naturalWidth) ctx.drawImage(img, W - w - 56, y, w, h);
-		return y;
+		var x = W - w - (opt.right != null ? opt.right : 56);
+		var y = H - h - (opt.bottom != null ? opt.bottom : (story ? 96 : 40));
+		if (s.logo && img && img.complete && img.naturalWidth) ctx.drawImage(img, x, y, w, h);
+		return { x: x, y: y, w: w, h: h, on: !!s.logo };
+	}
+
+	/** Mala oznaka rubrike gore lijevo na tekstu i citatu (ista kao na naslovnoj), da karusel izgleda kao cjelina. */
+	function topChip(ctx, s, format, x) {
+		if (s.topChip === false) return;
+		var cover = null;
+		D.slides.forEach(function (o) { if (!cover && o.t === 'cover' && o.chip) cover = o; });
+		if (!cover) return;
+		var c = chipBlock(ctx, typo(cover.chip), cover.chipColor || '#5271fe', format === 'story' ? 36 : 32, 700, 0, x);
+		c.draw(format === 'story' ? 250 : 88);
+	}
+
+	/** Potpis fotografije uspravno uz desnu ivicu, iznad logotipa. */
+	function sideCredit(ctx, text, W, fromY, dark) {
+		ctx.save();
+		ctx.translate(W - 30, fromY);
+		ctx.rotate(-Math.PI / 2);
+		ctx.font = font(SANS, 400, 20);
+		ctx.fillStyle = dark ? 'rgba(20,20,20,.55)' : 'rgba(255,255,255,.66)';
+		ctx.fillText(text, 0, 0);
+		ctx.restore();
 	}
 
 	/* ---------- Tri stila i tri vrste slajdova ---------- */
@@ -247,12 +285,26 @@
 		var k = s.size || 1, blocks = [], M, bottom, hs;
 
 		if (st === 'moderni') {
-			// DP moderni: manja oznaka, zbijen i jak naslov, sitan autor.
-			M = 64; bottom = H - (story ? 300 : 132);
-			if (s.chip) blocks.push(chipBlock(ctx, s.chip, s.chipColor || '#5271fe', story ? 42 : 38, 700, 0, M));
+			// DP moderni: manja oznaka, zbijen i jak naslov; autor i logo u istom redu na dnu.
+			M = 64;
+			var base = H - (story ? 300 : 72);  // osnovna linija autora = dno logotipa
+			var logo = drawLogo(ctx, { logo: false }, W, H, format, dark, { w: 100, right: M, bottom: H - base });
+			var chip, head, by;
+			if (s.chip) blocks.push(chip = chipBlock(ctx, s.chip, s.chipColor || '#5271fe', story ? 42 : 38, 700, 0, M));
 			hs = fitTitle(ctx, SANS, 700, (story ? 102 : 90) * k, 50, 5, s.title, W - 2 * M, -0.022);
-			blocks.push(textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.03, s.title, W - 2 * M, -hs * 0.022, ink, 22, M, W));
-			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 400, 28), 28, 34, s.byline, W - 2 * M, 0, soft, 26, M, W));
+			blocks.push(head = textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.03, s.title, W - 2 * M, -hs * 0.022, ink, 22, M, W));
+			if (s.byline) blocks.push(by = textBlock(ctx, font(SANS, 400, 28), 28, 34, s.byline, logo.x - M - 32, 0, soft, 26, M, W));
+			bottom = by ? base + 28 * 0.2 : base + hs * 0.2;
+			// Ako bi zadnji red naslova udario u logo, podigni naslov.
+			stackUp(blocks, bottom);
+			ctx.font = font(SANS, 700, hs); track(ctx, -hs * 0.022);
+			var lastW = ctx.measureText(head.lines[head.lines.length - 1].text).width;
+			track(ctx, 0);
+			var headBottom = head.top + head.h;
+			if (s.logo && M + lastW > logo.x - 28 && headBottom > logo.y - 18) {
+				if (by) by.gap += headBottom - (logo.y - 18);
+				else bottom -= headBottom - (logo.y - 18);
+			}
 		} else {
 			// DP klasik: kao dosadašnje objave na Instagramu.
 			M = 80; bottom = H - (story ? 300 : 150);
@@ -266,6 +318,11 @@
 		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.15, textTop - H * 0.2), s.darken);
 		blocks.forEach(function (b) { b.draw(b.top); });
 
+		if (st === 'moderni') {
+			var lg = drawLogo(ctx, s, W, H, format, dark, { w: 100, right: M, bottom: H - base });
+			if (s.credit) sideCredit(ctx, s.credit, W, (s.logo ? lg.y : base) - 28, dark);
+			return;
+		}
 		drawLogo(ctx, s, W, H, format, dark);
 		if (s.credit) {
 			ctx.font = font(SANS, 400, 22);
@@ -279,9 +336,10 @@
 		var st = style(), story = format === 'story', dark = isLight(s.bg);
 		ctx.fillStyle = s.bg || STYLE_BG[st].text;
 		ctx.fillRect(0, 0, W, H);
-		var M = 96, maxW = W - 2 * M, room = H - (story ? 640 : 380);
-		var ink = dark ? '#141414' : '#ffffff';
 		var modern = st === 'moderni';
+		var M = modern ? 88 : 96, maxW = W - 2 * M, room = H - (story ? 640 : 380);
+		var ink = dark ? '#141414' : '#ffffff';
+		if (modern) topChip(ctx, s, format, M);
 
 		if (!String(s.body || '').trim()) {
 			// Velika izjava, kao plakat.
@@ -308,9 +366,13 @@
 			b = wrap(ctx, s.body, maxW);
 			total = (t ? t.h + T.gap : 0) + (b.length - 1) * bs * T.blh + bs;
 		}
+		// DP moderni: tekst uvijek počinje na istoj visini (kao stranice iste priče).
+		var fixedTop = story ? 430 : 250;
+		if (modern) room = H - fixedTop - (story ? 380 : 190);
 		measure();
-		while (total > room && bs > 26) { ts -= 2; bs -= 1; measure(); }
-		var top = (H - total) / 2 - H * 0.02;
+		while (total > room && bs > 34) { ts -= 2; bs -= 1; measure(); }
+		OVER.set(ORIG, total > room);
+		var top = modern ? fixedTop : (H - total) / 2 - H * 0.02;
 		if (t) { t.draw(top); top += t.h + T.gap; }
 		ctx.fillStyle = T.body;
 		ctx.font = font(SANS, 400, bs);
@@ -343,7 +405,8 @@
 		}
 
 		// DP moderni: velik i zbijen citat, crta uz lijevu ivicu, ime podebljano pa opis.
-		var L = 124, maxW = W - L - 88, size = 124, qb;
+		topChip(ctx, s, format, 88);
+		var L = 132, maxW = W - L - 88, size = 124, qb;
 		do { size -= 4; qb = textBlock(ctx, font(SANS, 900, size), size, size * 1.04, q, maxW, -size * 0.02, ink, 0, L, W); } while (qb.h > room && size > 44);
 		var as = story ? 36 : 34, runs = [];
 		if (s.who) runs.push({ text: s.who + (s.whoInfo ? ',' : ''), font: font(SANS, 700, as), color: ink });
@@ -358,8 +421,16 @@
 		drawLogo(ctx, s, W, H, format, dark);
 	}
 
+	var OVER = new WeakMap(); // slajd -> tekst ne staje ni u najmanjoj čitljivoj veličini
+	var ORIG = null;
+
 	/** Crta slajd. scale 2 = dvostruka rezolucija (za preuzimanje). */
 	function draw(canvas, s, scale) {
+		ORIG = s;
+		var t = {};
+		Object.keys(s).forEach(function (k) { t[k] = s[k]; });
+		['title', 'body', 'quote', 'who', 'whoInfo', 'byline', 'chip', 'credit'].forEach(function (k) { if (t[k]) t[k] = typo(t[k]); });
+		s = t;
 		var size = SIZES[D.format] || SIZES.post;
 		SC = scale || 1;
 		var w = Math.round(size[0] * SC), hgt = Math.round(size[1] * SC);
@@ -468,8 +539,10 @@
 			h('button', { type: 'button', class: 'button', onclick: function () { add('text'); }, text: '+ Tekst' }),
 			h('button', { type: 'button', class: 'button', onclick: function () { add('quote'); }, text: '+ Citat' })
 		]));
+		ui.over = null;
 		fields();
 		draw(ui.canvas, D.slides[cur]);
+		overNote();
 	}
 
 	/** Mijenja stil; pozadine teksta i citata koje su bile zadane prelaze na zadane novog stila. */
@@ -571,6 +644,11 @@
 		} else if (s.t === 'text') {
 			F.appendChild(field('Naslov (podebljano)', textInput(s, 'title', true, 2)));
 			F.appendChild(field('Tekst', textInput(s, 'body', true, 8), 'Ako tekst ostavite prazan, naslov postaje velika izjava preko cijelog slajda.'));
+			ui.over = h('div', { class: 'dpo-over', hidden: 'hidden' }, [
+				h('span', { text: 'Teksta je previše za jedan slajd, pa bi slova bila premala za čitanje. ' }),
+				h('button', { type: 'button', class: 'button button-small', onclick: function () { splitText(s); }, text: 'Podijeli na dva slajda' })
+			]);
+			F.appendChild(ui.over);
 			F.appendChild(checkbox(s, 'caps', 'Velika slova (samo za veliku izjavu)'));
 			var al = h('select', {}, [h('option', { value: 'left', text: 'Lijevo' }), h('option', { value: 'justify', text: 'Obostrano (kao u novinama)' })]);
 			al.value = s.align || 'left';
@@ -579,9 +657,13 @@
 			F.appendChild(field('Pozadina', swatches(s, 'bg', C.bg)));
 		} else {
 			F.appendChild(field('Citat', textInput(s, 'quote', true, 5)));
-			F.appendChild(field('Ime', textInput(s, 'who'), 'Podebljano ispod citata. Crtica se doda sama.'));
+			F.appendChild(field('Ime', textInput(s, 'who'), 'Podebljano ispod citata.'));
 			F.appendChild(field('Opis', textInput(s, 'whoInfo'), 'Npr. "učenica 3. razreda". Piše se sivo, poslije imena.'));
 			F.appendChild(field('Pozadina', swatches(s, 'bg', C.bg)));
+		}
+		if (s.t !== 'cover' && style() === 'moderni') {
+			if (s.topChip === undefined) s.topChip = true;
+			F.appendChild(checkbox(s, 'topChip', 'Oznaka rubrike gore lijevo (ista kao na naslovnoj)'));
 		}
 		F.appendChild(checkbox(s, 'logo', 'DP logo u uglu'));
 	}
@@ -666,10 +748,27 @@
 	/* ---------- Spremanje stanja i crtanje ---------- */
 
 	var thumbTimer;
+	/** Dijeli predugačak tekst na dva slajda, na kraju rečenice najbliže sredini. */
+	function splitText(s) {
+		var parts = String(s.body || '').split(/(?<=[.!?…])\s+/), half = String(s.body).length / 2, a = [], len = 0;
+		while (parts.length > 1 && len + parts[0].length / 2 < half) { len += parts[0].length + 1; a.push(parts.shift()); }
+		if (!a.length) a.push(parts.shift());
+		var next = JSON.parse(JSON.stringify(s));
+		s.body = a.join(' ');
+		next.title = ''; next.body = parts.join(' ');
+		D.slides.splice(cur + 1, 0, next);
+		changed(true);
+	}
+
+	function overNote() {
+		if (ui.over) ui.over.hidden = !OVER.get(D.slides[cur]);
+	}
+
 	function changed(full) {
 		input.value = JSON.stringify(D);
-		if (full) { render(); return; }
+		if (full) { render(); overNote(); return; }
 		draw(ui.canvas, D.slides[cur]);
+		overNote();
 		clearTimeout(thumbTimer);
 		thumbTimer = setTimeout(function () {
 			var c = ui.strip.querySelectorAll('.dpo-thumb')[cur];

@@ -14,6 +14,11 @@ Instagram posts and stories in the Druga perspektiva style, made inside WordPres
   - **DP klasik:** the current Instagram look (big chip, Lato Bold, purple text slides, orange line with the name in italics).
 - **Formats:** Objava 3:4 (Instagram's new grid) and Story 9:16. Downloads are double resolution (2160 × 2880 and 2160 × 3840), which survives Instagram's compression better.
 - **Photos:** one photo per cover (a 2–3 photo collage is optional), from the Media Library or uploaded on the spot. Drag the photo in the preview to choose what shows; zoom, the strength of the bottom gradient and blur are sliders.
+- **Details in DP moderni:**
+  - the author line and the DP logo sit on one line at the bottom of the cover, and the photo credit runs up the right edge;
+  - text and quote slides carry the cover's category chip in the same top-left spot, and text starts at the same height on every slide, so a carousel reads as one piece;
+  - Bosnian typography is applied automatically when drawing: „…“ quotes, …, –, and one-letter words (i, u, s, k, a, o…) are kept with the next word;
+  - text that would get too small to read shows a warning with a "Podijeli na dva slajda" button that splits it at a sentence.
 - **Download:** "Preuzmi ovaj slajd" or "Preuzmi sve" saves PNG files in exactly Instagram's size, with the site's fonts (Lato) and the DP logo.
 - **Saved:** every design is kept under Objave za mreže, so it can be opened and changed later. They never appear on the public site.
 
