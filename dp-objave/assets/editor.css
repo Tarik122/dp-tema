@@ -140,3 +140,5 @@
 
 .dpo-over[hidden] { display: none; }
 .dpo-over .button { margin-top: 6px; }
+
+.dpo-two { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }

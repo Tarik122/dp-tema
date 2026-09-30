@@ -8,6 +8,8 @@ Instagram posts and stories in the Druga perspektiva style, made inside WordPres
   - **Naslovna:** full-bleed photo, smooth black gradient at the bottom, chip, bold headline, author, photo credit, logo.
   - **Tekst:** bold line and paragraph on a colour. With the paragraph left empty it becomes a big statement, like a poster.
   - **Citat:** the quote with the orange line, and the name and description under it.
+  - **Rezultat:** a match score on a photo: sport, both teams with big numbers, our team highlighted in colour, and an optional line such as "Gimnazijada 2025, četvrtfinale".
+  - **Raspored:** a timetable or any two-column table: title, a date, and rows typed as `lijevo | desno`, one per line. A `*` at the start highlights a row (e.g. `*Veliki odmor | 10:35 – 10:55`).
   - Add, copy, reorder and delete slides; a carousel is just several slides.
 - **Styles:** one switch changes the whole design:
   - **DP moderni** (default): the DP look with a more modern finish: a smaller chip, a tight bold headline, a small author line, calmer spacing, a big bold quote with the orange line, and a poster-style statement slide.

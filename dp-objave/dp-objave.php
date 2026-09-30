@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       DP objave
  * Description:       Instagram objave i storyji u stilu Druge perspektive, pravljeni iz članaka: naslovnica s fotografijom, tekst, citat. Sve se može urediti i preuzeti kao slika. Objave za mreže → Dodaj novu, ili "Napravi objavu" kod članka.
- * Version:           1.4.1
+ * Version:           1.5.0
  * Requires at least: 6.6
  * Requires PHP:      7.4
  * Author:            Druga perspektiva
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DPO_VERSION', '1.4.1' );
+define( 'DPO_VERSION', '1.5.0' );
 define( 'DPO_URL', plugin_dir_url( __FILE__ ) );
 define( 'DPO_META', '_dpo_design' );
 
@@ -200,22 +200,19 @@ function dpo_clean_design( $d ) {
 		'slides'  => array(),
 	);
 	foreach ( array_slice( (array) ( $d['slides'] ?? array() ), 0, 20 ) as $s ) {
-		$type  = in_array( $s['t'] ?? '', array( 'cover', 'text', 'quote' ), true ) ? $s['t'] : 'cover';
+		$type  = in_array( $s['t'] ?? '', array( 'cover', 'text', 'quote', 'score', 'table' ), true ) ? $s['t'] : 'cover';
 		$slide = array(
 			't'     => $type,
 			'bg'    => $hex( $s['bg'] ?? '', $colors['bg']['ljubicasta'][1] ),
 			'logo'  => ! empty( $s['logo'] ),
 			'title' => $text( $s['title'] ?? '', 300 ),
 		);
-		if ( 'cover' === $type ) {
-			$slide['chip']      = $text( $s['chip'] ?? '', 60 );
-			$slide['chipColor'] = $hex( $s['chipColor'] ?? '', $colors['chip']['plava'][1] );
-			$slide['byline']    = $text( $s['byline'] ?? '', 120 );
-			$slide['credit']    = $text( $s['credit'] ?? '', 120 );
-			$slide['darken']    = $num( $s['darken'] ?? 0.8, 0, 1, 0.8 );
-			$slide['blur']      = $num( $s['blur'] ?? 0, 0, 30, 0 );
-			$slide['size']      = $num( $s['size'] ?? 1, 0.6, 1.3, 1 );
-			$slide['photos']    = array();
+		// Slajdovi s fotografijom: naslovna, rezultat i raspored.
+		if ( in_array( $type, array( 'cover', 'score', 'table' ), true ) ) {
+			$slide['credit'] = $text( $s['credit'] ?? '', 120 );
+			$slide['darken'] = $num( $s['darken'] ?? 0.8, 0, 1, 0.8 );
+			$slide['blur']   = $num( $s['blur'] ?? 0, 0, 30, 0 );
+			$slide['photos'] = array();
 			foreach ( array_slice( (array) ( $s['photos'] ?? array() ), 0, 3 ) as $p ) {
 				$slide['photos'][] = array(
 					'id'   => absint( $p['id'] ?? 0 ),
@@ -225,12 +222,31 @@ function dpo_clean_design( $d ) {
 					'oy'   => $num( $p['oy'] ?? 0, -1, 1, 0 ),
 				);
 			}
+		}
+		if ( 'cover' === $type ) {
+			$slide['chip']      = $text( $s['chip'] ?? '', 60 );
+			$slide['chipColor'] = $hex( $s['chipColor'] ?? '', $colors['chip']['plava'][1] );
+			$slide['byline']    = $text( $s['byline'] ?? '', 120 );
+			$slide['size']      = $num( $s['size'] ?? 1, 0.6, 1.3, 1 );
+		} elseif ( 'score' === $type ) {
+			$slide['chip']      = $text( $s['chip'] ?? '', 60 );
+			$slide['chipColor'] = $hex( $s['chipColor'] ?? '', $colors['chip']['narandza'][1] );
+			$slide['home']      = $text( $s['home'] ?? '', 60 );
+			$slide['away']      = $text( $s['away'] ?? '', 60 );
+			$slide['homeScore'] = $text( $s['homeScore'] ?? '', 6 );
+			$slide['awayScore'] = $text( $s['awayScore'] ?? '', 6 );
+			$slide['ours']      = in_array( $s['ours'] ?? '', array( 'home', 'away' ), true ) ? $s['ours'] : '';
+			$slide['detail']    = $text( $s['detail'] ?? '', 120 );
+		} elseif ( 'table' === $type ) {
+			$slide['sub']       = $text( $s['sub'] ?? '', 80 );
+			$slide['rows']      = $text( $s['rows'] ?? '', 1500 );
+			$slide['cellColor'] = $hex( $s['cellColor'] ?? '', $colors['chip']['narandza'][1] );
 		} elseif ( 'text' === $type ) {
 			$slide['body']  = $text( $s['body'] ?? '', 1500 );
 			$slide['align'] = 'justify' === ( $s['align'] ?? '' ) ? 'justify' : 'left';
 			$slide['caps']  = ! empty( $s['caps'] );
 		} else {
-			$slide['quote'] = $text( $s['quote'] ?? '', 600 );
+			$slide['quote']   = $text( $s['quote'] ?? '', 600 );
 			$slide['who']     = $text( $s['who'] ?? '', 120 );
 			$slide['whoInfo'] = $text( $s['whoInfo'] ?? '', 160 );
 		}
