@@ -478,7 +478,10 @@
 		var nameMax = W - 2 * M - 28 - scoreW - 40;
 		[[s.home, s.homeScore, 'home'], [s.away, s.awayScore, 'away']].forEach(function (t, i) {
 			var top = sbTop + i * rowH, mid = top + rowH / 2;
-			var mine = ours === t[2], muted = ours && !mine;
+			var mine = ours === t[2];
+			// Pobjednik bijel, poraženi blijeđi (i kad izgubimo); naš tim uvijek ima crticu.
+			var hs = parseFloat(s.homeScore), as = parseFloat(s.awayScore);
+			var muted = !isNaN(hs) && !isNaN(as) && hs !== as && (t[2] === 'home' ? hs < as : as < hs);
 			if (i) { ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(M, top, W - 2 * M, 2); }
 			if (mine) { ctx.fillStyle = orange; ctx.fillRect(M, mid - rowH * 0.24, 8, rowH * 0.48); }
 			var size = ns;
@@ -541,19 +544,24 @@
 				y += 110;
 			}
 			y += 70;
-			var n = rows.length || 1, gap = 18, colW = 300;
-			var rh = Math.min(76, (bottomY - y - gap * (n - 1)) / n), fs = Math.min(38, rh * 0.5);
+			// Dugačak raspored ide u dva para kolona, da ćelije ne budu sitne.
+			var n = rows.length || 1, cols = n > (story ? 12 : 11) ? 2 : 1, per = Math.ceil(n / cols), gap = cols === 2 ? 12 : 18;
+			var pairW = cols === 2 ? (W - 2 * 56 - 32) / 2 : 624, cellW = pairW / 2 - 6;
+			var rh = Math.min(76, (bottomY - y - gap * (per - 1)) / per), fs = Math.min(cols === 2 ? 32 : 38, rh * 0.5);
 			rows.forEach(function (r, i) {
-				var ry = y + i * (rh + gap), fill = r.hi ? tint(cell, 0.4) : cell;
+				var c = Math.floor(i / per), k = i % per;
+				var x0 = cols === 2 ? 56 + c * (pairW + 32) : W / 2 - pairW / 2;
+				var ry = y + k * (rh + gap), fill = r.hi ? tint(cell, 0.4) : cell, bl = ry + rh / 2 + fs * 0.36;
 				ctx.font = font(SANS, 700, fs);
+				ctx.fillStyle = fill;
 				if (r.b) {
-					ctx.fillStyle = fill; ctx.fillRect(W / 2 - colW - 12, ry, colW, rh); ctx.fillRect(W / 2 + 12, ry, colW, rh);
+					ctx.fillRect(x0, ry, cellW, rh); ctx.fillRect(x0 + cellW + 12, ry, cellW, rh);
 					ctx.fillStyle = '#ffffff';
-					centerText(ctx, r.a, W / 2 - 12 - colW / 2, ry + rh / 2 + fs * 0.36);
-					centerText(ctx, r.b, W / 2 + 12 + colW / 2, ry + rh / 2 + fs * 0.36);
+					centerText(ctx, r.a, x0 + cellW / 2, bl);
+					centerText(ctx, r.b, x0 + cellW * 1.5 + 12, bl);
 				} else {
-					ctx.fillStyle = fill; ctx.fillRect(W / 2 - colW - 12, ry, colW * 2 + 24, rh);
-					ctx.fillStyle = '#ffffff'; centerText(ctx, r.a, W / 2, ry + rh / 2 + fs * 0.36);
+					ctx.fillRect(x0, ry, pairW, rh);
+					ctx.fillStyle = '#ffffff'; centerText(ctx, r.a, x0 + pairW / 2, bl);
 				}
 			});
 			drawLogo(ctx, s, W, H, format, dark);
@@ -567,32 +575,49 @@
 		y = story ? 250 : 110;
 		if (s.sub) { var c = chipBlock(ctx, s.sub, cell, story ? 42 : 38, 700, 0, M); c.draw(y); y += c.h + 24; }
 		if (s.title) {
-			var ts = fitTitle(ctx, SANS, 700, story ? 124 : 112, 56, 2, s.title, W - 2 * M, -0.022);
+			var many = rows.length > (story ? 12 : 9);
+			var ts = fitTitle(ctx, SANS, 700, (story ? 124 : 112) * (many ? 0.8 : 1), 56, 2, s.title, W - 2 * M, -0.022);
 			var tb = textBlock(ctx, font(SANS, 700, ts), ts, ts * 1.02, s.title, W - 2 * M, -ts * 0.022, ink, 0, M, W);
 			tb.draw(y); y += tb.h;
 		}
-		y += story ? 90 : 62;
-		var listBottom = H - (story ? 300 : 72) - (s.logo ? 120 : 0);
+		y += (story ? 90 : 62) * (rows.length > (story ? 12 : 9) ? 0.7 : 1);
+		var listBottom = H - (story ? 300 : 72) - (s.logo ? 112 : 0);
 		var n2 = rows.length || 1;
-		var rh2 = Math.min(story ? 108 : 94, (listBottom - y) / n2), fs2 = Math.min(story ? 50 : 44, rh2 * 0.46);
+		// Dugačak raspored (npr. 13 časova i odmori) ide u dvije kolone, da slova ostanu čitljiva.
+		var cols = n2 > (story ? 12 : 11) ? 2 : 1, per = Math.ceil(n2 / cols), cg = 48;
+		var colW = (W - 2 * M - cg * (cols - 1)) / cols;
+		var rh2 = Math.min(story ? 110 : (cols === 2 ? 108 : 96), (listBottom - y) / per);
+		var fs2 = Math.min(cols === 2 ? 36 : (story ? 50 : 44), rh2 * 0.46);
+		// Ako lijevo i desno ne stanu u kolonu, smanji slova.
+		rows.forEach(function (r) {
+			var need;
+			do {
+				ctx.font = font(SANS, 400, fs2); need = ctx.measureText(r.a).width;
+				ctx.font = font(SANS, 700, fs2); need += ctx.measureText(r.b).width + 28;
+				if (need > colW) fs2 -= 1;
+			} while (need > colW && fs2 > 22);
+		});
 		var line = dark ? 'rgba(20,20,20,.18)' : 'rgba(255,255,255,.24)';
-		var soft = dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.84)';
+		var soft = dark ? 'rgba(20,20,20,.66)' : 'rgba(255,255,255,.72)';
 		rows.forEach(function (r, i) {
-			var ry = y + i * rh2, bl = ry + rh2 / 2 + fs2 * 0.36;
+			var c = Math.floor(i / per), k = i % per;
+			var x0 = M + c * (colW + cg), x1 = x0 + colW;
+			var ry = y + k * rh2, bl = ry + rh2 / 2 + fs2 * 0.36;
+			var prev = k ? rows[i - 1] : null, last = k === per - 1 || i === n2 - 1;
 			if (r.hi) {
-				ctx.fillStyle = cell; ctx.fillRect(M - 22, ry + 3, W - 2 * M + 44, rh2 - 6);
-			} else if (!(i && rows[i - 1].hi)) {
-				ctx.fillStyle = line; ctx.fillRect(M, ry, W - 2 * M, 2);
+				ctx.fillStyle = cell; ctx.fillRect(x0 - 18, ry + 3, colW + 36, rh2 - 6);
+			} else {
+				if (!(prev && prev.hi)) { ctx.fillStyle = line; ctx.fillRect(x0, ry, colW, 2); }
+				if (last) { ctx.fillStyle = line; ctx.fillRect(x0, ry + rh2, colW, 2); }
 			}
-			if (i === rows.length - 1 && !r.hi) { ctx.fillStyle = line; ctx.fillRect(M, ry + rh2, W - 2 * M, 2); }
-			ctx.font = font(SANS, 700, fs2); track(ctx, -fs2 * 0.01);
-			ctx.fillStyle = r.hi ? '#ffffff' : ink;
-			ctx.fillText(r.a, M, bl);
-			track(ctx, 0);
+			// Naziv mirnije, vrijeme podebljano (to je ono što ljudi traže).
+			ctx.font = font(SANS, r.b ? 400 : 700, fs2);
+			ctx.fillStyle = r.hi ? '#ffffff' : (r.b ? soft : ink);
+			ctx.fillText(r.a, x0, bl);
 			if (r.b) {
-				ctx.font = font(SANS, 400, fs2);
-				ctx.fillStyle = r.hi ? '#ffffff' : soft;
-				ctx.fillText(r.b, W - M - ctx.measureText(r.b).width, bl);
+				ctx.font = font(SANS, 700, fs2);
+				ctx.fillStyle = r.hi ? '#ffffff' : ink;
+				ctx.fillText(r.b, x1 - ctx.measureText(r.b).width, bl);
 			}
 		});
 		var lg = drawLogo(ctx, s, W, H, format, dark, { w: 100, right: M, bottom: story ? 300 : 72 });
