@@ -61,6 +61,18 @@
 		return lines;
 	}
 
+	/** Kao wrap, ali redovi su podjednako dugi (bez jedne riječi same u zadnjem redu). */
+	function wrapBalanced(ctx, text, maxW) {
+		var lines = wrap(ctx, text, maxW), n = lines.length;
+		if (n < 2) return lines;
+		var lo = maxW * 0.5, hi = maxW;
+		for (var i = 0; i < 14; i++) {
+			var mid = (lo + hi) / 2;
+			if (wrap(ctx, text, mid).length <= n) hi = mid; else lo = mid;
+		}
+		return wrap(ctx, text, hi);
+	}
+
 	/** Kao wrap, ali za tekst iz više dijelova različite debljine (npr. podebljano ime pa opis). */
 	function wrapRuns(ctx, runs, maxW) {
 		var words = [];
@@ -136,13 +148,21 @@
 		return y;
 	}
 
-	/* ---------- Tri vrste slajdova ---------- */
+	/* ---------- Tri stila i tri vrste slajdova ---------- */
 
-	// Naslovna: fotografija preko cijelog slajda, crni prelaz odozdo, oznaka, naslov, autor.
-	function drawCover(ctx, s, W, H, format) {
-		var story = format === 'story', M = 72;
-		ctx.fillStyle = s.bg || '#141414';
-		ctx.fillRect(0, 0, W, H);
+	var SERIF = 'DPO Serif';
+	var SC = 1; // koliko puta je slika veća od 1080 px (preuzimanje je 2x, zbog Instagram kompresije)
+
+	// Zadane pozadine po stilu (tekst i citat).
+	var STYLE_BG = {
+		dp: { text: '#402f65', quote: '#402f65' },
+		apple: { text: '#ebebee', quote: '#ebebee' },
+		magazin: { text: '#f7f5f0', quote: '#f7f5f0' }
+	};
+
+	function style() { return STYLE_BG[D.style] ? D.style : 'dp'; }
+
+	function drawPhotos(ctx, s, W, H) {
 		var photos = s.photos || [], sl = slots(s, W, H), any = false;
 		photos.forEach(function (p, i) {
 			var img = images[p.url];
@@ -151,135 +171,232 @@
 			var b = photoBox(img, sl[i], p);
 			ctx.save();
 			ctx.beginPath(); ctx.rect(sl[i].x, sl[i].y, sl[i].w, sl[i].h); ctx.clip();
-			if (s.blur > 0) ctx.filter = 'blur(' + s.blur + 'px)';
+			if (s.blur > 0) ctx.filter = 'blur(' + (s.blur * SC) + 'px)';
 			ctx.drawImage(img, b.x, b.y, b.w, b.h);
 			ctx.restore();
 		});
-		var dark = !any && isLight(s.bg);
-		var ink = dark ? '#141414' : '#ffffff';
+		return any;
+	}
 
-		// Mjere teksta, odozdo prema gore.
-		var hs = (story ? 104 : 92) * (s.size || 1), lines;
-		ctx.font = font(SANS, 900, hs); track(ctx, -hs * 0.012);
-		lines = wrap(ctx, s.title, W - 2 * M);
-		while (lines.length > 5 && hs > 52) { hs -= 4; ctx.font = font(SANS, 900, hs); track(ctx, -hs * 0.012); lines = wrap(ctx, s.title, W - 2 * M); }
-		var lh = hs * 1.02;
-		var bs = story ? 34 : 30;
-		var last = H - (story ? 300 : 150);                     // osnovna linija zadnjeg reda
-		var headLast = s.byline ? last - bs * 0.75 - 30 - hs * 0.2 : last;
-		var headFirst = headLast - (lines.length - 1) * lh;
-		var cs = story ? 40 : 36, ch = Math.round(cs * 1.5);
-		var chipTop = headFirst - hs * 0.76 - 24 - ch;
-		var textTop = s.chip ? chipTop : headFirst - hs * 0.8;
-
-		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.2, textTop - H * 0.22), s.darken);
-
-		if (s.chip) {
-			ctx.font = font(SANS, 700, cs); track(ctx, 0);
-			var cw = ctx.measureText(s.chip).width + cs * 0.9;
-			ctx.fillStyle = s.chipColor || '#5271fe';
-			ctx.fillRect(M, chipTop, cw, ch);
-			ctx.fillStyle = '#ffffff';
-			ctx.fillText(s.chip, M + cs * 0.45, chipTop + ch * 0.7);
+	/**
+	 * Slaže blokove teksta odozdo prema gore (zadnji red na "bottom").
+	 * Svaki blok: { h: visina, gap: razmak iznad, draw: function (top) }.
+	 * Vraća gornju ivicu cijelog teksta.
+	 */
+	function stackUp(blocks, bottom) {
+		var y = bottom;
+		for (var i = blocks.length - 1; i >= 0; i--) {
+			var b = blocks[i];
+			b.top = y - b.h;
+			y = b.top - (i > 0 ? b.gap : 0);
 		}
-		ctx.fillStyle = ink;
-		ctx.font = font(SANS, 900, hs); track(ctx, -hs * 0.012);
-		lines.forEach(function (l, i) { ctx.fillText(l.text, M, headFirst + i * lh); });
+		return blocks.length ? blocks[0].top : bottom;
+	}
+
+	/** Blok teksta: redovi s visinom reda lh; osnovna linija prvog reda je top + size*0.8. */
+	function textBlock(ctx, fontStr, size, lh, text, maxW, trackPx, color, gap, align, W) {
+		ctx.font = fontStr; track(ctx, trackPx);
+		var lines = wrapBalanced(ctx, text, maxW);
+		return {
+			h: (lines.length - 1) * lh + size, gap: gap, lines: lines,
+			draw: function (top) {
+				ctx.font = fontStr; track(ctx, trackPx); ctx.fillStyle = color;
+				lines.forEach(function (l, i) {
+					var x = align === 'center' ? (W - ctx.measureText(l.text).width) / 2 : align;
+					ctx.fillText(l.text, x, top + size * 0.8 + i * lh);
+				});
+				track(ctx, 0);
+			}
+		};
+	}
+
+	/** Naslov koji se sam smanji dok ne stane u najviše maxLines redova. */
+	function fitTitle(ctx, family, weight, size, min, maxLines, text, maxW, trackEm) {
+		var lines;
+		do {
+			ctx.font = font(family, weight, size); track(ctx, size * trackEm);
+			lines = wrap(ctx, text, maxW);
+			if (lines.length <= maxLines) break;
+			size -= 4;
+		} while (size > min);
 		track(ctx, 0);
-		if (s.byline) {
-			ctx.font = font(SANS, 700, bs);
-			ctx.fillStyle = dark ? 'rgba(20,20,20,.75)' : 'rgba(255,255,255,.88)';
-			ctx.fillText(s.byline, M, last);
+		return size;
+	}
+
+	function chipBlock(ctx, text, color, size, weight, gap, M) {
+		ctx.font = font(SANS, weight, size);
+		var w = ctx.measureText(text).width + size * 0.9, h = Math.round(size * 1.45);
+		return {
+			h: h, gap: gap,
+			draw: function (top) {
+				ctx.fillStyle = color; ctx.fillRect(M, top, w, h);
+				ctx.font = font(SANS, weight, size); ctx.fillStyle = '#ffffff';
+				ctx.fillText(text, M + size * 0.45, top + h * 0.7);
+			}
+		};
+	}
+
+	// ---- Naslovna ----
+	function drawCover(ctx, s, W, H, format) {
+		var st = style(), story = format === 'story';
+		ctx.fillStyle = s.bg || '#141414';
+		ctx.fillRect(0, 0, W, H);
+		var any = drawPhotos(ctx, s, W, H);
+		var dark = !any && isLight(s.bg);
+		var ink = dark ? '#141414' : '#ffffff', soft = dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.86)';
+		var k = s.size || 1, blocks = [], M, bottom, hs;
+
+		if (st === 'apple') {
+			M = 64; bottom = H - (story ? 300 : 132);
+			if (s.chip) {
+				// Mala oznaka: kvadratić u boji rubrike i naziv.
+				blocks.push({
+					h: 30, gap: 0, draw: function (top) {
+						ctx.fillStyle = s.chipColor || '#5271fe'; ctx.fillRect(M, top + 4, 22, 22);
+						ctx.font = font(SANS, 700, 30); ctx.fillStyle = ink; ctx.fillText(s.chip, M + 34, top + 26);
+					}
+				});
+			}
+			hs = fitTitle(ctx, SANS, 700, (story ? 100 : 88) * k, 50, 5, s.title, W - 2 * M, -0.022);
+			blocks.push(textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.03, s.title, W - 2 * M, -hs * 0.022, ink, 18, M, W));
+			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 400, 28), 28, 34, s.byline, W - 2 * M, 0, soft, 24, M, W));
+		} else if (st === 'magazin') {
+			M = 72; bottom = H - (story ? 300 : 140);
+			if (s.chip) blocks.push(chipBlock(ctx, s.chip, s.chipColor || '#5271fe', 30, 700, 0, M));
+			hs = fitTitle(ctx, SERIF, 600, (story ? 104 : 92) * k, 52, 5, s.title, W - 2 * M, -0.012);
+			blocks.push(textBlock(ctx, font(SERIF, 600, hs), hs, hs * 1.04, s.title, W - 2 * M, -hs * 0.012, ink, 26, M, W));
+			if (s.dek) blocks.push(textBlock(ctx, font(SERIF, 400, 38, true), 38, 48, s.dek, W - 2 * M, 0, soft, 22, M, W));
+			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 700, 26), 26, 32, s.byline, W - 2 * M, 0, soft, 30, M, W));
+		} else {
+			// DP klasik: kao dosadašnje objave na Instagramu.
+			M = 80; bottom = H - (story ? 300 : 150);
+			if (s.chip) blocks.push(chipBlock(ctx, s.chip, s.chipColor || '#5271fe', story ? 60 : 54, 400, 0, M));
+			hs = fitTitle(ctx, SANS, 700, (story ? 94 : 86) * k, 50, 5, s.title, W - 2 * M, 0);
+			blocks.push(textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.08, s.title, W - 2 * M, 0, ink, 20, M, W));
+			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 400, 30), 30, 36, s.byline, W - 2 * M, 0, soft, 24, M, W));
 		}
-		var logoTop = drawLogo(ctx, s, W, H, format, dark);
+
+		var textTop = stackUp(blocks, bottom);
+		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.15, textTop - H * 0.2), s.darken);
+		blocks.forEach(function (b) { b.draw(b.top); });
+
+		drawLogo(ctx, s, W, H, format, dark);
 		if (s.credit) {
 			ctx.font = font(SANS, 400, 22);
 			ctx.fillStyle = dark ? 'rgba(20,20,20,.55)' : 'rgba(255,255,255,.62)';
 			ctx.fillText(s.credit, M, H - (story ? 120 : 50));
 		}
-		return logoTop;
 	}
 
-	// Tekst: naslov i pasus na boji. Bez pasusa postaje velika izjava (kao plakat).
+	// ---- Tekst (i velika izjava kad nema pasusa) ----
 	function drawText(ctx, s, W, H, format) {
-		var story = format === 'story', dark = isLight(s.bg);
-		ctx.fillStyle = s.bg || '#402f65';
+		var st = style(), story = format === 'story', dark = isLight(s.bg);
+		ctx.fillStyle = s.bg || STYLE_BG[st].text;
 		ctx.fillRect(0, 0, W, H);
 		var M = 96, maxW = W - 2 * M, room = H - (story ? 640 : 380);
 		var ink = dark ? '#141414' : '#ffffff';
 
 		if (!String(s.body || '').trim()) {
 			var text = s.caps ? String(s.title || '').toLocaleUpperCase('bs') : s.title;
-			var size = 170, lines;
+			var fam = st === 'apple' ? COND : st === 'magazin' ? SERIF : SANS;
+			var wt = st === 'apple' ? 800 : st === 'magazin' ? 600 : 700;
+			var lhk = st === 'apple' ? 0.98 : 1.06;
+			var size = 176, lines;
 			do {
-				size -= 6; ctx.font = font(COND, 800, size); lines = wrap(ctx, text, maxW);
-			} while ((lines.length * size * 0.98 > room || lines.some(function (l) { return ctx.measureText(l.text).width > maxW; })) && size > 50);
-			var lh = size * 0.98, top = (H - lines.length * lh) / 2 - H * 0.02;
-			ctx.fillStyle = ink;
-			lines.forEach(function (l, i) { ctx.fillText(l.text, (W - ctx.measureText(l.text).width) / 2, top + size * 0.8 + i * lh); });
+				size -= 6; ctx.font = font(fam, wt, size); lines = wrap(ctx, text, maxW);
+			} while ((lines.length * size * lhk > room || lines.some(function (l) { return ctx.measureText(l.text).width > maxW; })) && size > 50);
+			var blk = textBlock(ctx, font(fam, wt, size), size, size * lhk, text, maxW, 0, ink, 0, 'center', W);
+			blk.draw((H - blk.h) / 2 - H * 0.02);
 			drawLogo(ctx, s, W, H, format, dark);
 			return;
 		}
 
-		var ts = 64, bs = 40, t, b, total;
+		var T = {
+			dp: { tf: [SANS, 700], ts: 58, bf: [SANS, 400], bs: 42, blh: 1.24, gap: 18, body: dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.7)', tr: 0 },
+			apple: { tf: [SANS, 700], ts: 62, bf: [SANS, 400], bs: 40, blh: 1.38, gap: 30, body: dark ? 'rgba(20,20,20,.78)' : 'rgba(255,255,255,.84)', tr: -0.018 },
+			magazin: { tf: [SERIF, 600], ts: 64, bf: [SERIF, 400], bs: 40, blh: 1.42, gap: 30, body: dark ? 'rgba(20,20,20,.84)' : 'rgba(255,255,255,.86)', tr: -0.01 }
+		}[st];
+		var ts = T.ts, bs = T.bs, t, b, total;
 		function measure() {
-			ctx.font = font(SANS, 900, ts); track(ctx, -ts * 0.01); t = s.title ? wrap(ctx, s.title, maxW) : [];
-			track(ctx, 0);
-			ctx.font = font(SANS, 400, bs); b = wrap(ctx, s.body, maxW);
-			total = t.length * ts * 1.05 + (t.length ? 34 : 0) + b.length * bs * 1.38;
+			t = s.title ? textBlock(ctx, font(T.tf[0], T.tf[1], ts), ts, ts * 1.06, s.title, maxW, ts * T.tr, ink, 0, M, W) : null;
+			ctx.font = font(T.bf[0], T.bf[1], bs); track(ctx, 0);
+			b = wrap(ctx, s.body, maxW);
+			total = (t ? t.h + T.gap : 0) + (b.length - 1) * bs * T.blh + bs;
 		}
 		measure();
 		while (total > room && bs > 26) { ts -= 2; bs -= 1; measure(); }
-		var y = (H - total) / 2 - H * 0.02 + ts * 0.8;
-		ctx.fillStyle = ink;
-		ctx.font = font(SANS, 900, ts); track(ctx, -ts * 0.01);
-		t.forEach(function (l) { ctx.fillText(l.text, M, y); y += ts * 1.05; });
-		track(ctx, 0);
-		y = (H - total) / 2 - H * 0.02 + (t.length ? t.length * ts * 1.05 + 34 : 0) + bs * 0.8;
-		ctx.fillStyle = dark ? 'rgba(20,20,20,.78)' : 'rgba(255,255,255,.84)';
-		ctx.font = font(SANS, 400, bs);
-		b.forEach(function (l) { drawLine(ctx, l, M, y, maxW, s.align === 'justify'); y += bs * 1.38; });
+		var top = (H - total) / 2 - H * 0.02;
+		if (t) { t.draw(top); top += t.h + T.gap; }
+		ctx.fillStyle = T.body;
+		ctx.font = font(T.bf[0], T.bf[1], bs);
+		b.forEach(function (l, i) { drawLine(ctx, l, M, top + bs * 0.8 + i * bs * T.blh, maxW, s.align === 'justify'); });
 		drawLogo(ctx, s, W, H, format, dark);
 	}
 
-	// Citat: veliki uski podebljani tekst u sredini, ispod ime (podebljano) i opis.
+	// ---- Citat ----
 	function drawQuote(ctx, s, W, H, format) {
-		var story = format === 'story', dark = isLight(s.bg);
-		ctx.fillStyle = s.bg || '#ebebee';
+		var st = style(), story = format === 'story', dark = isLight(s.bg);
+		ctx.fillStyle = s.bg || STYLE_BG[st].quote;
 		ctx.fillRect(0, 0, W, H);
-		var M = 96, maxW = W - 2 * M, room = H * (story ? 0.5 : 0.56);
 		var ink = dark ? '#141414' : '#ffffff', soft = dark ? '#6d6d73' : 'rgba(255,255,255,.72)';
-		var q = String(s.quote || '').trim();
-		if (q && !/^[„“"”»«]/.test(q)) q = '„' + q.replace(/[“”"]$/, '') + '“';
+		var q = String(s.quote || '').trim().replace(/^[„“"”»«]+|[“”"«»]+$/g, '');
+		var M = 96, maxW = W - 2 * M, room = H * (story ? 0.5 : 0.56);
 
-		var size = 140, lines;
-		do { size -= 4; ctx.font = font(COND, 800, size); lines = wrap(ctx, q, maxW); }
-		while (lines.length * size > room && size > 44);
-		var lh = size * 0.98;
+		if (st === 'dp') {
+			// Kao dosadašnji citati: narandžasta crta, ime kurzivom desno.
+			var left = 172, w2 = W - 330, qs = 76, blk;
+			do { blk = textBlock(ctx, font(SANS, 400, qs), qs, qs * 1.15, q, w2, 0, ink, 0, left, W); qs -= 2; } while (blk.h > room && qs > 28);
+			qs += 2;
+			var ws = Math.max(30, Math.round(qs * 0.62)), who = [];
+			if (s.who) { ctx.font = font(SANS, 400, ws, true); who = wrapBalanced(ctx, '— ' + s.who + (s.whoInfo ? ', ' + s.whoInfo : ''), w2); }
+			var total = blk.h + (who.length ? 30 + who.length * ws * 1.25 : 0), top = (H - total) / 2;
+			ctx.fillStyle = '#ee8031'; ctx.fillRect(left - 32, top, 10, blk.h);
+			blk.draw(top);
+			ctx.font = font(SANS, 400, ws, true); ctx.fillStyle = dark ? 'rgba(20,20,20,.8)' : 'rgba(255,255,255,.9)';
+			who.forEach(function (l, i) { ctx.fillText(l.text, left + w2 - ctx.measureText(l.text).width, top + blk.h + 30 + ws * 0.8 + i * ws * 1.25); });
+			drawLogo(ctx, s, W, H, format, dark);
+			return;
+		}
 
-		var as = story ? 40 : 36, runs = [];
-		if (s.who) runs.push({ text: '—' + s.who + (s.whoInfo ? ',' : ''), font: font(SANS, 900, as), color: ink });
+		var apple = st === 'apple';
+		var fam = apple ? COND : SERIF, wt = apple ? 800 : 400, it = !apple, lhk = apple ? 0.98 : 1.12;
+		var text = apple ? '„' + q + '“' : q, size = apple ? 140 : 96, lines;
+		do { size -= 4; ctx.font = font(fam, wt, size, it); lines = wrapBalanced(ctx, text, maxW); } while (lines.length * size * lhk > room && size > 40);
+		var as = story ? 38 : 34, runs = [];
+		if (s.who) runs.push({ text: '—' + s.who + (s.whoInfo ? ',' : ''), font: font(SANS, apple ? 900 : 700, as), color: ink });
 		if (s.whoInfo) runs.push({ text: s.whoInfo, font: font(SANS, 400, as), color: soft });
 		var att = runs.length ? wrapRuns(ctx, runs, maxW - 60) : [];
-		var total = lines.length * lh + (att.length ? 48 + att.length * as * 1.3 : 0);
-		var top = (H - total) / 2 - H * 0.03;
-
-		ctx.fillStyle = ink;
-		ctx.font = font(COND, 800, size);
-		lines.forEach(function (l, i) { ctx.fillText(l.text, (W - ctx.measureText(l.text).width) / 2, top + size * 0.8 + i * lh); });
-		var y = top + lines.length * lh + 48 + as * 0.8;
-		att.forEach(function (l, i) { drawRunsLine(ctx, l, (W - l.w) / 2, y + i * as * 1.3); });
+		var qh = (lines.length - 1) * size * lhk + size;
+		var total = qh + (att.length ? 48 + (att.length - 1) * as * 1.3 + as : 0);
+		var top = (H - total) / 2 - H * 0.03 + (apple ? 0 : 70);
+		ctx.fillStyle = ink; ctx.font = font(fam, wt, size, it);
+		lines.forEach(function (l, i) {
+			var x = apple ? (W - ctx.measureText(l.text).width) / 2 : M;
+			ctx.fillText(l.text, x, top + size * 0.8 + i * size * lhk);
+		});
+		if (!apple) {
+			// Magazin: velika narandžasta navodnica iznad citata.
+			ctx.font = font(SERIF, 700, 240); ctx.fillStyle = '#ee8031';
+			ctx.fillText('“', M - 8, top - 10);
+		}
+		var y = top + qh + 48 + as * 0.8;
+		att.forEach(function (l, i) { drawRunsLine(ctx, l, apple ? (W - l.w) / 2 : M, y + i * as * 1.3); });
 		drawLogo(ctx, s, W, H, format, dark);
 	}
 
-	function draw(canvas, s) {
+	/** Crta slajd. scale 2 = dvostruka rezolucija (za preuzimanje). */
+	function draw(canvas, s, scale) {
 		var size = SIZES[D.format] || SIZES.post;
-		if (canvas.width !== size[0] || canvas.height !== size[1]) { canvas.width = size[0]; canvas.height = size[1]; }
+		SC = scale || 1;
+		var w = Math.round(size[0] * SC), hgt = Math.round(size[1] * SC);
+		if (canvas.width !== w || canvas.height !== hgt) { canvas.width = w; canvas.height = hgt; }
 		var ctx = canvas.getContext('2d');
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.setTransform(SC, 0, 0, SC, 0, 0);
+		ctx.clearRect(0, 0, size[0], size[1]);
 		ctx.textBaseline = 'alphabetic';
 		track(ctx, 0);
-		({ cover: drawCover, text: drawText, quote: drawQuote })[s.t](ctx, s, canvas.width, canvas.height, D.format);
+		({ cover: drawCover, text: drawText, quote: drawQuote })[s.t](ctx, s, size[0], size[1], D.format);
+		SC = 1;
 	}
 
 	/* ---------- Učitavanje ---------- */
@@ -320,7 +437,8 @@
 
 	function build() {
 		app.innerHTML = '';
-		ui.format = h('div', { class: 'dpo-seg' });
+		ui.format = h('div', { class: 'dpo-seg', role: 'group', 'aria-label': 'Format' });
+		ui.style = h('div', { class: 'dpo-seg', role: 'group', 'aria-label': 'Stil' });
 		ui.fill = h('select', { class: 'dpo-article' }, [h('option', { value: '', text: 'Popuni iz članka…' })].concat((CFG.articles || []).map(function (a) {
 			return h('option', { value: a.id, text: a.title });
 		})));
@@ -330,7 +448,8 @@
 		ui.fields = h('div', { class: 'dpo-fields' });
 
 		app.appendChild(h('div', { class: 'dpo-top' }, [
-			ui.format,
+			h('span', { class: 'dpo-label', text: 'Stil' }), ui.style,
+			h('span', { class: 'dpo-label', text: 'Format' }), ui.format,
 			ui.fill,
 			h('span', { class: 'dpo-spacer' }),
 			h('button', { type: 'button', class: 'button', onclick: downloadCurrent, text: 'Preuzmi ovaj slajd' }),
@@ -347,7 +466,14 @@
 	}
 
 	function render() {
-		// Format
+		// Stil i format
+		ui.style.innerHTML = '';
+		[['dp', 'DP klasik'], ['apple', 'Apple'], ['magazin', 'Magazin']].forEach(function (f) {
+			ui.style.appendChild(h('button', {
+				type: 'button', class: 'button' + (style() === f[0] ? ' is-on' : ''), 'aria-pressed': style() === f[0] ? 'true' : 'false',
+				onclick: function () { setStyle(f[0]); }, text: f[1]
+			}));
+		});
 		ui.format.innerHTML = '';
 		[['post', 'Objava 3:4'], ['story', 'Story 9:16']].forEach(function (f) {
 			ui.format.appendChild(h('button', {
@@ -361,7 +487,7 @@
 			var c = h('canvas', { class: 'dpo-thumb' });
 			var b = h('button', { type: 'button', class: 'dpo-thumb-btn' + (i === cur ? ' is-on' : ''), 'aria-label': 'Slajd ' + (i + 1), onclick: function () { cur = i; render(); } }, [c, h('span', { text: (i + 1) + '. ' + label(s.t) })]);
 			ui.strip.appendChild(b);
-			draw(c, s);
+			draw(c, s, 0.2);
 		});
 		ui.strip.appendChild(h('div', { class: 'dpo-add' }, [
 			h('button', { type: 'button', class: 'button', onclick: function () { add('cover'); }, text: '+ Naslovna' }),
@@ -372,12 +498,22 @@
 		draw(ui.canvas, D.slides[cur]);
 	}
 
+	/** Mijenja stil; pozadine teksta i citata koje su bile zadane prelaze na zadane novog stila. */
+	function setStyle(st) {
+		var old = STYLE_BG[style()];
+		D.slides.forEach(function (s) {
+			if (s.t !== 'cover' && (!s.bg || s.bg === old[s.t])) s.bg = STYLE_BG[st][s.t];
+		});
+		D.style = st;
+		changed(true);
+	}
+
 	function label(t) { return { cover: 'Naslovna', text: 'Tekst', quote: 'Citat' }[t]; }
 
 	function add(t) {
 		var s = newSlide(t);
 		var prev = D.slides[cur];
-		if (prev && prev.bg && t !== 'cover') s.bg = prev.t === 'cover' ? s.bg : prev.bg;
+		if (t !== 'cover') s.bg = prev && prev.t !== 'cover' && prev.bg ? prev.bg : STYLE_BG[style()][t];
 		D.slides.splice(cur + 1, 0, s);
 		cur++;
 		changed(true);
@@ -450,6 +586,7 @@
 			F.appendChild(field('Boja oznake', swatches(s, 'chipColor', C.chip)));
 			F.appendChild(field('Naslov', textInput(s, 'title', true, 3), 'Enter pravi novi red, ako želite sami prelomiti naslov.'));
 			F.appendChild(field('Veličina naslova', range(s, 'size', 0.6, 1.3, 0.05)));
+			if (style() === 'magazin') F.appendChild(field('Podnaslov (kurzivom ispod naslova)', textInput(s, 'dek', true, 2), 'Jedna rečenica. Prazno = bez podnaslova.'));
 			F.appendChild(field('Autor', textInput(s, 'byline'), 'Npr. "Piše: Amina Hodžić". Prazno = bez autora.'));
 			F.appendChild(photoFields(s));
 			if ((s.photos || []).length) {
@@ -563,7 +700,7 @@
 		clearTimeout(thumbTimer);
 		thumbTimer = setTimeout(function () {
 			var c = ui.strip.querySelectorAll('.dpo-thumb')[cur];
-			if (c) draw(c, D.slides[cur]);
+			if (c) draw(c, D.slides[cur], 0.2);
 		}, 250);
 	}
 
@@ -571,7 +708,7 @@
 		if (!ui.canvas) return;
 		draw(ui.canvas, D.slides[cur]);
 		var thumbs = ui.strip.querySelectorAll('.dpo-thumb');
-		D.slides.forEach(function (s, i) { if (thumbs[i]) draw(thumbs[i], s); });
+		D.slides.forEach(function (s, i) { if (thumbs[i]) draw(thumbs[i], s, 0.2); });
 	}
 
 	/* ---------- Popuni iz članka ---------- */
@@ -611,7 +748,7 @@
 				resolve(); return;
 			}
 			var c = document.createElement('canvas');
-			draw(c, s);
+			draw(c, s, 2);
 			c.toBlob(function (blob) {
 				var a = document.createElement('a');
 				a.href = URL.createObjectURL(blob);
@@ -649,7 +786,9 @@
 			new FontFace(SANS, 'url(' + CFG.fonts.bold + ')', { weight: '700' }),
 			new FontFace(SANS, 'url(' + CFG.fonts.black + ')', { weight: '900' }),
 			new FontFace(SANS, 'url(' + CFG.fonts.italic + ')', { weight: '400', style: 'italic' }),
-			new FontFace(COND, 'url(' + CFG.fonts.condensed + ')', { weight: '800' })
+			new FontFace(COND, 'url(' + CFG.fonts.condensed + ')', { weight: '800' }),
+			new FontFace(SERIF, 'url(' + CFG.fonts.serif + ')', { weight: '400 700' }),
+			new FontFace(SERIF, 'url(' + CFG.fonts.serifItalic + ')', { weight: '400 700', style: 'italic' })
 		];
 		Promise.all(faces.map(function (f) { return f.load().then(function (l) { document.fonts.add(l); }); }))
 			.catch(function () {})
