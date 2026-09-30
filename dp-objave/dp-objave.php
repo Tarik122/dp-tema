@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       DP objave
  * Description:       Instagram objave i storyji u stilu Druge perspektive, pravljeni iz članaka: naslovnica s fotografijom, tekst, citat. Sve se može urediti i preuzeti kao slika. Objave za mreže → Dodaj novu, ili "Napravi objavu" kod članka.
- * Version:           1.6.1
+ * Version:           1.7.0
  * Requires at least: 6.6
  * Requires PHP:      7.4
  * Author:            Druga perspektiva
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DPO_VERSION', '1.6.1' );
+define( 'DPO_VERSION', '1.7.0' );
 define( 'DPO_URL', plugin_dir_url( __FILE__ ) );
 define( 'DPO_META', '_dpo_design' );
 

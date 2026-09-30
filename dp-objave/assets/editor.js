@@ -28,7 +28,7 @@
 			return { t: t, bg: '#402f65', logo: true, title: 'Kratka, jaka rečenica kao naslov.', body: 'Ovdje ide tekst iz članka. Najbolje su dva do četiri kraća pasusa.', align: 'left', caps: false };
 		}
 		if (t === 'score') {
-			return { t: t, bg: '#141414', logo: true, title: '', chip: 'Odbojka', chipColor: '#ee8031', home: 'Peta gimnazija', homeScore: '2', away: 'Druga gimnazija', awayScore: '1', ours: 'away', detail: '', credit: '', darken: 0.8, blur: 0, photos: [] };
+			return { t: t, bg: '#402f65', logo: true, title: '', chip: 'Odbojka', chipColor: '#ee8031', home: 'Peta gimnazija', homeScore: '2', away: 'Druga gimnazija', awayScore: '1', ours: 'away', detail: '', credit: '', darken: 0.8, blur: 0, photos: [] };
 		}
 		if (t === 'table') {
 			return { t: t, bg: '#402f65', logo: true, title: 'Raspored', sub: '08.09. – 09.09.', rows: 'Prvi | 08:00 – 08:35\nDrugi | 08:40 – 09:15\nTreći | 09:20 – 09:55\nČetvrti | 10:00 – 10:35\n*Veliki odmor | 10:35 – 10:55\nPeti | 10:55 – 11:30\nŠesti | 11:35 – 12:10\nSedmi | 12:15 – 12:50', cellColor: '#ee8031', credit: '', darken: 0.6, blur: 0, photos: [] };
@@ -137,6 +137,11 @@
 		var w = img.naturalWidth * scale, h = img.naturalHeight * scale;
 		var ovX = w - slot.w, ovY = h - slot.h;
 		return { x: slot.x - ovX * (1 + (p.ox || 0)) / 2, y: slot.y - ovY * (1 + (p.oy || 0)) / 2, w: w, h: h, ovX: ovX, ovY: ovY };
+	}
+
+	/** Visina dijela slajda s fotografijom (rezultat u stilu DP moderni ima fotografiju samo gore). */
+	function photoH(s, H, format) {
+		return s.t === 'score' && style() === 'moderni' ? Math.round(H * (format === 'story' ? 0.5 : 0.55)) : H;
 	}
 
 	function slots(s, W, H) {
@@ -425,9 +430,10 @@
 	// ---- Rezultat utakmice ----
 	function drawScore(ctx, s, W, H, format) {
 		var st = style(), story = format === 'story';
-		ctx.fillStyle = s.bg || '#141414';
+		ctx.fillStyle = s.bg || '#402f65';
 		ctx.fillRect(0, 0, W, H);
-		var any = drawPhotos(ctx, s, W, H);
+		var ph = photoH(s, H, format);
+		var any = drawPhotos(ctx, s, W, ph);
 		var ours = s.ours, orange = s.chipColor || '#ee8031';
 		var colL = W * 0.27, colR = W * 0.73, nameW = W * 0.42;
 
@@ -460,47 +466,65 @@
 			return;
 		}
 
-		// DP moderni: kao naslovna. Fotografija, crni prelaz, sve dolje lijevo;
-		// rezultat kao semafor u dva reda, naš tim bijel s narandžastom crticom, protivnik blijeđi.
-		var M = 64, base = H - (story ? 300 : 72);
-		var rowH = story ? 190 : 168, ns = story ? 64 : 58, big = story ? 178 : 158;
-		var sbBottom = base - (s.logo ? 104 : 10);
-		var sbTop = sbBottom - 2 * rowH;
-		// Sport je naslov slajda (velik, kao naslov na naslovnoj); oznaka iznad nosi kontekst.
-		var hs = fitTitle(ctx, SANS, 700, story ? 112 : 100, 56, 2, s.chip || '', W - 2 * M, -0.022);
-		var head = s.chip ? textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.02, s.chip, W - 2 * M, -hs * 0.022, '#ffffff', 0, M, W) : null;
-		var headTop = head ? sbTop - 26 - head.h : sbTop;
-		var cs = story ? 40 : 36, ch = Math.round(cs * 1.45);
-		var chipTop = headTop - 22 - ch;
-		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.06, chipTop - H * 0.26), Math.min(1, s.darken * 1.12));
+		// DP moderni: fotografija gore (ništa preko nje), rezultat na traci u boji ispod.
+		// Traka: oznaka takmičenja i logo u prvom redu, sport kao naslov, pa semafor u dva reda.
+		var M = 64, y0 = ph;
+		var light = isLight(s.bg || '#402f65');
+		var ink = light ? '#141414' : '#ffffff';
+		var soft = light ? 'rgba(20,20,20,.5)' : 'rgba(255,255,255,.55)';
+		var line = light ? 'rgba(20,20,20,.16)' : 'rgba(255,255,255,.2)';
 
-		chipBlock(ctx, s.detail || 'Rezultat', orange, cs, 700, 0, M).draw(chipTop);
-		if (head) head.draw(headTop);
+		if (any) {
+			// Blaga sjena na dnu fotografije, da potpis bude čitljiv i prelaz mekši.
+			var g = ctx.createLinearGradient(0, y0 - 180, 0, y0);
+			g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.35)');
+			ctx.fillStyle = g; ctx.fillRect(0, y0 - 180, W, 180);
+			if (s.credit) {
+				ctx.font = font(SANS, 400, 22); ctx.fillStyle = 'rgba(255,255,255,.8)';
+				ctx.fillText(s.credit, W - M - ctx.measureText(s.credit).width, y0 - 24);
+			}
+		}
 
+		// Prvi red: oznaka lijevo, logo desno.
+		var cs = story ? 38 : 34, top = y0 + (story ? 64 : 52);
+		var chip = chipBlock(ctx, s.detail || 'Rezultat', orange, cs, 700, 0, M);
+		chip.draw(top);
+		var lw = story ? 96 : 84;
+		drawLogo(ctx, s, W, H, format, light, { w: lw, right: M, bottom: H - (top + chip.h / 2 + lw * 0.42) });
+		var y = top + chip.h + (story ? 26 : 20);
+
+		// Sport kao naslov.
+		if (s.chip) {
+			var hs = fitTitle(ctx, SANS, 700, story ? 104 : 88, 52, 1, s.chip, W - 2 * M, -0.022);
+			var head = textBlock(ctx, font(SANS, 700, hs), hs, hs, s.chip, W - 2 * M, -hs * 0.022, ink, 0, M, W);
+			head.draw(y); y += head.h;
+		}
+		y += story ? 44 : 30;
+
+		// Semafor.
+		var bottom = H - (story ? 300 : 64);
+		var rowH = Math.min(story ? 190 : 156, (bottom - y) / 2);
+		var big = rowH * 0.78, ns = Math.min(story ? 58 : 50, rowH * 0.36);
 		ctx.font = font(SANS, 900, big); track(ctx, -big * 0.02);
 		var scoreW = Math.max(ctx.measureText(s.homeScore || '').width, ctx.measureText(s.awayScore || '').width);
 		track(ctx, 0);
-		var nameMax = W - 2 * M - 28 - scoreW - 40;
+		var nameMax = W - 2 * M - 30 - scoreW - 40;
+		var hsc = parseFloat(s.homeScore), asc = parseFloat(s.awayScore);
 		[[s.home, s.homeScore, 'home'], [s.away, s.awayScore, 'away']].forEach(function (t, i) {
-			var top = sbTop + i * rowH, mid = top + rowH / 2;
-			var mine = ours === t[2];
-			// Pobjednik bijel, poraženi blijeđi (i kad izgubimo); naš tim uvijek ima crticu.
-			var hs = parseFloat(s.homeScore), as = parseFloat(s.awayScore);
-			var muted = !isNaN(hs) && !isNaN(as) && hs !== as && (t[2] === 'home' ? hs < as : as < hs);
-			if (i) { ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(M, top, W - 2 * M, 2); }
-			if (mine) { ctx.fillStyle = orange; ctx.fillRect(M, mid - rowH * 0.24, 8, rowH * 0.48); }
+			var rt = y + i * rowH, mid = rt + rowH / 2;
+			// Pobjednik puna boja, poraženi blijeđi (i kad izgubimo); naš tim uvijek ima crticu.
+			var lost = !isNaN(hsc) && !isNaN(asc) && hsc !== asc && (t[2] === 'home' ? hsc < asc : asc < hsc);
+			ctx.fillStyle = line; ctx.fillRect(M, rt, W - 2 * M, 2);
+			if (ours === t[2]) { ctx.fillStyle = orange; ctx.fillRect(M, mid - rowH * 0.22, 8, rowH * 0.44); }
 			var size = ns;
 			ctx.font = font(SANS, 700, size); track(ctx, -size * 0.015);
-			while (ctx.measureText(t[0] || '').width > nameMax && size > 32) { size -= 2; ctx.font = font(SANS, 700, size); track(ctx, -size * 0.015); }
-			ctx.fillStyle = muted ? 'rgba(255,255,255,.72)' : '#ffffff';
-			ctx.fillText(t[0] || '', M + 28, mid + size * 0.36);
+			while (ctx.measureText(t[0] || '').width > nameMax && size > 30) { size -= 2; ctx.font = font(SANS, 700, size); track(ctx, -size * 0.015); }
+			ctx.fillStyle = lost ? soft : ink;
+			ctx.fillText(t[0] || '', M + 30, mid + size * 0.36);
 			ctx.font = font(SANS, 900, big); track(ctx, -big * 0.02);
-			var sw = ctx.measureText(t[1] || '').width;
-			ctx.fillText(t[1] || '', W - M - sw, mid + big * 0.36);
+			ctx.fillText(t[1] || '', W - M - ctx.measureText(t[1] || '').width, mid + big * 0.36);
 			track(ctx, 0);
 		});
-		var lg = drawLogo(ctx, s, W, H, format, false, { w: 100, right: M, bottom: H - base });
-		if (s.credit) sideCredit(ctx, s.credit, W, (s.chip ? chipTop : sbTop) - 28, false);
 	}
 
 	/** Redovi rasporeda: "lijevo | desno"; zvjezdica na početku ističe red. */
@@ -858,7 +882,7 @@
 			F.appendChild(field('Naš tim (istaknut bojom)', ou));
 			F.appendChild(field('Oznaka / takmičenje', textInput(s, 'detail'), 'Npr. "Gimnazijada 2025, polufinale". U stilu DP moderni ide u narandžastu oznaku iznad sporta; prazno = "Rezultat".'));
 			F.appendChild(photoFields(s));
-			if ((s.photos || []).length) F.appendChild(field('Zatamnjenje', range(s, 'darken', 0, 1, 0.05)));
+			F.appendChild(field('Boja trake s rezultatom', swatches(s, 'bg', C.bg)));
 			F.appendChild(field('Potpis fotografije', textInput(s, 'credit')));
 		} else if (s.t === 'table') {
 			F.appendChild(field('Naslov', textInput(s, 'title')));
@@ -947,8 +971,10 @@
 		ui.canvas.addEventListener('pointerdown', function (e) {
 			var s = D.slides[cur];
 			if (!(s.photos || []).length) return;
-			var pt = point(e), sl = slots(s, ui.canvas.width, ui.canvas.height);
-			var i = Math.min(sl.length - 1, Math.floor(pt.y / (ui.canvas.height / sl.length)));
+			var ph = photoH(s, ui.canvas.height, D.format);
+			var pt = point(e), sl = slots(s, ui.canvas.width, ph);
+			if (pt.y > ph) return;
+			var i = Math.min(sl.length - 1, Math.floor(pt.y / (ph / sl.length)));
 			var p = s.photos[i], img = images[p.url];
 			if (!img || !img.naturalWidth) return;
 			var b = photoBox(img, sl[i], p);
