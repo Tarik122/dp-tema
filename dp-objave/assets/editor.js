@@ -165,16 +165,6 @@
 		return { x: x, y: y, w: w, h: h, on: !!s.logo };
 	}
 
-	/** Mala oznaka rubrike gore lijevo na tekstu i citatu (ista kao na naslovnoj), da karusel izgleda kao cjelina. */
-	function topChip(ctx, s, format, x) {
-		if (s.topChip === false) return;
-		var cover = null;
-		D.slides.forEach(function (o) { if (!cover && o.t === 'cover' && o.chip) cover = o; });
-		if (!cover) return;
-		var c = chipBlock(ctx, typo(cover.chip), cover.chipColor || '#5271fe', format === 'story' ? 36 : 32, 700, 0, x);
-		c.draw(format === 'story' ? 250 : 88);
-	}
-
 	/** Potpis fotografije uspravno uz desnu ivicu, iznad logotipa. */
 	function sideCredit(ctx, text, W, fromY, dark) {
 		ctx.save();
@@ -337,9 +327,8 @@
 		ctx.fillStyle = s.bg || STYLE_BG[st].text;
 		ctx.fillRect(0, 0, W, H);
 		var modern = st === 'moderni';
-		var M = modern ? 88 : 96, maxW = W - 2 * M, room = H - (story ? 640 : 380);
+		var M = 96, maxW = W - 2 * M, room = H - (story ? 640 : 380);
 		var ink = dark ? '#141414' : '#ffffff';
-		if (modern) topChip(ctx, s, format, M);
 
 		if (!String(s.body || '').trim()) {
 			// Velika izjava, kao plakat.
@@ -366,13 +355,10 @@
 			b = wrap(ctx, s.body, maxW);
 			total = (t ? t.h + T.gap : 0) + (b.length - 1) * bs * T.blh + bs;
 		}
-		// DP moderni: tekst uvijek počinje na istoj visini (kao stranice iste priče).
-		var fixedTop = story ? 430 : 250;
-		if (modern) room = H - fixedTop - (story ? 380 : 190);
 		measure();
 		while (total > room && bs > 34) { ts -= 2; bs -= 1; measure(); }
 		OVER.set(ORIG, total > room);
-		var top = modern ? fixedTop : (H - total) / 2 - H * 0.02;
+		var top = (H - total) / 2 - H * 0.02;
 		if (t) { t.draw(top); top += t.h + T.gap; }
 		ctx.fillStyle = T.body;
 		ctx.font = font(SANS, 400, bs);
@@ -405,8 +391,7 @@
 		}
 
 		// DP moderni: velik i zbijen citat, crta uz lijevu ivicu, ime podebljano pa opis.
-		topChip(ctx, s, format, 88);
-		var L = 132, maxW = W - L - 88, size = 124, qb;
+		var L = 124, maxW = W - L - 88, size = 124, qb;
 		do { size -= 4; qb = textBlock(ctx, font(SANS, 900, size), size, size * 1.04, q, maxW, -size * 0.02, ink, 0, L, W); } while (qb.h > room && size > 44);
 		var as = story ? 36 : 34, runs = [];
 		if (s.who) runs.push({ text: s.who + (s.whoInfo ? ',' : ''), font: font(SANS, 700, as), color: ink });
@@ -660,10 +645,6 @@
 			F.appendChild(field('Ime', textInput(s, 'who'), 'Podebljano ispod citata.'));
 			F.appendChild(field('Opis', textInput(s, 'whoInfo'), 'Npr. "učenica 3. razreda". Piše se sivo, poslije imena.'));
 			F.appendChild(field('Pozadina', swatches(s, 'bg', C.bg)));
-		}
-		if (s.t !== 'cover' && style() === 'moderni') {
-			if (s.topChip === undefined) s.topChip = true;
-			F.appendChild(checkbox(s, 'topChip', 'Oznaka rubrike gore lijevo (ista kao na naslovnoj)'));
 		}
 		F.appendChild(checkbox(s, 'logo', 'DP logo u uglu'));
 	}
