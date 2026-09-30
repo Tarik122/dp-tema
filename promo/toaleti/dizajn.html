@@ -5,9 +5,10 @@
 <title>Ni papira ni sapuna – karusel</title>
 <!--
 	Karusel za tekst o toaletima u Drugoj gimnaziji (Vijesti o školi), 5 slajdova 1080×1440.
-	Ideja: nula. Naslovna je velika „0“ (i prazna rolna), a grafikon je zgrada:
-	3 sprata × 2 toaleta × 3 polugodišta = 18 praznih rolni.
-	Rolna: isprekidani krug je mjesto gdje bi bio papir, puni mali krug je karton.
+	1: naslovna s fotografijom (zamijeniti foto-mjesto pravom fotografijom).
+	2–5: jedna panorama 4320 px. Rolna na slajdu 2 odmotava traku toalet-papira preko
+	sva četiri slajda; svaki listić nosi jednu činjenicu, a traka se na kraju kida.
+	Perforacije padaju tačno na spojeve slajdova, pa se papir „kida“ kad se prevuče.
 -->
 <style>
 @font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
@@ -19,9 +20,10 @@
 	--narandza: #ee8031;
 	--tinta: #141414;
 	--ljubicasta: #402f65;
-	--linija: rgba(255, 255, 255, 0.24);
 	--m: 64px;
 	--mt: 96px;
+	--traka-y: 430px;   /* gornja ivica trake */
+	--traka-h: 580px;   /* visina trake (širina papira) */
 }
 
 * { box-sizing: border-box; margin: 0; }
@@ -35,125 +37,110 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 	font-size: 38px; font-weight: 700; color: #fff; background: var(--plava); white-space: nowrap;
 }
 .naslov { font-size: 90px; font-weight: 700; line-height: 1.03; letter-spacing: -0.022em; text-wrap: balance; }
-.izjava { font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -0.025em; text-wrap: balance; }
 .tekst { font-size: 40px; line-height: 1.38; color: rgba(255, 255, 255, .84); text-wrap: pretty; }
 .autor { font-size: 28px; color: rgba(255, 255, 255, .86); }
-.napomena { font-size: 24px; line-height: 1.4; color: rgba(255, 255, 255, .66); }
 .logo { position: absolute; right: 64px; bottom: 72px; width: 100px; }
 
-/* Rolna: SVG se ubacuje skriptom u svaki .rolna. */
-.rolna { display: block; width: 92px; height: 92px; }
-.rolna svg { width: 100%; height: 100%; overflow: visible; }
-
-/* 1. Naslovna: velika nula. */
-.naslovna .nula {
-	position: absolute; left: 22px; top: -185px;
-	font-size: 1180px; font-weight: 900; line-height: 1; letter-spacing: -0.04em;
+/* 1. Naslovna s fotografijom. */
+.foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.foto-mjesto { position: absolute; inset: 0; background: #3a3a3a; }
+.foto-mjesto span { position: absolute; left: var(--m); top: 120px; font-size: 30px; color: rgba(255, 255, 255, .5); }
+.prelaz {
+	position: absolute; left: 0; right: 0; bottom: 0; height: 62%;
+	background: linear-gradient(to bottom,
+		rgba(0,0,0,0) 0%, rgba(0,0,0,.02) 8%, rgba(0,0,0,.08) 17%, rgba(0,0,0,.17) 25%,
+		rgba(0,0,0,.29) 33%, rgba(0,0,0,.42) 42%, rgba(0,0,0,.55) 50%, rgba(0,0,0,.66) 58%,
+		rgba(0,0,0,.74) 67%, rgba(0,0,0,.79) 75%, rgba(0,0,0,.8) 100%);
 }
 .naslovna .dno { position: absolute; left: var(--m); right: 200px; bottom: 132px; }
 .naslovna .naslov { margin-top: 26px; font-size: 110px; }
 .naslovna .autor { margin-top: 30px; }
+.potpis {
+	position: absolute; right: 26px; bottom: 200px;
+	writing-mode: vertical-rl; transform: rotate(180deg);
+	font-size: 20px; color: rgba(255, 255, 255, .66); white-space: nowrap;
+}
 
-/* 2. Zgrada: 3 sprata × 2 toaleta × 3 polugodišta. */
-.zgrada .gore { position: absolute; left: var(--mt); right: var(--mt); top: 140px; }
-.zgrada .gore .tekst { margin-top: 32px; }
-.zgrada .izjava { font-size: 200px; }
-.spratovi { position: absolute; left: var(--m); right: var(--m); top: 700px; }
-.spratovi .zaglavlje, .spratovi .sprat { display: grid; grid-template-columns: 180px 352px 352px; column-gap: 32px; align-items: center; }
-.spratovi .zaglavlje { padding-bottom: 18px; font-size: 26px; color: rgba(255, 255, 255, .66); }
-.spratovi .sprat .rolna { width: 108px; height: 108px; flex: none; }
-.spratovi .sprat { height: 170px; border-top: 2px solid var(--linija); }
-.spratovi .sprat:last-child { border-bottom: 2px solid var(--linija); }
-.spratovi .ime { font-size: 32px; font-weight: 700; }
-.spratovi .grupa { display: flex; gap: 14px; }
-.spratovi .ime { white-space: nowrap; }
+/* 2–5. Panorama s trakom papira. */
+.panorama { position: absolute; top: 0; left: 0; width: 4320px; height: 1440px; }
 
-/* 3. Odgovor škole s narandžastom linijom. */
-.odgovor .blok { position: absolute; left: var(--mt); right: var(--mt); top: 50%; transform: translateY(-58%); padding-left: 44px; }
-.odgovor .blok::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 150px; width: 12px; background: var(--narandza); }
-.odgovor .naslov { font-size: 88px; }
-.odgovor .autor { margin-top: 56px; }
+/* Rolna, gledana sprijeda: valjak s kartonom na vrhu. */
+.rolna { position: absolute; left: 96px; top: calc(var(--traka-y) - 44px); width: 300px; height: calc(var(--traka-h) + 88px); }
 
-/* 4. Izjava na plavoj. */
-.izjava-slajd { background: var(--plava); }
-.izjava-slajd .gore { position: absolute; left: var(--mt); right: var(--mt); top: 150px; }
-.izjava-slajd .izjava { font-size: 150px; }
+/* Traka: listići poredani jedan do drugog, s perforacijom između. */
+.traka { position: absolute; top: var(--traka-y); left: 246px; height: var(--traka-h); display: flex; }
+.list {
+	position: relative; height: 100%; flex: none;
+	background-color: #fff;
+	/* Utisnuti uzorak papira: sitne tačke, ne preljev boje. */
+	background-image: radial-gradient(circle, rgba(20, 20, 20, .07) 2.2px, transparent 2.6px);
+	background-size: 30px 30px; background-position: 15px 15px;
+	color: var(--tinta); padding: 56px 52px;
+	display: flex; flex-direction: column; justify-content: flex-end;
+}
+.list + .list { border-left: 3px dashed rgba(20, 20, 20, .28); }
+.list p { font-size: 58px; font-weight: 700; line-height: 1.06; letter-spacing: -0.022em; text-wrap: balance; }
+.list .broj { font-size: 360px; font-weight: 900; line-height: .8; letter-spacing: -0.04em; margin-left: -0.04em; }
+.list .ispod { margin-top: 26px; font-size: 44px; }
+.list small { display: block; margin-top: 22px; font-size: 26px; font-weight: 400; color: rgba(20, 20, 20, .6); letter-spacing: 0; }
+/* Otkinuti kraj trake. */
+.list.kraj p { font-size: 74px; font-weight: 900; letter-spacing: -0.025em; }
+.list.kraj { clip-path: polygon(0 0, 100% 0, 96% 6%, 100% 12%, 95% 19%, 99% 26%, 94% 33%, 100% 40%, 95% 47%, 99% 55%, 94% 62%, 100% 69%, 95% 76%, 99% 84%, 94% 91%, 100% 100%, 0 100%); padding-right: 70px; }
 
-/* 5. Sljedeća provjera. */
-.dalje .gore { position: absolute; left: var(--mt); right: var(--mt); top: 150px; }
-.dalje .red { display: flex; gap: 40px; margin-top: 80px; }
-.dalje .red .rolna { width: 150px; height: 150px; }
-.dalje .dno { position: absolute; left: var(--mt); right: 220px; bottom: 72px; }
-.dalje .dno .autor { margin-top: 28px; }
+.panorama .poslije { position: absolute; left: calc(3240px + var(--mt)); bottom: 72px; width: 700px; }
+.panorama .poslije .autor { margin-top: 24px; }
 </style>
 </head>
 <body>
 
 <!-- 1. Naslovna -->
 <section class="slide post naslovna">
-	<div class="nula">0</div>
+	<!-- Zamijeniti: <img class="foto" src="foto.jpg" alt=""> -->
+	<div class="foto-mjesto"><span>[ovdje ide vaša fotografija]</span></div>
+	<div class="prelaz"></div>
 	<div class="dno">
 		<span class="oznaka">Vijesti o školi</span>
 		<h1 class="naslov">Ni papira ni sapuna</h1>
 		<p class="autor">Pišu: [ime i prezime] i [ime i prezime]</p>
 	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+	<div class="potpis">Foto: [ime i prezime]</div>
 </section>
 
-<!-- 2. Zgrada -->
-<section class="slide post zgrada">
-	<div class="gore">
-		<h2 class="izjava">0 od 18</h2>
-		<p class="tekst">Tri polugodišta smo po jednu sedmicu obilazili svih šest toaleta u školi. Svaka rolna je jedan toalet u jednoj sedmici. Nijednom nije bilo ni papira ni sapuna.</p>
-	</div>
-	<div class="spratovi">
-		<div class="zaglavlje"><span></span><span>Ženski</span><span>Muški</span></div>
-		<div class="sprat"><span class="ime">2. sprat</span><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div></div>
-		<div class="sprat"><span class="ime">1. sprat</span><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div></div>
-		<div class="sprat"><span class="ime">Prizemlje</span><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div></div>
+<!-- 2. Panorama: početak (ostali slajdovi dobijaju kopiju, pomjerenu ulijevo) -->
+<section class="slide post panorama-slajd">
+	<div class="panorama" id="panorama">
+		<div class="traka">
+			<!-- Širine: listići se sastaju tačno na 1080, 2160 i 3240 px. -->
+			<div class="list" style="width:834px;padding-left:202px"><p>Ovo je jedini toalet-papir u Drugoj gimnaziji.</p></div>
+			<div class="list" style="width:540px"><p>Šest toaleta, tri sprata. Tri polugodišta smo ih obilazili po sedmicu dana.</p></div>
+			<div class="list" style="width:540px"><div class="broj">0</div><p class="ispod">puta papir</p></div>
+			<div class="list" style="width:540px"><div class="broj">0</div><p class="ispod">puta sapun</p></div>
+			<div class="list" style="width:540px"><p>Vijeće učenika je to pokrenulo prošle godine. Ništa se nije promijenilo.</p></div>
+			<div class="list" style="width:540px"><p>Uprava škole: nema novca u budžetu, a učenici to uništavaju iz zabave.<small>Odgovor na naše pitanje</small></p></div>
+			<div class="list kraj" style="width:500px"><p>Uništiti se može samo ono što postoji.</p></div>
+		</div>
+		<svg class="rolna" viewBox="0 0 300 668" aria-hidden="true">
+			<path d="M0 44 V624 A150 44 0 0 0 300 624 V44 Z" fill="#fff"/>
+			<path d="M0 44 V624 A150 44 0 0 0 300 624 V44" fill="none" stroke="rgba(20,20,20,.18)" stroke-width="3"/>
+			<ellipse cx="150" cy="44" rx="150" ry="44" fill="#fff" stroke="rgba(20,20,20,.18)" stroke-width="3"/>
+			<ellipse cx="150" cy="44" rx="104" ry="30" fill="none" stroke="rgba(20,20,20,.08)" stroke-width="2"/>
+			<ellipse cx="150" cy="44" rx="62" ry="18" fill="none" stroke="rgba(20,20,20,.08)" stroke-width="2"/>
+			<ellipse cx="150" cy="44" rx="44" ry="13" fill="#ee8031"/>
+			<ellipse cx="150" cy="46" rx="33" ry="9" fill="#2a1f45"/>
+		</svg>
+		<div class="poslije">
+			<p class="tekst">Sljedeća provjera: [mjesec].</p>
+			<p class="autor">Cijeli tekst na drugaperspektiva.org</p>
+		</div>
 	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
-
-<!-- 3. Odgovor škole (prepričan; zamijeniti citatom iz intervjua s pomoćnikom direktora) -->
-<section class="slide post odgovor">
-	<div class="blok">
-		<p class="naslov">Nema novca u budžetu, a učenici to uništavaju iz zabave.</p>
-		<p class="autor">Uprava škole, na naše pitanje zašto nema papira i sapuna</p>
-	</div>
-	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
-</section>
-
-<!-- 4. Izjava -->
-<section class="slide post izjava-slajd">
-	<div class="gore"><p class="izjava">Uništiti se može samo ono što postoji.</p></div>
-	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
-</section>
-
-<!-- 5. Sljedeća provjera -->
-<section class="slide post dalje">
-	<div class="gore">
-		<h2 class="naslov">Sljedeća provjera: [mjesec].</h2>
-		<div class="red"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i><i class="rolna nova"></i></div>
-	</div>
-	<div class="dno">
-		<p class="tekst">Svako polugodište obilazimo svih šest toaleta. Objavit ćemo šta zateknemo.</p>
-		<p class="autor">Cijeli tekst na drugaperspektiva.org</p>
-	</div>
-	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
-</section>
+<section class="slide post panorama-slajd" data-pomak="1"><img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt=""></section>
+<section class="slide post panorama-slajd" data-pomak="2"><img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt=""></section>
+<section class="slide post panorama-slajd" data-pomak="3"><img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt=""></section>
 
 <script>
-/* Prazna rolna: isprekidani obris (gdje bi bio papir) i karton u sredini. Nova (sljedeća) je narandžasta. */
-document.querySelectorAll('.rolna').forEach(function (el) {
-	var boja = el.classList.contains('nova') ? '#ee8031' : '#fff';
-	var obris = el.classList.contains('nova') ? 1 : .7;
-	el.innerHTML = '<svg viewBox="0 0 100 100">'
-		+ '<circle cx="50" cy="50" r="46" fill="none" stroke="' + boja + '" stroke-opacity="' + obris + '" stroke-width="4" stroke-dasharray="7 7"/>'
-		+ '<circle cx="50" cy="50" r="18" fill="none" stroke="' + boja + '" stroke-width="9"/>'
-		+ '</svg>';
-});
-
 /* Bosanska tipografija: „navodnici“, …, – i jednoslovne riječi vezane za sljedeću. */
 (function () {
 	var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
@@ -165,9 +152,18 @@ document.querySelectorAll('.rolna').forEach(function (el) {
 			.replace(/(^|[\s(\[ ])["“”″˝]/g, '$1„')
 			.replace(/["“”″˝]/g, '“')
 			.replace(/ - /g, ' – ')
-			.replace(/(?<=^|[\s („])([aiouskvzAIOUSKVZ]) +/g, '$1 ');
+			.replace(/(?<=^|[\s\u00a0(„])([aiouskvzAIOUSKVZ]) +/g, '$1\u00a0');
 	}
 })();
+
+/* Ista panorama na slajdovima 3–5, pomjerena za po 1080 px. */
+var izvor = document.getElementById('panorama');
+document.querySelectorAll('[data-pomak]').forEach(function (s) {
+	var kopija = izvor.cloneNode(true);
+	kopija.removeAttribute('id');
+	kopija.style.left = (-1080 * Number(s.dataset.pomak)) + 'px';
+	s.prepend(kopija);
+});
 </script>
 </body>
 </html>
