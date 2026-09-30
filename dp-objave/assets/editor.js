@@ -464,13 +464,18 @@
 		// rezultat kao semafor u dva reda, naš tim bijel s narandžastom crticom, protivnik blijeđi.
 		var M = 64, base = H - (story ? 300 : 72);
 		var rowH = story ? 190 : 168, ns = story ? 64 : 58, big = story ? 178 : 158;
-		var sbBottom = base - (s.logo ? 104 : (s.detail ? 56 : 10));
+		var sbBottom = base - (s.logo ? 104 : 10);
 		var sbTop = sbBottom - 2 * rowH;
-		var cs = story ? 42 : 38, ch = Math.round(cs * 1.45);
-		var chipTop = sbTop - 34 - ch;
-		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.08, (s.chip ? chipTop : sbTop) - H * 0.3), Math.min(1, s.darken * 1.12));
+		// Sport je naslov slajda (velik, kao naslov na naslovnoj); oznaka iznad nosi kontekst.
+		var hs = fitTitle(ctx, SANS, 700, story ? 112 : 100, 56, 2, s.chip || '', W - 2 * M, -0.022);
+		var head = s.chip ? textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.02, s.chip, W - 2 * M, -hs * 0.022, '#ffffff', 0, M, W) : null;
+		var headTop = head ? sbTop - 26 - head.h : sbTop;
+		var cs = story ? 40 : 36, ch = Math.round(cs * 1.45);
+		var chipTop = headTop - 22 - ch;
+		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.06, chipTop - H * 0.26), Math.min(1, s.darken * 1.12));
 
-		if (s.chip) chipBlock(ctx, s.chip, orange, cs, 700, 0, M).draw(chipTop);
+		chipBlock(ctx, s.detail || 'Rezultat', orange, cs, 700, 0, M).draw(chipTop);
+		if (head) head.draw(headTop);
 
 		ctx.font = font(SANS, 900, big); track(ctx, -big * 0.02);
 		var scoreW = Math.max(ctx.measureText(s.homeScore || '').width, ctx.measureText(s.awayScore || '').width);
@@ -494,10 +499,6 @@
 			ctx.fillText(t[1] || '', W - M - sw, mid + big * 0.36);
 			track(ctx, 0);
 		});
-		if (s.detail) {
-			ctx.font = font(SANS, 400, 28); ctx.fillStyle = 'rgba(255,255,255,.86)';
-			ctx.fillText(s.detail, M, base);
-		}
 		var lg = drawLogo(ctx, s, W, H, format, false, { w: 100, right: M, bottom: H - base });
 		if (s.credit) sideCredit(ctx, s.credit, W, (s.chip ? chipTop : sbTop) - 28, false);
 	}
@@ -847,7 +848,7 @@
 			F.appendChild(field('Potpis fotografije', textInput(s, 'credit'), 'Npr. "Foto: Ime Prezime". Prazno = bez potpisa.'));
 			F.appendChild(field((s.photos || []).length ? 'Pozadina (vidi se samo bez fotografije)' : 'Pozadina', swatches(s, 'bg', C.bg)));
 		} else if (s.t === 'score') {
-			F.appendChild(field('Sport', textInput(s, 'chip'), 'Npr. "Odbojka" ili "Košarka, polufinale".'));
+			F.appendChild(field('Sport', textInput(s, 'chip'), 'Npr. "Odbojka". U stilu DP moderni to je veliki naslov iznad rezultata.'));
 			F.appendChild(field('Boja oznake i našeg tima', swatches(s, 'chipColor', C.chip)));
 			F.appendChild(h('div', { class: 'dpo-two' }, [field('Domaći', textInput(s, 'home')), field('Rezultat', textInput(s, 'homeScore'))]));
 			F.appendChild(h('div', { class: 'dpo-two' }, [field('Gosti', textInput(s, 'away')), field('Rezultat', textInput(s, 'awayScore'))]));
@@ -855,7 +856,7 @@
 			ou.value = s.ours || '';
 			ou.addEventListener('change', function () { s.ours = ou.value; changed(); });
 			F.appendChild(field('Naš tim (istaknut bojom)', ou));
-			F.appendChild(field('Dodatak ispod', textInput(s, 'detail'), 'Neobavezno, npr. "Gimnazijada 2025, polufinale".'));
+			F.appendChild(field('Oznaka / takmičenje', textInput(s, 'detail'), 'Npr. "Gimnazijada 2025, polufinale". U stilu DP moderni ide u narandžastu oznaku iznad sporta; prazno = "Rezultat".'));
 			F.appendChild(photoFields(s));
 			if ((s.photos || []).length) F.appendChild(field('Zatamnjenje', range(s, 'darken', 0, 1, 0.05)));
 			F.appendChild(field('Potpis fotografije', textInput(s, 'credit')));
