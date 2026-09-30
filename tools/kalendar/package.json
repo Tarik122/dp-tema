@@ -1,0 +1,9 @@
+{
+  "name": "dp-kalendar",
+  "private": true,
+  "type": "module",
+  "description": "Kalendar događaja za Instagram Druge perspektive: JSON u PNG slajdove.",
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}

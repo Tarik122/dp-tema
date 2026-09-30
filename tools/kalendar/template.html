@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<title>Kalendar događaja</title>
+<style>
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 900; src: url("../../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
+
+/* DP moderni: boje i mjere (1080 px širine). */
+:root {
+	--plava: #5271fe;
+	--narandza: #ee8031;
+	--ljubicasta: #402f65;
+	--tinta: #141414;
+	--soft: rgba(255, 255, 255, 0.72);
+	--line: rgba(255, 255, 255, 0.24);
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { background: #777; font-family: "Lato", sans-serif; color: #fff; }
+
+.slide {
+	position: relative;
+	width: 1080px;
+	height: 1440px;
+	overflow: hidden;
+	background: var(--ljubicasta);
+	margin-bottom: 40px;
+}
+.slide.story { height: 1920px; }
+
+.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.dim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); }
+
+/* Crni prelaz odozdo (mekan, pa pun ispod teksta). */
+.scrim {
+	position: absolute; left: 0; right: 0; bottom: 0; height: 62%;
+	background: linear-gradient(to bottom,
+		rgba(0,0,0,0) 0%, rgba(0,0,0,.02) 8%, rgba(0,0,0,.08) 17%, rgba(0,0,0,.17) 25%,
+		rgba(0,0,0,.29) 33%, rgba(0,0,0,.42) 42%, rgba(0,0,0,.55) 50%, rgba(0,0,0,.66) 58%,
+		rgba(0,0,0,.74) 67%, rgba(0,0,0,.79) 75%, rgba(0,0,0,.8) 100%);
+}
+
+.chip {
+	display: inline-block;
+	padding: 0 0.45em;
+	height: 1.45em;
+	line-height: 1.45em;
+	font-size: 38px;
+	font-weight: 700;
+	color: #fff;
+	background: var(--plava);
+	white-space: nowrap;
+}
+.chip.o { background: var(--narandza); }
+
+.logo { position: absolute; right: 64px; width: 100px; }
+.credit {
+	position: absolute; right: 26px;
+	writing-mode: vertical-rl; transform: rotate(180deg);
+	font-size: 20px; color: rgba(255, 255, 255, .66); white-space: nowrap;
+}
+
+/* ---- Naslovna ---- */
+.cover .text { position: absolute; left: 64px; right: 64px; bottom: 132px; }
+.cover h1 {
+	margin-top: 22px;
+	font-size: 90px; font-weight: 700; line-height: 1.03; letter-spacing: -0.022em;
+	text-wrap: balance;
+}
+.cover .logo { bottom: 72px; }
+
+/* ---- Zajedničko za unutrašnje slajdove ---- */
+.inner .head { position: absolute; left: 72px; right: 72px; top: 110px; }
+.inner h2 {
+	margin-top: 24px;
+	font-size: 112px; font-weight: 700; line-height: 1; letter-spacing: -0.022em;
+}
+.inner .logo { bottom: 72px; }
+.inner .body { position: absolute; left: 72px; right: 72px; }
+
+/* ---- Lista (npr. koncerti): datum i dan | naziv | mjesto ---- */
+.rows { display: flex; flex-direction: column; }
+.row {
+	display: grid;
+	grid-template-columns: 210px 1fr auto;
+	gap: 24px;
+	align-items: baseline;
+	padding: 26px 0;
+	border-top: 2px solid var(--line);
+	font-size: 34px;
+	line-height: 1.2;
+}
+.row:last-child { border-bottom: 2px solid var(--line); }
+.row .d b { font-weight: 700; }
+.row .d span { display: block; font-size: 26px; color: var(--soft); margin-top: 4px; }
+.row .n { font-weight: 700; text-wrap: balance; }
+.row .m { color: var(--soft); text-align: right; max-width: 330px; text-wrap: balance; }
+
+/* ---- Mreža plakata ---- */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 28px; }
+.item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.poster {
+	width: 100%;
+	background: #0e0b17;
+	overflow: hidden;
+}
+.poster img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.poster .ph {
+	width: 100%; height: 100%; display: grid; place-items: center; padding: 20px;
+	font-size: 28px; font-weight: 700; color: rgba(255,255,255,.5); border: 2px dashed rgba(255,255,255,.3);
+}
+.item .t { margin-top: 16px; font-size: 30px; font-weight: 700; line-height: 1.15; text-wrap: balance; }
+.item .s { margin-top: 4px; font-size: 26px; color: var(--soft); }
+</style>
+</head>
+<body>
+<main id="slides"></main>
+<script>
+/* Podaci dolaze iz render.mjs kao window.DATA (fotografije već ugrađene kao data: URL). */
+(function () {
+	var D = window.DATA, root = document.getElementById('slides');
+	var story = D.format === 'story';
+	var H = story ? 1920 : 1440;
+	var bottomSafe = story ? 300 : 72;
+
+	function el(tag, cls, html) {
+		var e = document.createElement(tag);
+		if (cls) e.className = cls;
+		if (html != null) e.innerHTML = html;
+		return e;
+	}
+	function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+	/* Bosanska tipografija: „navodnici“, … , – i jednoslovne riječi vezane za sljedeću. */
+	function typo(t) {
+		return esc(String(t || '')
+			.replace(/\.\.\./g, '…')
+			.replace(/(^|[\s(\[ ])["“”″˝]/g, '$1„')
+			.replace(/["“”″˝]/g, '“')
+			.replace(/ - /g, ' – ')
+			.replace(/(?<=^|[\s („])([aiouskvzAIOUSKVZ]) +/g, '$1 '));
+	}
+
+	function logo(slide) {
+		var l = el('img', 'logo'); l.src = D.logo; l.alt = '';
+		if (story) l.style.bottom = bottomSafe + 'px';
+		slide.appendChild(l);
+	}
+
+	function frame(cls) {
+		var s = el('section', 'slide ' + cls + (story ? ' story' : ''));
+		root.appendChild(s);
+		return s;
+	}
+
+	// 1. Naslovna
+	var c = D.naslovna || {};
+	var cover = frame('cover');
+	if (c.fotografija) { var bg = el('img', 'bg'); bg.src = c.fotografija; cover.appendChild(bg); cover.appendChild(el('div', 'scrim')); }
+	var tx = el('div', 'text');
+	if (story) tx.style.bottom = (bottomSafe + 60) + 'px';
+	tx.appendChild(el('span', 'chip' + (c.boja === 'narandza' ? ' o' : ''), typo(c.oznaka || 'Vijesti')));
+	tx.appendChild(el('h1', '', typo(c.naslov)));
+	cover.appendChild(tx);
+	logo(cover);
+	if (c.potpis) { var cr = el('div', 'credit', typo(c.potpis)); cr.style.bottom = (story ? bottomSafe : 72) + 110 + 'px'; cover.appendChild(cr); }
+
+	// 2+. Sekcije
+	(D.sekcije || []).forEach(function (sec) {
+		var s = frame('inner');
+		if (sec.pozadina) { var b = el('img', 'bg'); b.src = sec.pozadina; s.appendChild(b); s.appendChild(el('div', 'dim')); }
+		var head = el('div', 'head');
+		if (story) head.style.top = '250px';
+		head.appendChild(el('span', 'chip' + (sec.boja === 'plava' ? '' : ' o'), typo(sec.oznaka || (D.mjesecVeliko + ' ' + D.godina))));
+		head.appendChild(el('h2', '', typo(sec.naslov)));
+		s.appendChild(head);
+		var body = el('div', 'body');
+		s.appendChild(body);
+		logo(s);
+		// Tijelo počinje ispod naslova i ide do logotipa.
+		var top = head.offsetTop + head.offsetHeight + (story ? 80 : 56);
+		var bottom = H - bottomSafe - 110;
+		body.style.top = top + 'px';
+		var room = bottom - top;
+
+		if (sec.tip === 'lista') {
+			var rows = el('div', 'rows');
+			(sec.redovi || []).forEach(function (r) {
+				var row = el('div', 'row');
+				row.appendChild(el('div', 'd', '<b>' + typo(r.datum) + '</b>' + (r.dan ? '<span>' + typo(r.dan) + '</span>' : '')));
+				row.appendChild(el('div', 'n', typo(r.naziv)));
+				row.appendChild(el('div', 'm', typo(r.mjesto)));
+				rows.appendChild(row);
+			});
+			body.appendChild(rows);
+			// Ako ne stane, smanji slova i razmake dok ne stane.
+			var fs = 34;
+			while (rows.offsetHeight > room && fs > 24) {
+				fs -= 1;
+				rows.querySelectorAll('.row').forEach(function (r) { r.style.fontSize = fs + 'px'; r.style.paddingTop = r.style.paddingBottom = Math.round(fs * 0.7) + 'px'; });
+			}
+		} else {
+			var items = sec.stavke || [];
+			var grid = el('div', 'grid');
+			var perRow = 3, nRows = Math.ceil(items.length / perRow) || 1;
+			var capH = 104, rowGap = 32, ratio = 4 / 3;
+			var colW = (1080 - 144 - 2 * 28) / 3;
+			var ph = Math.min(colW * ratio, (room - (nRows - 1) * rowGap) / nRows - capH);
+			var pw = Math.min(colW, ph / ratio);
+			grid.style.rowGap = rowGap + 'px';
+			items.forEach(function (it) {
+				var item = el('div', 'item');
+				var box = el('div', 'poster');
+				box.style.width = pw + 'px'; box.style.height = (pw * ratio) + 'px';
+				if (it.plakat) { var im = el('img'); im.src = it.plakat; box.appendChild(im); }
+				else box.appendChild(el('div', 'ph', typo(it.naziv)));
+				item.appendChild(box);
+				item.appendChild(el('div', 't', typo(it.naziv)));
+				if (it.datum) item.appendChild(el('div', 's', typo(it.datum)));
+				item.style.width = colW + 'px';
+				grid.appendChild(item);
+			});
+			body.appendChild(grid);
+		}
+	});
+	window.READY = true;
+})();
+</script>
+</body>
+</html>

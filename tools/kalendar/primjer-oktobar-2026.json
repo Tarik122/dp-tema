@@ -1,0 +1,38 @@
+{
+  "mjesec": "oktobar",
+  "godina": 2026,
+  "format": "post",
+  "naslovna": {
+    "oznaka": "Vijesti",
+    "naslov": "Kalendar događaja za mjesec oktobar",
+    "fotografija": "https://commons.wikimedia.org/wiki/Special:FilePath/Sarajevo_City_Panorama.JPG?width=2000",
+    "potpis": "Foto: Julian Nyča, CC BY-SA 4.0"
+  },
+  "sekcije": [
+    {
+      "tip": "mreza",
+      "naslov": "Predstave",
+      "oznaka": "Narodno pozorište Sarajevo",
+      "stavke": [
+        { "naziv": "Ničija zemlja", "datum": "2.10.", "plakat": "https://nps.ba/assets/photos/performance/medium/1790589224-nicija-zemlja.jpeg", "izvor": "https://nps.ba/repertoar/nicija-zemlja/1048" },
+        { "naziv": "Slučaj Pelicot", "datum": "4.10.", "plakat": "https://nps.ba/assets/photos/performance/medium/1790589968-narodno-pozoriste-04.jpg", "izvor": "https://nps.ba/repertoar/slucaj-pelicot/1049" },
+        { "naziv": "Sigurno mjesto", "datum": "7.10.", "plakat": "https://nps.ba/assets/photos/performance/medium/1790590625-sigurno-mjesto-putovanje-u-centralni-mediteran.jpg", "izvor": "https://nps.ba/repertoar/sigurno-mjesto-putovanje-u-centralni-mediteran/1050" },
+        { "naziv": "Vještice iz Salema", "datum": "9.10.", "plakat": "https://nps.ba/assets/photos/performance/medium/1790591218-vjestice-iz-salema.jpg", "izvor": "https://nps.ba/repertoar/vjestice-iz-salema/1051" },
+        { "naziv": "Sarajevski trgovac", "datum": "12.10.", "plakat": "https://nps.ba/assets/photos/performance/medium/1740525404-vh-sarajevski-trgovac-2025-33.jpg", "izvor": "https://nps.ba/repertoar/sarajevski-trgovac/990" },
+        { "naziv": "Jedan je Muhammad Ali", "datum": "13.10.", "plakat": "https://nps.ba/assets/photos/performance/medium/1706177507-vh-jedan-je-muhamed-ali-25-1-2024-95.jpg", "izvor": "https://nps.ba/repertoar/jedan-je-muhammad-ali/991" }
+      ]
+    },
+    {
+      "tip": "lista",
+      "naslov": "Predstave po danima",
+      "redovi": [
+        { "datum": "2.10.", "dan": "Petak", "naziv": "Ničija zemlja", "mjesto": "Narodno pozorište" },
+        { "datum": "4.10.", "dan": "Nedjelja", "naziv": "Slučaj Pelicot", "mjesto": "Narodno pozorište" },
+        { "datum": "7.10.", "dan": "Srijeda", "naziv": "Sigurno mjesto. Putovanje u Centralni Mediteran", "mjesto": "Narodno pozorište" },
+        { "datum": "9.10.", "dan": "Petak", "naziv": "Vještice iz Salema", "mjesto": "Narodno pozorište" },
+        { "datum": "12.10.", "dan": "Ponedjeljak", "naziv": "Sarajevski trgovac", "mjesto": "Narodno pozorište" },
+        { "datum": "13.10.", "dan": "Utorak", "naziv": "Jedan je Muhammad Ali", "mjesto": "Narodno pozorište" }
+      ]
+    }
+  ]
+}

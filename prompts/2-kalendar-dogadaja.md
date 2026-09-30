@@ -1,92 +1,82 @@
-# Kalendar događaja: monthly prompt
+# Kalendar događaja: monthly prompt (Claude Code)
 
-**Before you start:**
-1. Use it in the same Claude Project as the DP moderni style guide (`1-dp-moderni-stil.md`), so the design rules apply.
-2. Turn on **web search** in the chat (the research depends on it).
-3. Copy everything below the line, change the month and year in the first line, and send.
+This version does **everything**, posters included.
 
-It gives you, in this order:
-1. a checked list of events with sources;
-2. the finished carousel as an editor where you add the posters and download PNGs;
-3. the caption;
-4. links to every poster.
+**How to run it:**
+1. Start a session in **Claude Code** (claude.ai/code) on the `tarik122/dp-tema` repository.
+2. Paste everything below the line, with the month and year changed in the first line.
+
+Claude Code can search the web and download images itself. It fills in the generator in `tools/kalendar`, which turns the events into finished slides, and sends you the PNGs.
+
+What you get back:
+- a table of every event with its source link, so you can check it quickly;
+- the finished slides (2160 px wide);
+- the Instagram caption.
+
+(If you ever have to use regular claude.ai instead, use the style guide project and ask for the same slides. There you will have to add the posters by hand.)
 
 ---
 
-Napravi mjesečni **Kalendar događaja** za **[MJESEC] [GODINA]** (npr. mart 2027) za Instagram Druge perspektive. Radi sve sam: istraži, izaberi, napiši i dizajniraj. Tekst na slajdovima je na bosanskom (ijekavica). Dizajn prati DP moderni stil iz uputa ovog projekta. Ako ih ne vidiš, reci mi da ih zalijepim.
+Napravi mjesečni **Kalendar događaja** za **[MJESEC] [GODINA]** (npr. novembar 2026) za Instagram Druge perspektive. Uradi sve sam: istraži, izaberi, skini plakate, napravi slajdove i pošalji mi ih. Tekst na slajdovima je na bosanskom (ijekavica). Sa mnom pričaj na engleskom, jednostavno.
 
-## 1. Istraživanje (web search)
+Koristi generator u `tools/kalendar` (pročitaj `tools/kalendar/README.md` i primjer `tools/kalendar/primjer-oktobar-2026.json`). On pravi slajdove u DP moderni stilu i sam skida slike s adresa koje mu daš.
 
-Nađi događaje u **Sarajevu** u tom mjesecu koji bi zanimali srednjoškolce, u četiri grupe:
+## 1. Istraživanje
 
-- **Koncerti:** veći koncerti i nastupi (dvorane, BKC, Narodno pozorište, klubovi, festivali), plus Sarajevska filharmonija ako nastupa.
-- **Predstave:** repertoar sarajevskih pozorišta za taj mjesec, npr.:
-  - Narodno pozorište Sarajevo
+Nađi događaje u **Sarajevu** u tom mjesecu koji bi zanimali srednjoškolce:
+
+- **Koncerti:** veći koncerti i nastupi (Zetra, Skenderija, BKC, Narodno pozorište, klubovi, festivali), plus Sarajevska filharmonija.
+- **Predstave:** repertoari pozorišta. Stranice s repertoarom najbolje je otvoriti direktno (curl ili WebFetch), jer web pretraga slabo nalazi lokalne stvari. Na primjer:
+  - Narodno pozorište Sarajevo, `nps.ba/repertoar`
   - Kamerni teatar 55
   - SARTR
   - Pozorište mladih
   - Otvorena scena Obala
-- **Filmovi:** filmovi koji tog mjeseca izlaze ili su najgledaniji u sarajevskim kinima (provjeri koja kina trenutno rade i njihove programe).
-  - Koristi naslove pod kojima se prikazuju kod nas, npr. „Vrisak 7“, „Kućna pomoćnica“.
-  - Navedi datum od kada je film u kinima.
-- **Ostalo (neobavezno):** izložbe, festivali, sajmovi, veći sportski događaji. Samo ako ima bar tri dobra.
+- **Filmovi:** filmovi koji tog mjeseca izlaze u sarajevskim kinima, s našim naslovima (npr. „Vrisak 7“, „Kućna pomoćnica“). Za datum premijere provjeri stranicu kina ili distributera.
+- **Ostalo (neobavezno):** izložbe, festivali, sajmovi. Samo ako ima bar tri dobra.
 
-Pravila istraživanja:
-- Svaki događaj mora imati **tačan datum i mjesto sa službene stranice** izvođača, dvorane, pozorišta, kina ili prodaje karata (npr. Entrio, Eventim, Karter). Novinski članak je dovoljan samo ako navodi datum i mjesto.
-- **Ništa ne izmišljaj.** Ako nešto nije potvrđeno, ne stavljaj ga na slajd, nego ga navedi u listi „Nepotvrđeno“.
-- Preskoči događaje koji su već otkazani ili rasprodani, i one koji nisu za mlađe od 18.
-- Po grupi izaberi **najviše 6** događaja: prednost imaju poznati izvođači, premijere, jeftine ili besplatne stvari i ono o čemu učenici pričaju.
-- Datumi: `07.03.` i dan u sedmici punom riječi (Subota, Nedjelja…). Provjeri da dan u sedmici odgovara datumu te godine.
+Pravila:
+- Svaki događaj mora imati **tačan datum i mjesto iz službenog izvora**: stranica izvođača, dvorane, pozorišta, kina ili prodaje karata. Novinski članak je dovoljan samo ako navodi datum i mjesto.
+- **Ništa ne izmišljaj.** Ako nešto nisi mogao potvrditi, ne ide na slajd, nego na listu „Nepotvrđeno“.
+- Preskoči otkazano, rasprodano i događaje samo za 18+.
+- Najviše **6 po mreži** i **7 po listi**. Prednost imaju poznati izvođači, premijere, jeftine i besplatne stvari.
+- Dan u sedmici izračunaj iz datuma (npr. u Pythonu), ne pogađaj.
 
-Prvo mi pokaži **tabelu provjere** (u chatu, ne na slajdu): grupa, datum, dan, naziv, mjesto, link izvora. Ispod nje stavi „Nepotvrđeno“ (ako ima čega). Onda nastavi s dizajnom, bez čekanja.
+## 2. Plakati i fotografije (sve sam)
 
-## 2. Karusel (post 1080 × 1440, isti HTML editor kao u uputama stila)
+- **Predstave:** otvori stranicu predstave i uzmi njenu glavnu sliku (najčešće `og:image` u HTML-u). Tako rade stranice Narodnog pozorišta.
+- **Filmovi:** službeni plakat, s naslovom na našem jeziku ako postoji. Izvor je stranica kina ili distributera; ako nema, uzmi međunarodni plakat iz pouzdane baze filmova (npr. TMDB, `image.tmdb.org`).
+- **Koncerti:** lista ne treba plakate. Ako želiš pozadinsku fotografiju (`pozadina`), uzmi je samo iz slobodnog izvora.
+- **Naslovna:** fotografija Sarajeva sa slobodnom licencom sa Wikimedia Commons, najmanje 1600 px široka. U `potpis` napiši autora i licencu (npr. „Foto: Ime Prezime, CC BY-SA 4.0“). Autora i licencu dobiješ preko Commons API-ja (`prop=imageinfo&iiprop=extmetadata`). Svaki mjesec uzmi drugu fotografiju ako možeš.
+- Prije nego staviš adresu u JSON, provjeri je (npr. `curl -sI`): mora vraćati sliku, a ne HTML stranicu.
 
-Isti redoslijed i sadržaj kao dosadašnji kalendari, ali u DP moderni stilu:
+## 3. Slajdovi
 
-1. **Naslovna**
-   - Fotografija Sarajeva: slot „Dodaj fotografiju“, ja je dodajem.
-   - Oznaka „Vijesti“ (plava).
-   - Naslov „Kalendar događaja za mjesec [mjesec]“ (npr. „Kalendar događaja za mjesec mart“).
-   - Bez autora.
-2. **Koncerti** (Lista, tri kolone): datum i dan | izvođač (podebljano, glavna kolona) | mjesto (mirnije).
-   - Chip „[Mjesec] [godina]“, naslov „Koncerti“.
-   - Najviše 7 redova, poredano po datumu.
-3. **Predstave** (Mreža 3 × 2)
-   - Za svaku predstavu: slot za plakat, ispod naziv (podebljano) i datum (npr. „15.03.“).
-   - Ako se ista predstava igra više puta, napiši prvi datum i „i dalje“ ili navedi datume („15. i 16.03.“).
-   - Chip „[Mjesec] [godina]“, naslov „Predstave“.
-4. **Filmovi** (Mreža 3 × 2)
-   - Za svaki film: slot za plakat, ispod naziv, a ispod toga „od 12.03.“ ako znaš datum premijere.
-   - Chip „[Mjesec] [godina]“, naslov „Filmovi“.
-5. **Ostalo** (samo ako ga ima): Lista ili Mreža, naslov npr. „Izložbe i festivali“.
+1. Napravi `tools/kalendar/[godina]-[mjesec broj].json` (npr. `2026-11.json`). Redoslijed:
+   1. naslovna: oznaka „Vijesti“, naslov „Kalendar događaja za mjesec [mjesec]“;
+   2. Koncerti (`lista`);
+   3. Predstave (`mreza`, s datumom ispod naziva);
+   4. Filmovi (`mreza`, ispod naziva „od 12.11.“ ako znaš premijeru);
+   5. Ostalo, ako ga ima.
 
-Za slajdove 2–5:
-- Pozadina je Ljubičasta.
-- Svaki slajd ima i neobavezan slot „Pozadinska fotografija“ (npr. publika na koncertu, pozorišna zavjesa, sjedišta u kinu). Ako je dodam, zatamni je ravnomjerno na 75% crne, da se tekst i plakati uvijek dobro čitaju.
-- Plakate ubacujem sam, preko dugmeta na svakom slotu.
-- Plakat ima oblik 2:3 i uvijek je cijel: `object-fit: contain` na tamnoj pozadini slota, nikad izrezan.
-- Svaki slajd ima DP logo dolje desno, dugme „Preuzmi PNG“ i dugme „Preuzmi sve“ na vrhu.
+   Na svaku stavku stavi `izvor`.
+2. Pokreni generator:
 
-Nazive i datume napiši tačno kako su na službenim stranicama, s pravim bosanskim slovima i navodnicima „…“.
+   ```
+   cd tools/kalendar && npm install && cd ../..
+   node tools/kalendar/render.mjs tools/kalendar/[datoteka].json
+   ```
 
-## 3. Opis za Instagram
+3. **Pogledaj svaki PNG** (otvori sliku i stvarno je pogledaj). Ako neki plakat nije učitan, izgleda loše izrezan ili je mutan, ili tekst ide preblizu dna, popravi JSON (druga slika, kraći naziv, manje stavki) i pokreni ponovo. Nemoj stati dok svi slajdovi ne izgledaju uredno.
+4. Commitaj JSON (slike u `izlaz/` se ne commitaju) i pushaj na svoj branch.
 
-Kratak, topao tekst na bosanskom, u stilu:
+## 4. Šta mi pošalješ
 
-> Ukoliko pronađete malo slobodnog vremena ovaj mjesec, a niste sigurni šta da radite, možete pronaći ideju u ovom pregledu svih događaja u mjesecu [mjesecu]. …
+1. **Tabelu provjere:** grupa, datum, dan, naziv, mjesto, link izvora. Ispod nje listu „Nepotvrđeno“, ako ima čega.
+2. **Sve PNG slajdove**, redom, kao datoteke koje mogu skinuti.
+3. **Opis za Instagram**, u stilu:
 
-Zatim jedna rečenica po grupi s po jednim ili dva najzanimljivija događaja, pa „Karte i više informacija potražite na stranicama organizatora.“ Na kraju 3–5 hashtagova (#sarajevo #drugaperspektiva #kalendardogađaja #drugagimnazija).
+   > Ukoliko pronađete malo slobodnog vremena ovaj mjesec, a niste sigurni šta da radite, možete pronaći ideju u ovom pregledu svih događaja u mjesecu [mjesecu]. …
 
-## 4. Plakati
-
-Na kraju mi daj listu: za svaki događaj na slajdovima naziv i direktan link na službeni plakat, ili stranicu s koje ga mogu preuzeti. Poredaj ih istim redom kao slotove u editoru, da ih mogu redom ubaciti.
-
-## Provjera prije nego završiš
-
-- [ ] Svaki događaj na slajdu je u tabeli provjere sa izvorom.
-- [ ] Datumi i dani u sedmici se slažu.
-- [ ] Nijedan događaj nije izvan traženog mjeseca.
-- [ ] Najviše 6 po mreži i 7 po listi.
-- [ ] Svi naslovi su pravilno napisani (č, ć, đ, š, ž; „navodnici“; crtica – u rasponima).
-- [ ] Dizajn poštuje DP moderni upute: margine, veličine, boje i sigurne zone.
+   Zatim po jedna rečenica o najzanimljivijem koncertu, predstavi i filmu, pa „Karte i više informacija potražite na stranicama organizatora.“ Na kraju 3–5 hashtagova (#sarajevo #drugaperspektiva #drugagimnazija).
+4. Kratko, na engleskom: šta si izostavio i zašto, i šta da provjerim prije objave.
