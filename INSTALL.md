@@ -153,3 +153,10 @@ Korisni blokovi za pisanje su u editoru članka pod **Uzorci → Druga perspekti
 Meni se mijenja u **Zaglavlje**.
 
 Ako nešto pođe po zlu u Site Editoru: otvorite šablon → tri tačke → **Resetuj** i vraća se originalni izgled teme.
+
+## 10. Dodatak DP objave (Instagram objave i storyji)
+
+**Dodaci → Dodaj novi → Otpremi dodatak** → `dp-objave.zip` → **Aktiviraj**. U meniju se pojavi **Objave za mreže**.
+
+Kod svakog članka (u listi članaka, kad pređete mišem preko naslova) je link **Napravi objavu**: naslov, rubrika, fotografija i citati se popune sami. Tekst, boje i fotografije se mijenjaju desno od pregleda, fotografija se pomjera povlačenjem. **Preuzmi sve** spremi slike (PNG) u tačnoj veličini za Instagram. Kliknite **Objavi** da se dizajn spremi za kasnije; na sajtu se ne pojavljuje.
+

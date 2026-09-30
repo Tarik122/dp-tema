@@ -1,0 +1,133 @@
+/* DP objave: uređivač u administraciji. */
+
+#dpo-editor .inside { margin: 0; padding: 0; }
+
+#dpo-app { padding: 12px 16px 16px; }
+
+.dpo-top,
+.dpo-slide-tools {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.dpo-spacer { flex: 1; }
+
+.dpo-seg { display: inline-flex; }
+.dpo-seg .button { border-radius: 0; margin-left: -1px; }
+.dpo-seg .button:first-child { border-radius: 3px 0 0 3px; margin-left: 0; }
+.dpo-seg .button:last-child { border-radius: 0 3px 3px 0; }
+.dpo-seg .button.is-on { background: #1d2327; border-color: #1d2327; color: #fff; }
+
+.dpo-article { max-width: 280px; }
+
+/* Traka sa slajdovima */
+.dpo-strip {
+	display: flex;
+	align-items: flex-end;
+	gap: 10px;
+	margin: 14px 0;
+	padding: 10px;
+	overflow-x: auto;
+	background: #f0f0f1;
+	border-radius: 4px;
+}
+
+.dpo-thumb-btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	flex: none;
+	padding: 4px;
+	border: 2px solid transparent;
+	border-radius: 4px;
+	background: none;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.dpo-thumb-btn.is-on { border-color: #2271b1; background: #fff; }
+.dpo-thumb-btn:focus-visible { outline: 2px solid #2271b1; outline-offset: 2px; }
+.dpo-thumb { display: block; width: 84px; height: auto; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+
+.dpo-add { display: flex; flex-direction: column; gap: 4px; flex: none; margin-left: 6px; }
+
+/* Pregled i polja */
+.dpo-main {
+	display: grid;
+	grid-template-columns: minmax(260px, 440px) minmax(280px, 1fr);
+	gap: 24px;
+	align-items: start;
+}
+
+.dpo-stage { position: sticky; top: 40px; }
+
+.dpo-preview {
+	display: block;
+	width: 100%;
+	height: auto;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+	cursor: grab;
+	touch-action: none;
+}
+
+.dpo-preview:active { cursor: grabbing; }
+
+.dpo-hint,
+.dpo-note { color: #646970; font-size: 12px; }
+
+.dpo-fields { display: flex; flex-direction: column; gap: 14px; }
+
+.dpo-field { display: flex; flex-direction: column; gap: 5px; }
+.dpo-label { font-weight: 600; }
+.dpo-field input[type="text"],
+.dpo-field textarea,
+.dpo-field select { width: 100%; max-width: none; }
+.dpo-field textarea { font-size: 14px; line-height: 1.4; }
+
+.dpo-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.dpo-swatch {
+	width: 34px;
+	height: 34px;
+	border: 1px solid rgba(0, 0, 0, 0.25);
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.dpo-swatch.is-on { outline: 3px solid #1d2327; outline-offset: 2px; }
+.dpo-swatch:focus-visible { outline: 3px solid #2271b1; outline-offset: 2px; }
+
+.dpo-photos { display: flex; flex-direction: column; gap: 8px; }
+
+.dpo-photo {
+	display: grid;
+	grid-template-columns: 90px 1fr;
+	gap: 10px;
+	align-items: center;
+	padding: 8px;
+	background: #f6f7f7;
+	border-radius: 4px;
+}
+
+.dpo-photo img { width: 90px; height: 64px; object-fit: cover; border-radius: 3px; }
+.dpo-photo-ctl { display: flex; flex-direction: column; gap: 4px; }
+.dpo-photos > .button { align-self: flex-start; }
+
+.dpo-check { font-weight: 600; }
+
+.dpo-danger { color: #b32d2e !important; border-color: #b32d2e !important; }
+
+.dpo-save-note {
+	margin: 18px 0 0;
+	padding: 10px 12px;
+	background: #f0f6fc;
+	border-left: 4px solid #2271b1;
+}
+
+@media (max-width: 782px) {
+	.dpo-main { grid-template-columns: 1fr; }
+	.dpo-stage { position: static; }
+}
