@@ -26,7 +26,6 @@ function dpo_design_from_article( $post_id ) {
 			'chip'      => $cat ? html_entity_decode( $cat->name, ENT_QUOTES, 'UTF-8' ) : '',
 			'chipColor' => dpo_chip_hex( $cat ),
 			'byline'    => dpo_byline( $post ),
-			'dek'       => has_excerpt( $post ) ? dpo_cut( trim( wp_strip_all_tags( $post->post_excerpt ) ), 180 ) : '',
 			'credit'    => $photo ? dpo_photo_credit( $photo ) : '',
 			'photos'    => $photo ? array( dpo_photo( $photo ) ) : array(),
 		)

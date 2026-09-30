@@ -6,7 +6,6 @@
 	// Instagram: objava 3:4 (nova mreža profila) i story 9:16.
 	var SIZES = { post: [1080, 1440], story: [1080, 1920] };
 	var SANS = 'DPO Lato';
-	var COND = 'DPO Barlow';
 	var input = document.getElementById('dpo-design');
 	var app = document.getElementById('dpo-app');
 	if (!input || !app) return;
@@ -76,6 +75,7 @@
 	/** Kao wrap, ali za tekst iz više dijelova različite debljine (npr. podebljano ime pa opis). */
 	function wrapRuns(ctx, runs, maxW) {
 		var words = [];
+		track(ctx, 0);
 		runs.forEach(function (r) {
 			String(r.text || '').split(/\s+/).filter(Boolean).forEach(function (w) { words.push({ text: w, font: r.font, color: r.color }); });
 		});
@@ -150,17 +150,16 @@
 
 	/* ---------- Tri stila i tri vrste slajdova ---------- */
 
-	var SERIF = 'DPO Serif';
 	var SC = 1; // koliko puta je slika veća od 1080 px (preuzimanje je 2x, zbog Instagram kompresije)
 
 	// Zadane pozadine po stilu (tekst i citat).
 	var STYLE_BG = {
-		dp: { text: '#402f65', quote: '#402f65' },
-		apple: { text: '#ebebee', quote: '#ebebee' },
-		magazin: { text: '#f7f5f0', quote: '#f7f5f0' }
+		moderni: { text: '#402f65', quote: '#402f65' },
+		dp: { text: '#402f65', quote: '#402f65' }
 	};
 
-	function style() { return STYLE_BG[D.style] ? D.style : 'dp'; }
+	// Stariji dizajni (Apple, Magazin) prikazuju se kao DP moderni.
+	function style() { return D.style === 'dp' ? 'dp' : 'moderni'; }
 
 	function drawPhotos(ctx, s, W, H) {
 		var photos = s.photos || [], sl = slots(s, W, H), any = false;
@@ -197,6 +196,7 @@
 	function textBlock(ctx, fontStr, size, lh, text, maxW, trackPx, color, gap, align, W) {
 		ctx.font = fontStr; track(ctx, trackPx);
 		var lines = wrapBalanced(ctx, text, maxW);
+		track(ctx, 0);
 		return {
 			h: (lines.length - 1) * lh + size, gap: gap, lines: lines,
 			draw: function (top) {
@@ -246,27 +246,13 @@
 		var ink = dark ? '#141414' : '#ffffff', soft = dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.86)';
 		var k = s.size || 1, blocks = [], M, bottom, hs;
 
-		if (st === 'apple') {
+		if (st === 'moderni') {
+			// DP moderni: manja oznaka, zbijen i jak naslov, sitan autor.
 			M = 64; bottom = H - (story ? 300 : 132);
-			if (s.chip) {
-				// Mala oznaka: kvadratić u boji rubrike i naziv.
-				blocks.push({
-					h: 30, gap: 0, draw: function (top) {
-						ctx.fillStyle = s.chipColor || '#5271fe'; ctx.fillRect(M, top + 4, 22, 22);
-						ctx.font = font(SANS, 700, 30); ctx.fillStyle = ink; ctx.fillText(s.chip, M + 34, top + 26);
-					}
-				});
-			}
-			hs = fitTitle(ctx, SANS, 700, (story ? 100 : 88) * k, 50, 5, s.title, W - 2 * M, -0.022);
-			blocks.push(textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.03, s.title, W - 2 * M, -hs * 0.022, ink, 18, M, W));
-			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 400, 28), 28, 34, s.byline, W - 2 * M, 0, soft, 24, M, W));
-		} else if (st === 'magazin') {
-			M = 72; bottom = H - (story ? 300 : 140);
-			if (s.chip) blocks.push(chipBlock(ctx, s.chip, s.chipColor || '#5271fe', 30, 700, 0, M));
-			hs = fitTitle(ctx, SERIF, 600, (story ? 104 : 92) * k, 52, 5, s.title, W - 2 * M, -0.012);
-			blocks.push(textBlock(ctx, font(SERIF, 600, hs), hs, hs * 1.04, s.title, W - 2 * M, -hs * 0.012, ink, 26, M, W));
-			if (s.dek) blocks.push(textBlock(ctx, font(SERIF, 400, 38, true), 38, 48, s.dek, W - 2 * M, 0, soft, 22, M, W));
-			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 700, 26), 26, 32, s.byline, W - 2 * M, 0, soft, 30, M, W));
+			if (s.chip) blocks.push(chipBlock(ctx, s.chip, s.chipColor || '#5271fe', story ? 42 : 38, 700, 0, M));
+			hs = fitTitle(ctx, SANS, 700, (story ? 102 : 90) * k, 50, 5, s.title, W - 2 * M, -0.022);
+			blocks.push(textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.03, s.title, W - 2 * M, -hs * 0.022, ink, 22, M, W));
+			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 400, 28), 28, 34, s.byline, W - 2 * M, 0, soft, 26, M, W));
 		} else {
 			// DP klasik: kao dosadašnje objave na Instagramu.
 			M = 80; bottom = H - (story ? 300 : 150);
@@ -295,31 +281,30 @@
 		ctx.fillRect(0, 0, W, H);
 		var M = 96, maxW = W - 2 * M, room = H - (story ? 640 : 380);
 		var ink = dark ? '#141414' : '#ffffff';
+		var modern = st === 'moderni';
 
 		if (!String(s.body || '').trim()) {
+			// Velika izjava, kao plakat.
 			var text = s.caps ? String(s.title || '').toLocaleUpperCase('bs') : s.title;
-			var fam = st === 'apple' ? COND : st === 'magazin' ? SERIF : SANS;
-			var wt = st === 'apple' ? 800 : st === 'magazin' ? 600 : 700;
-			var lhk = st === 'apple' ? 0.98 : 1.06;
+			var wt = modern ? 900 : 700, tr = modern ? -0.025 : 0, lhk = modern ? 1.0 : 1.08;
 			var size = 176, lines;
 			do {
-				size -= 6; ctx.font = font(fam, wt, size); lines = wrap(ctx, text, maxW);
+				size -= 6; ctx.font = font(SANS, wt, size); track(ctx, size * tr); lines = wrap(ctx, text, maxW);
 			} while ((lines.length * size * lhk > room || lines.some(function (l) { return ctx.measureText(l.text).width > maxW; })) && size > 50);
-			var blk = textBlock(ctx, font(fam, wt, size), size, size * lhk, text, maxW, 0, ink, 0, 'center', W);
+			track(ctx, 0);
+			var blk = textBlock(ctx, font(SANS, wt, size), size, size * lhk, text, maxW, size * tr, ink, 0, modern ? M : 'center', W);
 			blk.draw((H - blk.h) / 2 - H * 0.02);
 			drawLogo(ctx, s, W, H, format, dark);
 			return;
 		}
 
-		var T = {
-			dp: { tf: [SANS, 700], ts: 58, bf: [SANS, 400], bs: 42, blh: 1.24, gap: 18, body: dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.7)', tr: 0 },
-			apple: { tf: [SANS, 700], ts: 62, bf: [SANS, 400], bs: 40, blh: 1.38, gap: 30, body: dark ? 'rgba(20,20,20,.78)' : 'rgba(255,255,255,.84)', tr: -0.018 },
-			magazin: { tf: [SERIF, 600], ts: 64, bf: [SERIF, 400], bs: 40, blh: 1.42, gap: 30, body: dark ? 'rgba(20,20,20,.84)' : 'rgba(255,255,255,.86)', tr: -0.01 }
-		}[st];
+		var T = modern
+			? { ts: 64, bs: 40, blh: 1.38, gap: 30, body: dark ? 'rgba(20,20,20,.78)' : 'rgba(255,255,255,.84)', tr: -0.02 }
+			: { ts: 58, bs: 42, blh: 1.24, gap: 18, body: dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.7)', tr: 0 };
 		var ts = T.ts, bs = T.bs, t, b, total;
 		function measure() {
-			t = s.title ? textBlock(ctx, font(T.tf[0], T.tf[1], ts), ts, ts * 1.06, s.title, maxW, ts * T.tr, ink, 0, M, W) : null;
-			ctx.font = font(T.bf[0], T.bf[1], bs); track(ctx, 0);
+			t = s.title ? textBlock(ctx, font(SANS, 700, ts), ts, ts * 1.06, s.title, maxW, ts * T.tr, ink, 0, M, W) : null;
+			ctx.font = font(SANS, 400, bs); track(ctx, 0);
 			b = wrap(ctx, s.body, maxW);
 			total = (t ? t.h + T.gap : 0) + (b.length - 1) * bs * T.blh + bs;
 		}
@@ -328,25 +313,24 @@
 		var top = (H - total) / 2 - H * 0.02;
 		if (t) { t.draw(top); top += t.h + T.gap; }
 		ctx.fillStyle = T.body;
-		ctx.font = font(T.bf[0], T.bf[1], bs);
+		ctx.font = font(SANS, 400, bs);
 		b.forEach(function (l, i) { drawLine(ctx, l, M, top + bs * 0.8 + i * bs * T.blh, maxW, s.align === 'justify'); });
 		drawLogo(ctx, s, W, H, format, dark);
 	}
 
-	// ---- Citat ----
+	// ---- Citat: narandžasta crta uz tekst (znak DP citata) ----
 	function drawQuote(ctx, s, W, H, format) {
 		var st = style(), story = format === 'story', dark = isLight(s.bg);
 		ctx.fillStyle = s.bg || STYLE_BG[st].quote;
 		ctx.fillRect(0, 0, W, H);
-		var ink = dark ? '#141414' : '#ffffff', soft = dark ? '#6d6d73' : 'rgba(255,255,255,.72)';
+		var ink = dark ? '#141414' : '#ffffff', soft = dark ? 'rgba(20,20,20,.62)' : 'rgba(255,255,255,.72)';
 		var q = String(s.quote || '').trim().replace(/^[„“"”»«]+|[“”"«»]+$/g, '');
-		var M = 96, maxW = W - 2 * M, room = H * (story ? 0.5 : 0.56);
+		var room = H * (story ? 0.5 : 0.56);
 
-		if (st === 'dp') {
-			// Kao dosadašnji citati: narandžasta crta, ime kurzivom desno.
+		if (st !== 'moderni') {
+			// DP klasik: kao dosadašnji citati, ime kurzivom desno.
 			var left = 172, w2 = W - 330, qs = 76, blk;
 			do { blk = textBlock(ctx, font(SANS, 400, qs), qs, qs * 1.15, q, w2, 0, ink, 0, left, W); qs -= 2; } while (blk.h > room && qs > 28);
-			qs += 2;
 			var ws = Math.max(30, Math.round(qs * 0.62)), who = [];
 			if (s.who) { ctx.font = font(SANS, 400, ws, true); who = wrapBalanced(ctx, '— ' + s.who + (s.whoInfo ? ', ' + s.whoInfo : ''), w2); }
 			var total = blk.h + (who.length ? 30 + who.length * ws * 1.25 : 0), top = (H - total) / 2;
@@ -358,29 +342,19 @@
 			return;
 		}
 
-		var apple = st === 'apple';
-		var fam = apple ? COND : SERIF, wt = apple ? 800 : 400, it = !apple, lhk = apple ? 0.98 : 1.12;
-		var text = apple ? '„' + q + '“' : q, size = apple ? 140 : 96, lines;
-		do { size -= 4; ctx.font = font(fam, wt, size, it); lines = wrapBalanced(ctx, text, maxW); } while (lines.length * size * lhk > room && size > 40);
-		var as = story ? 38 : 34, runs = [];
-		if (s.who) runs.push({ text: '—' + s.who + (s.whoInfo ? ',' : ''), font: font(SANS, apple ? 900 : 700, as), color: ink });
+		// DP moderni: velik i zbijen citat, crta uz lijevu ivicu, ime podebljano pa opis.
+		var L = 124, maxW = W - L - 88, size = 124, qb;
+		do { size -= 4; qb = textBlock(ctx, font(SANS, 900, size), size, size * 1.04, q, maxW, -size * 0.02, ink, 0, L, W); } while (qb.h > room && size > 44);
+		var as = story ? 36 : 34, runs = [];
+		if (s.who) runs.push({ text: s.who + (s.whoInfo ? ',' : ''), font: font(SANS, 700, as), color: ink });
 		if (s.whoInfo) runs.push({ text: s.whoInfo, font: font(SANS, 400, as), color: soft });
-		var att = runs.length ? wrapRuns(ctx, runs, maxW - 60) : [];
-		var qh = (lines.length - 1) * size * lhk + size;
-		var total = qh + (att.length ? 48 + (att.length - 1) * as * 1.3 + as : 0);
-		var top = (H - total) / 2 - H * 0.03 + (apple ? 0 : 70);
-		ctx.fillStyle = ink; ctx.font = font(fam, wt, size, it);
-		lines.forEach(function (l, i) {
-			var x = apple ? (W - ctx.measureText(l.text).width) / 2 : M;
-			ctx.fillText(l.text, x, top + size * 0.8 + i * size * lhk);
-		});
-		if (!apple) {
-			// Magazin: velika narandžasta navodnica iznad citata.
-			ctx.font = font(SERIF, 700, 240); ctx.fillStyle = '#ee8031';
-			ctx.fillText('“', M - 8, top - 10);
-		}
-		var y = top + qh + 48 + as * 0.8;
-		att.forEach(function (l, i) { drawRunsLine(ctx, l, apple ? (W - l.w) / 2 : M, y + i * as * 1.3); });
+		var att = runs.length ? wrapRuns(ctx, runs, maxW) : [];
+		var attH = att.length ? 44 + (att.length - 1) * as * 1.3 + as : 0;
+		var y0 = (H - qb.h - attH) / 2 - H * 0.02;
+		ctx.fillStyle = '#ee8031';
+		ctx.fillRect(L - 44, y0 + size * 0.06, 12, qb.h - size * 0.12);
+		qb.draw(y0);
+		att.forEach(function (l, i) { drawRunsLine(ctx, l, L, y0 + qb.h + 44 + as * 0.8 + i * as * 1.3); });
 		drawLogo(ctx, s, W, H, format, dark);
 	}
 
@@ -468,7 +442,7 @@
 	function render() {
 		// Stil i format
 		ui.style.innerHTML = '';
-		[['dp', 'DP klasik'], ['apple', 'Apple'], ['magazin', 'Magazin']].forEach(function (f) {
+		[['moderni', 'DP moderni'], ['dp', 'DP klasik']].forEach(function (f) {
 			ui.style.appendChild(h('button', {
 				type: 'button', class: 'button' + (style() === f[0] ? ' is-on' : ''), 'aria-pressed': style() === f[0] ? 'true' : 'false',
 				onclick: function () { setStyle(f[0]); }, text: f[1]
@@ -586,7 +560,6 @@
 			F.appendChild(field('Boja oznake', swatches(s, 'chipColor', C.chip)));
 			F.appendChild(field('Naslov', textInput(s, 'title', true, 3), 'Enter pravi novi red, ako želite sami prelomiti naslov.'));
 			F.appendChild(field('Veličina naslova', range(s, 'size', 0.6, 1.3, 0.05)));
-			if (style() === 'magazin') F.appendChild(field('Podnaslov (kurzivom ispod naslova)', textInput(s, 'dek', true, 2), 'Jedna rečenica. Prazno = bez podnaslova.'));
 			F.appendChild(field('Autor', textInput(s, 'byline'), 'Npr. "Piše: Amina Hodžić". Prazno = bez autora.'));
 			F.appendChild(photoFields(s));
 			if ((s.photos || []).length) {
@@ -785,10 +758,7 @@
 			new FontFace(SANS, 'url(' + CFG.fonts.regular + ')', { weight: '400' }),
 			new FontFace(SANS, 'url(' + CFG.fonts.bold + ')', { weight: '700' }),
 			new FontFace(SANS, 'url(' + CFG.fonts.black + ')', { weight: '900' }),
-			new FontFace(SANS, 'url(' + CFG.fonts.italic + ')', { weight: '400', style: 'italic' }),
-			new FontFace(COND, 'url(' + CFG.fonts.condensed + ')', { weight: '800' }),
-			new FontFace(SERIF, 'url(' + CFG.fonts.serif + ')', { weight: '400 700' }),
-			new FontFace(SERIF, 'url(' + CFG.fonts.serifItalic + ')', { weight: '400 700', style: 'italic' })
+			new FontFace(SANS, 'url(' + CFG.fonts.italic + ')', { weight: '400', style: 'italic' })
 		];
 		Promise.all(faces.map(function (f) { return f.load().then(function (l) { document.fonts.add(l); }); }))
 			.catch(function () {})
