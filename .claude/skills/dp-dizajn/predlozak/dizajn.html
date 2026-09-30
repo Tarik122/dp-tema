@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<title>DP dizajn</title>
+<!--
+	Početna tačka za novi DP moderni dizajn. Kopira se u promo/<naziv>/ i tamo mijenja.
+	Svaki <section class="slide"> postaje jedna PNG slika (render.mjs, 2x rezolucija).
+	Veličine: post 1080×1440 (klasa "post"), story 1080×1920 ("story"), ekran 1920×1080 ("ekran").
+-->
+<style>
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 400; font-style: italic; src: url("../../dp-objave/assets/fonts/lato-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 900; src: url("../../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
+
+:root {
+	/* Boje DP moderni (tačne vrijednosti, ne mijenjati). */
+	--plava: #5271fe;       /* oznaka: vijesti */
+	--plava-igre: #3b57e8;  /* samo za igre (pogođeno slovo) */
+	--narandza: #ee8031;    /* oznaka: kultura, sport; naglasak */
+	--zelena: #1f6b4f;      /* oznaka: nauka */
+	--tinta: #141414;       /* oznaka: mišljenje; tamne površine */
+	--ljubicasta: #402f65;  /* glavna pozadina bez fotografije */
+	--svijetla: #ebebee;    /* svijetla pozadina */
+	--mekano: rgba(255, 255, 255, 0.72);
+	--linija: rgba(255, 255, 255, 0.24);
+
+	--m: 64px;              /* margina na slajdu s fotografijom (96px na tekstu) */
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 40px; display: flex; flex-direction: column; gap: 40px; }
+
+.slide { position: relative; overflow: hidden; background: var(--ljubicasta); }
+.post { width: 1080px; height: 1440px; }
+.story { width: 1080px; height: 1920px; }
+.ekran { width: 1920px; height: 1080px; }
+
+/* Fotografija preko cijelog slajda + crni prelaz odozdo (jedini dozvoljeni gradijent). */
+.foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.prelaz {
+	position: absolute; left: 0; right: 0; bottom: 0; height: 62%;
+	background: linear-gradient(to bottom,
+		rgba(0,0,0,0) 0%, rgba(0,0,0,.02) 8%, rgba(0,0,0,.08) 17%, rgba(0,0,0,.17) 25%,
+		rgba(0,0,0,.29) 33%, rgba(0,0,0,.42) 42%, rgba(0,0,0,.55) 50%, rgba(0,0,0,.66) 58%,
+		rgba(0,0,0,.74) 67%, rgba(0,0,0,.79) 75%, rgba(0,0,0,.8) 100%);
+}
+
+/* Oznaka (chip): puna boja, oštri uglovi, bijeli tekst. */
+.oznaka {
+	display: inline-block; padding: 0 0.45em; height: 1.45em; line-height: 1.45em;
+	font-size: 38px; font-weight: 700; color: #fff; background: var(--plava); white-space: nowrap;
+}
+.oznaka.narandza { background: var(--narandza); }
+.oznaka.zelena { background: var(--zelena); }
+.oznaka.tinta { background: var(--tinta); }
+
+/* Naslov: Lato Bold, zbijen. */
+.naslov { font-size: 90px; font-weight: 700; line-height: 1.03; letter-spacing: -0.022em; text-wrap: balance; }
+.izjava { font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -0.025em; text-wrap: balance; }
+.tekst { font-size: 40px; line-height: 1.38; color: rgba(255, 255, 255, .84); text-wrap: pretty; }
+.autor { font-size: 28px; color: rgba(255, 255, 255, .86); }
+
+/* Logo dolje desno (bijeli na tamnom, crni na svijetlom). */
+.logo { position: absolute; right: 64px; bottom: 72px; width: 100px; }
+.story .logo { bottom: 300px; }
+
+/* Potpis fotografije uspravno uz desnu ivicu. */
+.potpis {
+	position: absolute; right: 26px; bottom: 200px;
+	writing-mode: vertical-rl; transform: rotate(180deg);
+	font-size: 20px; color: rgba(255, 255, 255, .66); white-space: nowrap;
+}
+
+/* ---- Primjer: naslovna (obrisati ili prepraviti) ---- */
+.primjer .dno { position: absolute; left: var(--m); right: var(--m); bottom: 132px; }
+.primjer .naslov { margin-top: 22px; }
+.primjer .autor { margin-top: 26px; }
+</style>
+</head>
+<body>
+
+<section class="slide post primjer">
+	<img class="foto" src="https://commons.wikimedia.org/wiki/Special:FilePath/Sarajevo_City_Panorama.JPG?width=2000" alt="">
+	<div class="prelaz"></div>
+	<div class="dno">
+		<span class="oznaka">Vijesti</span>
+		<h1 class="naslov">Naslov koji pokazuje kako izgleda DP moderni</h1>
+		<p class="autor">Piše: Ime Prezime</p>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+	<div class="potpis">Foto: Julian Nyča, CC BY-SA 4.0</div>
+</section>
+
+<script>
+/* Bosanska tipografija za sve tekstove: „navodnici“, …, – i jednoslovne riječi vezane za sljedeću. */
+(function () {
+	var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+	var n;
+	while ((n = walker.nextNode())) {
+		if (n.parentNode.closest('script, style')) continue;
+		n.nodeValue = n.nodeValue
+			.replace(/\.\.\./g, '…')
+			.replace(/(^|[\s(\[ ])["“”″˝]/g, '$1„')
+			.replace(/["“”″˝]/g, '“')
+			.replace(/ - /g, ' – ')
+			.replace(/(?<=^|[\s („])([aiouskvzAIOUSKVZ]) +/g, '$1 ');
+	}
+})();
+</script>
+</body>
+</html>
