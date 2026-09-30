@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<title>Ni papira ni sapuna – karusel</title>
+<!--
+	Karusel za tekst o toaletima u Drugoj gimnaziji (Vijesti o školi), 5 slajdova 1080×1440.
+	Ideja: nula. Naslovna je velika „0“ (i prazna rolna), a grafikon je zgrada:
+	3 sprata × 2 toaleta × 3 polugodišta = 18 praznih rolni.
+	Rolna: isprekidani krug je mjesto gdje bi bio papir, puni mali krug je karton.
+-->
+<style>
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 900; src: url("../../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
+
+:root {
+	--plava: #5271fe;
+	--narandza: #ee8031;
+	--tinta: #141414;
+	--ljubicasta: #402f65;
+	--linija: rgba(255, 255, 255, 0.24);
+	--m: 64px;
+	--mt: 96px;
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 40px; display: flex; flex-direction: column; gap: 40px; }
+
+.slide { position: relative; overflow: hidden; background: var(--ljubicasta); }
+.post { width: 1080px; height: 1440px; }
+
+.oznaka {
+	display: inline-block; padding: 0 0.45em; height: 1.45em; line-height: 1.45em;
+	font-size: 38px; font-weight: 700; color: #fff; background: var(--plava); white-space: nowrap;
+}
+.naslov { font-size: 90px; font-weight: 700; line-height: 1.03; letter-spacing: -0.022em; text-wrap: balance; }
+.izjava { font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -0.025em; text-wrap: balance; }
+.tekst { font-size: 40px; line-height: 1.38; color: rgba(255, 255, 255, .84); text-wrap: pretty; }
+.autor { font-size: 28px; color: rgba(255, 255, 255, .86); }
+.napomena { font-size: 24px; line-height: 1.4; color: rgba(255, 255, 255, .66); }
+.logo { position: absolute; right: 64px; bottom: 72px; width: 100px; }
+
+/* Rolna: SVG se ubacuje skriptom u svaki .rolna. */
+.rolna { display: block; width: 92px; height: 92px; }
+.rolna svg { width: 100%; height: 100%; overflow: visible; }
+
+/* 1. Naslovna: velika nula. */
+.naslovna .nula {
+	position: absolute; left: 22px; top: -185px;
+	font-size: 1180px; font-weight: 900; line-height: 1; letter-spacing: -0.04em;
+}
+.naslovna .dno { position: absolute; left: var(--m); right: 200px; bottom: 132px; }
+.naslovna .naslov { margin-top: 26px; font-size: 110px; }
+.naslovna .autor { margin-top: 30px; }
+
+/* 2. Zgrada: 3 sprata × 2 toaleta × 3 polugodišta. */
+.zgrada .gore { position: absolute; left: var(--mt); right: var(--mt); top: 140px; }
+.zgrada .gore .tekst { margin-top: 32px; }
+.zgrada .izjava { font-size: 200px; }
+.spratovi { position: absolute; left: var(--m); right: var(--m); top: 700px; }
+.spratovi .zaglavlje, .spratovi .sprat { display: grid; grid-template-columns: 180px 352px 352px; column-gap: 32px; align-items: center; }
+.spratovi .zaglavlje { padding-bottom: 18px; font-size: 26px; color: rgba(255, 255, 255, .66); }
+.spratovi .sprat .rolna { width: 108px; height: 108px; flex: none; }
+.spratovi .sprat { height: 170px; border-top: 2px solid var(--linija); }
+.spratovi .sprat:last-child { border-bottom: 2px solid var(--linija); }
+.spratovi .ime { font-size: 32px; font-weight: 700; }
+.spratovi .grupa { display: flex; gap: 14px; }
+.spratovi .ime { white-space: nowrap; }
+
+/* 3. Odgovor škole s narandžastom linijom. */
+.odgovor .blok { position: absolute; left: var(--mt); right: var(--mt); top: 50%; transform: translateY(-58%); padding-left: 44px; }
+.odgovor .blok::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 150px; width: 12px; background: var(--narandza); }
+.odgovor .naslov { font-size: 88px; }
+.odgovor .autor { margin-top: 56px; }
+
+/* 4. Izjava na plavoj. */
+.izjava-slajd { background: var(--plava); }
+.izjava-slajd .gore { position: absolute; left: var(--mt); right: var(--mt); top: 150px; }
+.izjava-slajd .izjava { font-size: 150px; }
+
+/* 5. Sljedeća provjera. */
+.dalje .gore { position: absolute; left: var(--mt); right: var(--mt); top: 150px; }
+.dalje .red { display: flex; gap: 40px; margin-top: 80px; }
+.dalje .red .rolna { width: 150px; height: 150px; }
+.dalje .dno { position: absolute; left: var(--mt); right: 220px; bottom: 72px; }
+.dalje .dno .autor { margin-top: 28px; }
+</style>
+</head>
+<body>
+
+<!-- 1. Naslovna -->
+<section class="slide post naslovna">
+	<div class="nula">0</div>
+	<div class="dno">
+		<span class="oznaka">Vijesti o školi</span>
+		<h1 class="naslov">Ni papira ni sapuna</h1>
+		<p class="autor">Pišu: [ime i prezime] i [ime i prezime]</p>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<!-- 2. Zgrada -->
+<section class="slide post zgrada">
+	<div class="gore">
+		<h2 class="izjava">0 od 18</h2>
+		<p class="tekst">Tri polugodišta smo po jednu sedmicu obilazili svih šest toaleta u školi. Svaka rolna je jedan toalet u jednoj sedmici. Nijednom nije bilo ni papira ni sapuna.</p>
+	</div>
+	<div class="spratovi">
+		<div class="zaglavlje"><span></span><span>Ženski</span><span>Muški</span></div>
+		<div class="sprat"><span class="ime">2. sprat</span><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div></div>
+		<div class="sprat"><span class="ime">1. sprat</span><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div></div>
+		<div class="sprat"><span class="ime">Prizemlje</span><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div><div class="grupa"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i></div></div>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<!-- 3. Odgovor škole (prepričan; zamijeniti citatom iz intervjua s pomoćnikom direktora) -->
+<section class="slide post odgovor">
+	<div class="blok">
+		<p class="naslov">Nema novca u budžetu, a učenici to uništavaju iz zabave.</p>
+		<p class="autor">Uprava škole, na naše pitanje zašto nema papira i sapuna</p>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<!-- 4. Izjava -->
+<section class="slide post izjava-slajd">
+	<div class="gore"><p class="izjava">Uništiti se može samo ono što postoji.</p></div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<!-- 5. Sljedeća provjera -->
+<section class="slide post dalje">
+	<div class="gore">
+		<h2 class="naslov">Sljedeća provjera: [mjesec].</h2>
+		<div class="red"><i class="rolna"></i><i class="rolna"></i><i class="rolna"></i><i class="rolna nova"></i></div>
+	</div>
+	<div class="dno">
+		<p class="tekst">Svako polugodište obilazimo svih šest toaleta. Objavit ćemo šta zateknemo.</p>
+		<p class="autor">Cijeli tekst na drugaperspektiva.org</p>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<script>
+/* Prazna rolna: isprekidani obris (gdje bi bio papir) i karton u sredini. Nova (sljedeća) je narandžasta. */
+document.querySelectorAll('.rolna').forEach(function (el) {
+	var boja = el.classList.contains('nova') ? '#ee8031' : '#fff';
+	var obris = el.classList.contains('nova') ? 1 : .7;
+	el.innerHTML = '<svg viewBox="0 0 100 100">'
+		+ '<circle cx="50" cy="50" r="46" fill="none" stroke="' + boja + '" stroke-opacity="' + obris + '" stroke-width="4" stroke-dasharray="7 7"/>'
+		+ '<circle cx="50" cy="50" r="18" fill="none" stroke="' + boja + '" stroke-width="9"/>'
+		+ '</svg>';
+});
+
+/* Bosanska tipografija: „navodnici“, …, – i jednoslovne riječi vezane za sljedeću. */
+(function () {
+	var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+	var n;
+	while ((n = walker.nextNode())) {
+		if (n.parentNode.closest('script, style, svg')) continue;
+		n.nodeValue = n.nodeValue
+			.replace(/\.\.\./g, '…')
+			.replace(/(^|[\s(\[ ])["“”″˝]/g, '$1„')
+			.replace(/["“”″˝]/g, '“')
+			.replace(/ - /g, ' – ')
+			.replace(/(?<=^|[\s („])([aiouskvzAIOUSKVZ]) +/g, '$1 ');
+	}
+})();
+</script>
+</body>
+</html>
