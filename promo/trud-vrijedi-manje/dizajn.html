@@ -7,7 +7,7 @@
 	Karusel od 7 slajdova za tekst „Da li moj trud vrijedi manje?“ (Mišljenje).
 	Slajdovi 3 i 4 su jedna panorama 2160 px: stupci stipendija idu preko oba slajda,
 	razmjer je 1 KM = 1 px, pa stupac za Centar prelazi na sljedeći slajd.
-	Podaci: grafikon i mapa iz teksta (Tarik Bećarević, Sema Čeljo; plate: FZS, 2023).
+	Podaci: konkursi općina za 2025/2026 i FZS, plate za 2024. (vidi podaci/ i azuriranje-clanka.md).
 -->
 <style>
 @font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
@@ -69,12 +69,15 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 .panorama .uvod .tekst { margin-top: 28px; }
 .panorama .poenta { position: absolute; left: calc(1080px + var(--mt)); top: 150px; width: 880px; }
 .panorama .poenta .naslov { font-size: 72px; }
-.stupci { position: absolute; left: var(--m); top: 480px; display: flex; flex-direction: column; gap: 22px; }
+.stupci { position: absolute; left: var(--m); top: 440px; display: flex; flex-direction: column; gap: 16px; }
 .stubac {
-	height: 92px; background: rgba(255, 255, 255, .22); display: flex; align-items: center; justify-content: space-between;
+	height: 78px; background: rgba(255, 255, 255, .22); display: flex; align-items: center; justify-content: space-between;
 	padding: 0 26px; font-size: 34px; color: #fff; white-space: nowrap;
 }
-.stubac b { font-size: 40px; font-weight: 700; }
+.stubac b { font-size: 36px; font-weight: 700; }
+/* Iznos koji bi pao na spoj dva slajda ide van stupca. */
+.stubac.van { position: relative; }
+.stubac.van b { position: absolute; left: 100%; margin-left: 22px; }
 .stubac.min { background: #fff; color: var(--ljubicasta); }
 .stubac.max { background: var(--narandza); }
 .panorama .izvor { position: absolute; left: calc(1080px + var(--mt)); bottom: 72px; width: 760px; }
@@ -82,10 +85,10 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 /* 5. Plate i stipendije. */
 .plate .gore { position: absolute; left: var(--mt); right: var(--mt); top: 150px; }
 .plate .naslov { font-size: 72px; }
-.lista { position: absolute; left: var(--mt); right: var(--mt); top: 560px; border-collapse: collapse; width: calc(100% - 2 * var(--mt)); }
+.lista { position: absolute; left: var(--mt); right: var(--mt); top: 440px; border-collapse: collapse; width: calc(100% - 2 * var(--mt)); }
 .lista th { font-size: 24px; font-weight: 400; color: rgba(255, 255, 255, .66); text-align: right; padding: 0 0 18px; vertical-align: bottom; line-height: 1.3; }
 .lista th:first-child { text-align: left; }
-.lista td { font-size: 36px; padding: 21px 0; border-top: 2px solid var(--linija); text-align: right; color: rgba(255, 255, 255, .5); white-space: nowrap; }
+.lista td { font-size: 34px; padding: 15px 0; border-top: 2px solid var(--linija); text-align: right; color: rgba(255, 255, 255, .5); white-space: nowrap; }
 .lista td:first-child { text-align: left; }
 .lista tr.jako td { color: #fff; font-weight: 700; }
 .plate .izvor { position: absolute; left: var(--mt); bottom: 72px; width: 760px; }
@@ -134,21 +137,23 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 	<div class="panorama" id="panorama">
 		<div class="uvod">
 			<h2 class="naslov">Koliko vrijedi petica?</h2>
-			<p class="tekst">Stipendija za odličan uspjeh za jednu školsku godinu, po općinama</p>
+			<p class="tekst">Stipendija za prosjek 5.0 u školskoj 2025/2026. godini, po općinama</p>
 		</div>
 		<div class="poenta">
-			<h2 class="naslov">U Centru skoro tri puta više nego u Vogošći.</h2>
+			<h2 class="naslov">U Centru i Novom Sarajevu 2000 KM. U Vogošći 765 KM.</h2>
 		</div>
 		<div class="stupci">
-			<div class="stubac min" style="width:675px">Vogošća<b>675 KM</b></div>
-			<div class="stubac" style="width:725px">Novo Sarajevo<b>725 KM</b></div>
-			<div class="stubac" style="width:810px">Ilijaš<b>810 KM</b></div>
+			<div class="stubac min" style="width:765px">Vogošća<b>765 KM</b></div>
+			<div class="stubac" style="width:900px">Hadžići<b>900 KM</b></div>
 			<div class="stubac" style="width:1000px">Novi Grad<b>1000 KM</b></div>
+			<div class="stubac" style="width:1000px">Trnovo<b>1000 KM</b></div>
+			<div class="stubac van" style="width:1170px">Ilijaš<b>1170 KM</b></div>
 			<div class="stubac" style="width:1350px">Stari Grad<b>1350 KM</b></div>
 			<div class="stubac" style="width:1430px">Ilidža<b>1430 KM</b></div>
+			<div class="stubac max" style="width:2000px">Novo Sarajevo<b>2000 KM</b></div>
 			<div class="stubac max" style="width:2000px">Centar<b>2000 KM</b></div>
 		</div>
-		<p class="napomena izvor">Neto iznosi. Izvor: Druga perspektiva, april 2025.</p>
+		<p class="napomena izvor">Iznos za cijelu školsku godinu. U Ilidži i Novom Gradu stipendija zavisi i od prihoda porodice. Izvor: konkursi općina.</p>
 	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
@@ -161,19 +166,21 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 <!-- 5. Plate i stipendije -->
 <section class="slide post plate">
 	<div class="gore">
-		<h2 class="naslov">U Ilijašu i Vogošći su plate najniže. I stipendije su među najmanjima.</h2>
+		<h2 class="naslov">Najveće stipendije daju općine s najvećim platama.</h2>
 	</div>
 	<table class="lista">
 		<tr><th>Općina</th><th>Prosječna<br>mjesečna plata</th><th>Stipendija<br>za godinu</th></tr>
-		<tr class="jako"><td>Ilijaš</td><td>991 KM</td><td>810 KM</td></tr>
-		<tr class="jako"><td>Vogošća</td><td>1246 KM</td><td>675 KM</td></tr>
-		<tr><td>Ilidža</td><td>1305 KM</td><td>1430 KM</td></tr>
-		<tr><td>Novi Grad</td><td>1434 KM</td><td>1000 KM</td></tr>
-		<tr><td>Stari Grad</td><td>1623 KM</td><td>1350 KM</td></tr>
-		<tr><td>Novo Sarajevo</td><td>1700 KM</td><td>725 KM</td></tr>
-		<tr><td>Centar</td><td>1776 KM</td><td>2000 KM</td></tr>
+		<tr class="jako"><td>Centar</td><td>1986 KM</td><td>2000 KM</td></tr>
+		<tr class="jako"><td>Novo Sarajevo</td><td>1830 KM</td><td>2000 KM</td></tr>
+		<tr><td>Stari Grad</td><td>1778 KM</td><td>1350 KM</td></tr>
+		<tr><td>Novi Grad</td><td>1545 KM</td><td>1000 KM</td></tr>
+		<tr><td>Ilidža</td><td>1408 KM</td><td>1430 KM</td></tr>
+		<tr><td>Hadžići</td><td>1341 KM</td><td>900 KM</td></tr>
+		<tr><td>Vogošća</td><td>1325 KM</td><td>765 KM</td></tr>
+		<tr><td>Trnovo</td><td>1301 KM</td><td>1000 KM</td></tr>
+		<tr><td>Ilijaš</td><td>1080 KM</td><td>1170 KM</td></tr>
 	</table>
-	<p class="napomena izvor">Neto iznosi. Plate za 2023. godinu, izvor: FZS.</p>
+	<p class="napomena izvor">Neto plate za 2024. godinu (FZS). Stipendije za školsku 2025/2026.</p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
