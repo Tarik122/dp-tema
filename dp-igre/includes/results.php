@@ -12,9 +12,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /** Day number of a game, counted from the option holding its first day. */
 function dpig_day_number( $option, $date ) {
-	$start = new DateTimeImmutable( get_option( $option, $date ) );
+	$first = get_option( $option );
+	if ( ! $first ) {
+		// Missing when the plugin was updated without re-activating. Count from the first day anyone played.
+		$games = array( 'dpig_kx_start' => 'kontekst', 'dpig_lj_start' => 'ljestve' );
+		$first = isset( $games[ $option ] ) ? dpig_first_played( $games[ $option ] ) : '';
+		$first = $first ? $first : wp_date( 'Y-m-d' );
+		update_option( $option, $first );
+	}
+	$start = new DateTimeImmutable( $first );
 	$day   = new DateTimeImmutable( $date );
 	return (int) $start->diff( $day )->format( '%r%a' ) + 1;
+}
+
+/** The earliest day anyone played a game, or '' if nobody has. */
+function dpig_first_played( $game ) {
+	global $wpdb;
+	return (string) $wpdb->get_var( $wpdb->prepare( 'SELECT MIN(puzzle_date) FROM ' . dpig_table( 'results' ) . ' WHERE game = %s', $game ) );
 }
 
 /** Seconds until the next puzzle (midnight in the site's time zone). */

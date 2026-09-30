@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Druga Perspektiva – Igre
  * Description:       Dnevne igre Druge perspektive s Google prijavom za školske e-mailove, ljestvicama i nizovima: Riječ dana [dp_wordle], Kontekst [dp_kontekst] i Ljestve [dp_ljestve]. Svaku igru ubacite na stranicu njenim kratkim kodom.
- * Version:           1.4.0
+ * Version:           1.4.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Druga Perspektiva
@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DPIG_VERSION', '1.4.0' );
-define( 'DPIG_DB_VERSION', '2' );
+define( 'DPIG_VERSION', '1.4.1' );
+define( 'DPIG_DB_VERSION', '3' );
 define( 'DPIG_FILE', __FILE__ );
 define( 'DPIG_DIR', plugin_dir_path( __FILE__ ) );
 define( 'DPIG_URL', plugin_dir_url( __FILE__ ) );
