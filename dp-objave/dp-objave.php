@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       DP objave
  * Description:       Instagram objave i storyji u stilu Druge perspektive, pravljeni iz članaka: naslovnica s fotografijom, tekst, citat. Sve se može urediti i preuzeti kao slika. Objave za mreže → Dodaj novu, ili "Napravi objavu" kod članka.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.6
  * Requires PHP:      7.4
  * Author:            Druga perspektiva
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'DPO_VERSION', '1.0.0' );
+define( 'DPO_VERSION', '1.1.0' );
 define( 'DPO_URL', plugin_dir_url( __FILE__ ) );
 define( 'DPO_META', '_dpo_design' );
 
@@ -117,7 +117,9 @@ add_action(
 				'fonts'    => array(
 					'regular' => DPO_URL . 'assets/fonts/lato-400.woff2',
 					'bold'    => DPO_URL . 'assets/fonts/lato-700.woff2',
-					'italic'  => DPO_URL . 'assets/fonts/lato-400-italic.woff2',
+					'black'     => DPO_URL . 'assets/fonts/lato-900.woff2',
+					'italic'    => DPO_URL . 'assets/fonts/lato-400-italic.woff2',
+					'condensed' => DPO_URL . 'assets/fonts/barlow-condensed-800.woff2',
 				),
 				'logo'     => array(
 					'white' => DPO_URL . 'assets/logo-bijeli.png',
@@ -141,6 +143,7 @@ function dpo_colors() {
 			'crna'       => array( 'Crna', '#141414' ),
 		),
 		'bg'   => array(
+			'svijetla'   => array( 'Svijetlosiva', '#ebebee' ),
 			'ljubicasta' => array( 'Ljubičasta', '#402f65' ),
 			'plava'      => array( 'Plava', '#5271fe' ),
 			'crna'       => array( 'Crna', '#141414' ),
@@ -207,10 +210,11 @@ function dpo_clean_design( $d ) {
 		if ( 'cover' === $type ) {
 			$slide['chip']      = $text( $s['chip'] ?? '', 60 );
 			$slide['chipColor'] = $hex( $s['chipColor'] ?? '', $colors['chip']['plava'][1] );
+			$slide['byline']    = $text( $s['byline'] ?? '', 120 );
 			$slide['credit']    = $text( $s['credit'] ?? '', 120 );
-			$slide['darken']    = $num( $s['darken'] ?? 0.6, 0, 1, 0.6 );
+			$slide['darken']    = $num( $s['darken'] ?? 0.8, 0, 1, 0.8 );
 			$slide['blur']      = $num( $s['blur'] ?? 0, 0, 30, 0 );
-			$slide['size']      = $num( $s['size'] ?? 1, 0.6, 1.4, 1 );
+			$slide['size']      = $num( $s['size'] ?? 1, 0.6, 1.3, 1 );
 			$slide['photos']    = array();
 			foreach ( array_slice( (array) ( $s['photos'] ?? array() ), 0, 3 ) as $p ) {
 				$slide['photos'][] = array(
@@ -224,9 +228,11 @@ function dpo_clean_design( $d ) {
 		} elseif ( 'text' === $type ) {
 			$slide['body']  = $text( $s['body'] ?? '', 1500 );
 			$slide['align'] = 'justify' === ( $s['align'] ?? '' ) ? 'justify' : 'left';
+			$slide['caps']  = ! empty( $s['caps'] );
 		} else {
 			$slide['quote'] = $text( $s['quote'] ?? '', 600 );
-			$slide['who']   = $text( $s['who'] ?? '', 120 );
+			$slide['who']     = $text( $s['who'] ?? '', 120 );
+			$slide['whoInfo'] = $text( $s['whoInfo'] ?? '', 160 );
 		}
 		$out['slides'][] = $slide;
 	}
@@ -243,13 +249,14 @@ function dpo_blank_design() {
 		'slides'  => array(
 			array(
 				't'         => 'cover',
-				'bg'        => '#402f65',
+				'bg'        => '#141414',
 				'logo'      => true,
 				'title'     => 'Naslov objave',
 				'chip'      => 'Vijesti',
 				'chipColor' => '#5271fe',
+				'byline'    => '',
 				'credit'    => '',
-				'darken'    => 0.6,
+				'darken'    => 0.8,
 				'blur'      => 0,
 				'size'      => 1,
 				'photos'    => array(),

@@ -25,6 +25,7 @@ function dpo_design_from_article( $post_id ) {
 			'title'     => $title,
 			'chip'      => $cat ? html_entity_decode( $cat->name, ENT_QUOTES, 'UTF-8' ) : '',
 			'chipColor' => dpo_chip_hex( $cat ),
+			'byline'    => dpo_byline( $post ),
 			'credit'    => $photo ? dpo_photo_credit( $photo ) : '',
 			'photos'    => $photo ? array( dpo_photo( $photo ) ) : array(),
 		)
@@ -44,19 +45,29 @@ function dpo_design_from_article( $post_id ) {
 		);
 	}
 	foreach ( array_slice( dpo_quotes( $post ), 0, 2 ) as $q ) {
+		// "Ime Prezime, učenica 3. razreda" -> ime podebljano, opis sivo.
+		$parts    = array_map( 'trim', explode( ',', $q['who'], 2 ) );
 		$slides[] = array(
-			't'     => 'quote',
-			'bg'    => $colors['bg']['ljubicasta'][1],
-			'logo'  => true,
-			'title' => '',
-			'quote' => $q['text'],
-			'who'   => $q['who'],
+			't'       => 'quote',
+			'bg'      => $colors['bg']['svijetla'][1],
+			'logo'    => true,
+			'title'   => '',
+			'quote'   => $q['text'],
+			'who'     => $parts[0],
+			'whoInfo' => $parts[1] ?? '',
 		);
 	}
 
 	$design['article'] = $post_id;
 	$design['slides']  = $slides;
 	return $design;
+}
+
+/** "Piše: Ime Prezime" (više autora ako ih dodatak Co-Authors Plus prikazuje). */
+function dpo_byline( $post ) {
+	$name = function_exists( 'coauthors' ) ? coauthors( ', ', ' i ', null, null, false ) : get_the_author_meta( 'display_name', $post->post_author );
+	$name = trim( html_entity_decode( wp_strip_all_tags( (string) $name ), ENT_QUOTES, 'UTF-8' ) );
+	return '' === $name || 'admin' === strtolower( $name ) ? '' : 'Piše: ' . $name;
 }
 
 /** Glavna rubrika članka (prva koja nije "Bez kategorije"). */
