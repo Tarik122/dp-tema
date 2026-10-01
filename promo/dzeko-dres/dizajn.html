@@ -73,36 +73,25 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 	font-size: 20px; color: rgba(255, 255, 255, .66); white-space: nowrap;
 }
 
-/* ---- Džeko dres: fotografija gore, ljubičasti panel dolje, vrijeme kao glavni broj ---- */
-.dres .okvir { position: absolute; left: 0; top: 0; width: 1080px; height: 800px; overflow: hidden; }
-.dres .gore { position: absolute; left: -137px; top: -60px; width: 1355px; height: auto; }
-.dres .panel { position: absolute; left: 0; right: 0; top: 800px; bottom: 0; background: var(--ljubicasta); }
-.dres .vrh { position: absolute; left: var(--m); right: var(--m); top: 96px; }
-.dres .oznaka { background: var(--narandza); }
-.dres .naslov { font-size: 102px; margin-top: 24px; }
-.dres .tekst { margin-top: 26px; max-width: 840px; }
-.dres .vrijeme { position: absolute; left: var(--m); bottom: 300px; padding-left: 40px; border-left: 12px solid var(--narandza); }
-.dres .broj { font-size: 210px; font-weight: 900; line-height: .82; letter-spacing: -0.03em; }
-.dres .gdje { font-size: 40px; font-weight: 700; margin-top: 22px; line-height: 1; }
-.dres .potpis { position: absolute; left: auto; right: var(--m); top: 822px; bottom: auto; writing-mode: horizontal-tb; transform: none; font-size: 22px; }
+/* ---- Džeko dres: fotografija gore, jedna rečenica i jedna informacija dolje ---- */
+.dres .okvir { position: absolute; left: 0; top: 0; width: 1080px; height: 1000px; overflow: hidden; }
+.dres .gore { position: absolute; left: -180px; top: -20px; width: 1440px; height: 1078px; }
+.dres .potpis { position: absolute; right: var(--m); left: auto; top: 1022px; bottom: auto; writing-mode: horizontal-tb; transform: none; font-size: 22px; }
+.dres .dno { position: absolute; left: var(--m); right: var(--m); bottom: 300px; }
+.dres .izjava { font-size: 112px; }
+.dres .tekst { margin-top: 40px; max-width: 760px; }
+.dres .tekst b { color: #fff; }
 </style>
 </head>
 <body>
 
 <section class="slide story dres">
 	<div class="okvir"><img class="gore" src="foto.jpg" alt=""></div>
-	<div class="panel">
-		<div class="vrh">
-			<span class="oznaka">Poziv učenicima</span>
-			<h1 class="naslov">Sutra svi u dresu Edina Džeke</h1>
-			<p class="tekst">Ko ima, naravno. Tokom dana se slikamo i po odjeljenjima.</p>
-		</div>
-	</div>
-	<div class="vrijeme">
-		<div class="broj">13:10</div>
-		<p class="gdje">Zajednička slika u holu škole</p>
-	</div>
 	<div class="potpis">Foto: Rejana (@rejana4president)</div>
+	<div class="dno">
+		<h1 class="izjava">Sutra svi u Džekinom dresu</h1>
+		<p class="tekst">Tokom dana slikaju se odjeljenja, a u <b>13:10</b> svi zajedno u holu.</p>
+	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
