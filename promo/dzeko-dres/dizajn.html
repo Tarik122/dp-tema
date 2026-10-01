@@ -73,25 +73,36 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 	font-size: 20px; color: rgba(255, 255, 255, .66); white-space: nowrap;
 }
 
-/* ---- Džeko dres: fotografija gore, jedna rečenica i jedna informacija dolje ---- */
-.dres .okvir { position: absolute; left: 0; top: 0; width: 1080px; height: 1000px; overflow: hidden; }
-.dres .gore { position: absolute; left: -180px; top: -20px; width: 1440px; height: 1078px; }
-.dres .potpis { position: absolute; right: var(--m); left: auto; top: 1022px; bottom: auto; writing-mode: horizontal-tb; transform: none; font-size: 22px; }
-.dres .dno { position: absolute; left: var(--m); right: var(--m); bottom: 300px; }
-.dres .izjava { font-size: 112px; }
-.dres .tekst { margin-top: 40px; max-width: 760px; }
-.dres .tekst b { color: #fff; }
+/* ---- Džeko dres: fotografija gore, ljubičasti panel dolje ---- */
+.dres .okvir { position: absolute; left: 0; top: 0; width: 1080px; height: 820px; overflow: hidden; }
+.dres .gore { position: absolute; left: 0; top: 0; width: 1080px; height: 820px; object-fit: cover; object-position: 50% 0%; transform-origin: 50% 30%; transform: scale(1.1); }
+.dres .panel { position: absolute; left: 0; right: 0; top: 820px; bottom: 0; background: var(--ljubicasta); padding: 72px var(--m) 0; }
+.dres .oznaka { background: var(--narandza); }
+.dres .naslov { font-size: 102px; margin-top: 24px; }
+.dres .tekst { margin-top: 30px; }
+.dres .lista { position: absolute; left: var(--m); right: var(--m); bottom: 300px; list-style: none; padding: 0; }
+.dres .lista li { display: flex; justify-content: space-between; align-items: baseline; font-size: 40px; padding: 26px 0; border-top: 2px solid var(--linija); }
+.dres .lista li span { color: var(--mekano); }
+.dres .lista li b { font-weight: 700; }
+.dres .lista li.istaknuto { background: var(--narandza); border-top-color: transparent; margin: 0 -24px; padding: 26px 24px; }
+.dres .lista li.istaknuto span { color: #fff; }
+.dres .logo { bottom: 300px; }
+.dres .lista { right: calc(var(--m) + 140px); }
 </style>
 </head>
 <body>
 
 <section class="slide story dres">
 	<div class="okvir"><img class="gore" src="foto.jpg" alt=""></div>
-	<div class="potpis">Foto: Rejana (@rejana4president)</div>
-	<div class="dno">
-		<h1 class="izjava">Sutra svi u Džekinom dresu</h1>
-		<p class="tekst">Tokom dana slikaju se odjeljenja, a u <b>13:10</b> svi zajedno u holu.</p>
+	<div class="panel">
+		<span class="oznaka">Poziv učenicima</span>
+		<h1 class="naslov">Sutra svi u dresu Edina Džeke</h1>
+		<p class="tekst">Ko ima dres, neka ga obuče. Slikamo se po odjeljenjima i svi zajedno.</p>
 	</div>
+	<ul class="lista">
+		<li><span>Po odjeljenjima</span><b>tokom dana</b></li>
+		<li class="istaknuto"><span>Zajednička slika u holu</span><b>13:10 - 13:15</b></li>
+	</ul>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
