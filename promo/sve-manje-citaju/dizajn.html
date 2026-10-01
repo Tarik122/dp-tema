@@ -5,7 +5,7 @@
 <title>Zašto učenici sve manje čitaju? – karusel</title>
 <!--
 	Karusel „Iz arhive“ za tekst Lejle Bučo (Mišljenje, 29. decembar 2024.), 5 slajdova 1080×1440.
-	Tekst je miran i informativan: naslov, sažetak, zaključci teksta, citat, poveznica.
+	Tekst je miran i informativan: naslov, sažetak, glavni nalaz teksta, citat, poveznica.
 	Grafika: jedna duga polica s knjigama ide dnom svih slajdova (panorama 5400 px) i postepeno
 	se prorjeđuje; gdje je knjiga bila, ostaje blijedi obris. Tekst to ne komentariše.
 -->
@@ -19,7 +19,6 @@
 	--ljubicasta: #402f65;
 	--svijetla: #ebebee;
 	--mt: 96px;
-	--linija: rgba(255, 255, 255, .24);
 }
 
 * { box-sizing: border-box; margin: 0; }
@@ -44,37 +43,31 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 /* Polica: panorama preko svih slajdova. */
 .polica { position: absolute; left: 0; top: 0; width: 5400px; height: 1440px; }
 .pod { position: absolute; left: 0; right: 0; top: 1196px; height: 3px; background: rgba(255, 255, 255, .3); }
-.k { position: absolute; border-radius: 6px; background: #fff; }
-.k::before, .k::after { content: ""; position: absolute; left: 0; right: 0; height: 8px; background: rgba(20, 20, 20, .13); }
-.k::before { top: 26px; }
-.k::after { bottom: 26px; }
-.k.siva { background: var(--svijetla); }
+.k { position: absolute; border-radius: 6px; background: #fff; overflow: hidden; }
+.k i { position: absolute; left: 0; right: 0; background: rgba(20, 20, 20, .13); }
+.k.svijetla { background: var(--svijetla); }
+.k.lavanda { background: #cac5d4; }   /* bijela 72 % na ljubičastoj */
+.k.tamnija { background: #a9a1b9; }   /* bijela 55 % na ljubičastoj */
 .k.tinta { background: var(--tinta); }
-.k.tinta::before, .k.tinta::after { background: rgba(255, 255, 255, .16); }
+.k.tinta i { background: rgba(255, 255, 255, .16); }
 .k.narandza { background: var(--narandza); }
 .k.obris { background: rgba(255, 255, 255, .08); }
-.k.obris::before, .k.obris::after { display: none; }
 
 /* 1. Naslovna */
 .naslovna .gore { top: 120px; }
+.naslovna .meta { display: flex; align-items: center; gap: 26px; font-size: 30px; color: rgba(255, 255, 255, .78); }
 .naslovna .naslov { margin-top: 26px; font-size: 104px; }
+.naslovna .autor { margin-top: 34px; font-size: 40px; color: rgba(255, 255, 255, .72); }
+.naslovna .autor b { color: #fff; }
 
 /* 2. Sažetak */
 .sazetak .tekst { margin-top: 36px; }
 
-/* 3. Zaključci */
-.zakljucci .gore { top: 132px; }
-.lista { margin-top: 36px; border-top: 2px solid var(--linija); }
-.lista p { padding: 21px 0; border-bottom: 2px solid var(--linija); font-size: 40px; line-height: 1.3; text-wrap: pretty; }
-
-/* 4. Citat */
+/* 3–4. Citati */
 .citat { border-left: 12px solid var(--narandza); padding-left: 44px; }
 .citat .uvod { font-size: 64px; }
 .citat .malo { margin-top: 28px; }
 .citat .malo b { color: #fff; }
-
-/* 5. Kraj */
-.kraj .tekst { margin-top: 28px; }
 </style>
 </head>
 <body>
@@ -82,29 +75,26 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 <!-- 1. Naslovna -->
 <section class="slide post naslovna">
 	<div class="gore">
-		<span class="oznaka">Iz arhive</span>
+		<p class="meta"><span class="oznaka">Mišljenje</span><span>Iz arhive, decembar 2024.</span></p>
 		<h1 class="naslov">Zašto učenici sve manje čitaju?</h1>
+		<p class="autor">Piše: <b>Lejla Bučo</b></p>
 	</div>
-	<p class="dolje malo">Piše: Lejla Bučo</p>
 </section>
 
 <!-- 2. Sažetak -->
 <section class="slide post sazetak">
 	<div class="gore">
-		<p class="uvod">Djeca i tinejdžeri danas čitaju manje nego ikada, a digitalni mediji u tome igraju veliku ulogu.</p>
-		<p class="tekst">Lejla Bučo razgovarala je sa sedmogodišnjom Lamijom i njenom mamom, s četvero učenika od 13 do 16 godina i sa studentom psihologije o tome šta ih od knjige odbija, a šta privlači.</p>
+		<p class="uvod">Djeca i tinejdžeri danas čitaju manje nego ikada.</p>
+		<p class="tekst">Lejla Bučo o tome je razgovarala sa sedmogodišnjom Lamijom i njenom mamom, s četvero učenika od 13 do 16 godina i sa studentom psihologije. Pitala ih je šta ih od knjige odbija, a šta privlači.</p>
 	</div>
 </section>
 
-<!-- 3. Zaključci -->
-<section class="slide post zakljucci">
+<!-- 3. Glavni nalaz -->
+<section class="slide post">
 	<div class="gore">
-		<h2 class="uvod">Zaključci</h2>
-		<div class="lista">
-			<p>Odbojnost prema knjizi veća je što je čitalac mlađi.</p>
-			<p>Kod starijih učenika presudni su sadržaj i književna vrsta: čitaju ono što ih zanima.</p>
-			<p>Kod svih sagovornika presudan je bio prvi dojam o knjizi i čitanju.</p>
-			<p>Kao moguće rješenje tekst predlaže dnevnik&nbsp;čitanja.</p>
+		<div class="citat">
+			<p class="uvod">„Prvi dojam o knjizi i čitanju je u svim slučajevima bio presudan.“</p>
+			<p class="malo"><b>Lejla Bučo</b></p>
 		</div>
 	</div>
 </section>
@@ -120,10 +110,9 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 </section>
 
 <!-- 5. Kraj -->
-<section class="slide post kraj">
+<section class="slide post">
 	<div class="gore">
-		<p class="uvod">Cijeli tekst je na drugaperspektiva.org</p>
-		<p class="tekst">Objavljen je 29. decembra 2024. u rubrici&nbsp;Mišljenje.</p>
+		<p class="uvod">Cijeli tekst je objavljen 29.&nbsp;decembra&nbsp;2024. na&nbsp;drugaperspektiva.org</p>
 	</div>
 </section>
 
@@ -143,24 +132,23 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 	}
 })();
 
-/* Polica: knjige jedna do druge, s lijeva na desno sve rjeđe. Isti „slučajni“ raspored svaki put. */
+/* Polica: knjige jedna do druge, s lijeva na desno sve rjeđe. Isti „slučajni“ raspored svaki put:
+   jedan niz brojeva određuje raspored (širina, visina, boja, da li knjiga stoji), drugi ukrase. */
 (function () {
-	var sjeme = 32;
-	function slucajno() { sjeme = (sjeme * 16807) % 2147483647; return (sjeme - 1) / 2147483646; }
+	function niz(sjeme) {
+		return function () { sjeme = (sjeme * 16807) % 2147483647; return (sjeme - 1) / 2147483646; };
+	}
+	var slucajno = niz(32), ukras = niz(11);
 	var POD = 1196, KRAJ = 5400 - 64;
-	var polica = document.createElement('div');
-	polica.className = 'polica';
-	polica.innerHTML = '<div class="pod"></div>';
 	var x = 64, knjige = [];
 	while (x < KRAJ - 60) {
 		var w = Math.round(48 + slucajno() * 46);
 		var h = Math.round(222 + slucajno() * 108);
 		var r = slucajno();
-		var boja = r < .46 ? '' : r < .8 ? 'siva' : 'tinta';
+		var boja = r < .2 ? 'bijela' : r < .44 ? 'svijetla' : r < .66 ? 'lavanda' : r < .82 ? 'tamnija' : 'tinta';
 		/* Vjerovatnoća da knjiga još stoji: puna polica na naslovnoj, oko 0,15 na kraju. */
 		var t = x / 5400, p = t < .19 ? 1 : 1 - .9 * Math.pow((t - .19) / .81, .75);
-		var ima = slucajno() < p;
-		knjige.push({ x: x, w: w, h: h, boja: boja, ima: ima });
+		knjige.push({ x: x, w: w, h: h, boja: boja, ima: slucajno() < p, ukras: Math.floor(ukras() * 6) });
 		x += w + 6;
 	}
 	/* Narandžasta: jedna na naslovnoj, jedna među posljednjima. */
@@ -170,12 +158,43 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 	}
 	narandzasta(600, 900);
 	narandzasta(4500, 5200);
+	/* Knjiga koja prelazi spoj slajdova samo za nekoliko piksela izgleda kao greška: skrati je do spoja. */
 	knjige.forEach(function (k) {
+		for (var spoj = 1080; spoj < 5400; spoj += 1080) {
+			var desno = k.x + k.w - spoj, lijevo = spoj - k.x;
+			if (desno > 0 && desno < 16) k.w -= desno + 4;
+			else if (lijevo > 0 && lijevo < 16) { k.x = spoj + 4; k.w -= lijevo + 4; }
+		}
+	});
+
+	/* Ukrasi na hrptu: trake, ploča za naslov ili ništa. Brojevi su udaljenosti od vrha (ili dna, ako su negativni). */
+	var UKRASI = [
+		[[26, 8], [-34, 8]],                       /* dvije tanke trake */
+		[[22, 6], [34, 6], [-40, 6], [-28, 6]],    /* dvostruke trake */
+		[[38, 64, .55]],                           /* ploča za naslov */
+		[[30, 22]],                                /* jedna široka traka gore */
+		[],                                        /* bez ukrasa */
+		[[24, 6], [-70, 30]]                       /* tanka gore, široka dolje */
+	];
+	function hrbat(k) {
 		var el = document.createElement('div');
 		el.className = 'k ' + (k.ima ? k.boja : 'obris');
 		el.style.cssText = 'left:' + k.x + 'px;top:' + (POD - k.h) + 'px;width:' + k.w + 'px;height:' + k.h + 'px';
-		polica.appendChild(el);
-	});
+		if (k.ima) UKRASI[k.ukras].forEach(function (u) {
+			var i = document.createElement('i');
+			i.style[u[0] < 0 ? 'bottom' : 'top'] = Math.abs(u[0]) + 'px';
+			i.style.height = u[1] + 'px';
+			if (u[2]) { i.style.left = i.style.right = (k.w * (1 - u[2]) / 2) + 'px'; i.style.borderRadius = '3px'; }
+			el.appendChild(i);
+		});
+		return el;
+	}
+
+	var polica = document.createElement('div');
+	polica.className = 'polica';
+	polica.innerHTML = '<div class="pod"></div>';
+	knjige.forEach(function (k) { polica.appendChild(hrbat(k)); });
+
 	document.querySelectorAll('section.slide').forEach(function (s, i) {
 		var p = polica.cloneNode(true);
 		p.style.left = (-1080 * i) + 'px';
