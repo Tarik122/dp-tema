@@ -83,7 +83,6 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 		<h1 class="naslov">Zašto učenici sve manje čitaju?</h1>
 		<p class="autor">Piše: <b>Lejla Bučo</b></p>
 	</div>
-	<p class="dolje malo">Iz arhive, 29. decembar 2024.</p>
 </section>
 
 <!-- 2. Sažetak -->
@@ -205,7 +204,9 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 		var p = polica.cloneNode(true);
 		p.style.left = (-1080 * i) + 'px';
 		s.prepend(p);
-		s.insertAdjacentHTML('beforeend', '<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">');
+		/* Oznaka „Iz arhive“ na dnu svakog slajda, u ravni s logom. */
+		s.insertAdjacentHTML('beforeend', '<p class="dolje malo">Iz arhive, 29. decembar 2024.</p>' +
+			'<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">');
 	});
 })();
 </script>
