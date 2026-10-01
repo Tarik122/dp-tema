@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<title>Zašto učenici sve manje čitaju? – karusel</title>
+<!--
+	Karusel „Iz arhive“ za tekst Lejle Bučo (Mišljenje, 29. decembar 2024.), 5 slajdova 1080×1440.
+	Ideja: gomila lektira se smanjuje sa svakim prevlačenjem (6, 3, 1 knjiga); gdje je knjiga bila,
+	ostaje isprekidani obris. Onda na mjestu gomile stoji mobitel, visok kao cijela gomila.
+	Na posljednjem slajdu narandžasta knjiga stoji uspravno: knjiga je zamijenila mobitel.
+	Narandžasta knjiga je uvijek na dnu gomile: prva knjiga, prvi dojam.
+-->
+<style>
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 900; src: url("../../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
+
+:root {
+	--narandza: #ee8031;
+	--tinta: #141414;
+	--ljubicasta: #402f65;
+	--svijetla: #ebebee;
+	--mt: 96px;
+	--pod: 1196px;   /* linija na kojoj stoje knjige */
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 40px; display: flex; flex-direction: column; gap: 40px; }
+
+.slide { position: relative; overflow: hidden; background: var(--ljubicasta); }
+.post { width: 1080px; height: 1440px; }
+.logo { position: absolute; right: 64px; bottom: 72px; width: 100px; }
+
+.oznaka {
+	display: inline-block; padding: 0 0.45em; height: 1.45em; line-height: 1.45em;
+	font-size: 38px; font-weight: 700; color: #fff; background: var(--tinta); white-space: nowrap;
+}
+.naslov { font-size: 96px; font-weight: 700; line-height: 1.03; letter-spacing: -0.022em; text-wrap: balance; }
+.autor { position: absolute; left: var(--mt); bottom: 84px; font-size: 28px; color: rgba(255, 255, 255, .86); }
+
+/* Pod: tanka linija preko cijelog slajda, na istoj visini na svim slajdovima. */
+.pod { position: absolute; left: 0; right: 0; top: var(--pod); height: 3px; background: rgba(255, 255, 255, .3); }
+
+/* Knjiga (hrbat okrenut prema nama). */
+.knjiga {
+	position: absolute; border-radius: 8px; background: #fff; color: var(--tinta);
+	display: flex; align-items: center; gap: 22px; padding: 0 76px; white-space: nowrap;
+}
+.knjiga::before, .knjiga::after { content: ""; position: absolute; top: 0; bottom: 0; width: 9px; background: rgba(20, 20, 20, .14); }
+.knjiga.siva { background: var(--svijetla); }
+.knjiga.prva { background: var(--narandza); }
+.knjiga b { font-size: 36px; font-weight: 700; }
+.knjiga span { font-size: 28px; color: rgba(20, 20, 20, .62); }
+.knjiga::before { left: 34px; }
+.knjiga::after { right: 34px; }
+/* Obris knjige koje više nema. */
+.obris { position: absolute; border-radius: 8px; background: rgba(255, 255, 255, .09); }
+
+/* Mobitel uspravno i mobitel položen. */
+.mobitel { position: absolute; background: var(--tinta); border-radius: 64px; }
+.mobitel .ekran { position: absolute; inset: 18px; border-radius: 48px; background: #fff; }
+.mobitel .ekran::before { content: ""; position: absolute; left: 50%; top: 26px; width: 112px; height: 34px; margin-left: -56px; border-radius: 17px; background: var(--tinta); }
+/* Knjiga koja stoji: hrbat uspravno, tekst odozdo prema gore. */
+.knjiga.stoji { flex-direction: column; justify-content: center; padding: 76px 0; writing-mode: vertical-rl; transform: rotate(180deg); }
+.knjiga.stoji::before, .knjiga.stoji::after { top: auto; bottom: auto; left: 0; right: 0; width: auto; height: 9px; }
+.knjiga.stoji::before { top: 34px; }
+.knjiga.stoji::after { bottom: 34px; }
+
+/* Citat na vrhu slajda. */
+.gore { position: absolute; left: var(--mt); right: var(--mt); top: 150px; }
+.citat { font-size: 64px; font-weight: 700; line-height: 1.06; letter-spacing: -0.022em; text-wrap: balance; }
+.ko { margin-top: 30px; font-size: 30px; color: rgba(255, 255, 255, .72); }
+.ko b { color: #fff; }
+.izjava { font-size: 92px; font-weight: 900; line-height: 1.0; letter-spacing: -0.025em; text-wrap: balance; }
+.dno-tekst { position: absolute; left: var(--mt); right: 240px; bottom: 84px; font-size: 28px; color: rgba(255, 255, 255, .86); }
+</style>
+</head>
+<body>
+
+<!-- 1. Naslovna: sedam knjiga -->
+<section class="slide post" data-knjiga="6">
+	<div class="gore" style="top:120px">
+		<span class="oznaka">Iz arhive</span>
+		<h1 class="naslov" style="margin-top:24px;font-size:104px">Zašto učenici sve manje čitaju?</h1>
+	</div>
+	<p class="autor">Piše: Lejla Bučo</p>
+</section>
+
+<!-- 2. Četiri knjige -->
+<section class="slide post" data-knjiga="3">
+	<div class="gore">
+		<p class="citat">„Ne sviđa mi se što je toliko puna jedna stranica.“</p>
+		<p class="ko"><b>Lamija,</b> 7 godina</p>
+	</div>
+</section>
+
+<!-- 3. Jedna knjiga -->
+<section class="slide post" data-knjiga="1">
+	<div class="gore">
+		<p class="citat">„Lektire nisu zanimljive, nikad ne poželim pročitati nešto zbog lektire.“</p>
+		<p class="ko"><b>Ajna,</b> 13 godina</p>
+	</div>
+</section>
+
+<!-- 4. Mobitel -->
+<section class="slide post" data-mobitel>
+	<div class="gore">
+		<p class="citat">„Društvene mreže sve više zamjenjuju knjigu…“</p>
+		<p class="ko"><b>Iman,</b> 15 godina</p>
+	</div>
+</section>
+
+<!-- 5. Knjiga na mobitelu -->
+<section class="slide post" data-kraj>
+	<div class="gore" style="right:300px">
+		<p class="izjava">Prvi dojam o knjizi i čitanju je u svim slučajevima bio presudan.</p>
+	</div>
+	<p class="dno-tekst">Cijeli tekst Lejle Bučo na drugaperspektiva.org</p>
+</section>
+
+<script>
+/* Bosanska tipografija: „navodnici“, …, – i jednoslovne riječi vezane za sljedeću. */
+(function () {
+	var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+	var n;
+	while ((n = walker.nextNode())) {
+		if (n.parentNode.closest('script, style, svg')) continue;
+		n.nodeValue = n.nodeValue
+			.replace(/\.\.\./g, '…')
+			.replace(/(^|[\s(\[ ])["“”″˝]/g, '$1„')
+			.replace(/["”″˝]/g, '“')
+			.replace(/ - /g, ' – ')
+			.replace(/(?<=^|[\s („])([aiouskvzAIOUSKVZ]) +/g, '$1 ');
+	}
+})();
+
+/* Gomila, odozdo prema gore. Na svakom slajdu ostaje samo donji dio iste gomile. */
+var gomila = [
+	{ boja: 'prva', d: 820, h: 120, x: 0,  naslov: 'Mali princ',       pisac: 'Antoine de Saint-Exupéry' },
+	{ boja: '',     d: 870, h: 128, x: 30, naslov: 'Na Drini ćuprija', pisac: 'Ivo Andrić' },
+	{ boja: 'siva', d: 800, h: 104, x: 6,  naslov: 'Derviš i smrt',    pisac: 'Meša Selimović' },
+	{ boja: '',     d: 850, h: 116, x: 44, naslov: 'Zločin i kazna',   pisac: 'F. M. Dostojevski' },
+	{ boja: 'siva', d: 760, h: 96,  x: 16, naslov: 'Hamlet',           pisac: 'William Shakespeare' },
+	{ boja: '',     d: 820, h: 108, x: 52, naslov: 'Kameni spavač',    pisac: 'Mak Dizdar' }
+];
+var POD = 1196, LIJEVO = 96;
+var VISINA = gomila.reduce(function (z, k) { return z + k.h; }, 0);
+
+function postavi(el, k, dno) {
+	el.style.cssText = 'left:' + (LIJEVO + k.x) + 'px;top:' + (dno - k.h) + 'px;width:' + k.d + 'px;height:' + k.h + 'px';
+	return el;
+}
+function knjiga(k, dno) {
+	var el = document.createElement('div');
+	el.className = 'knjiga ' + k.boja;
+	el.innerHTML = '<b>' + k.naslov + '</b><span>' + k.pisac + '</span>';
+	return postavi(el, k, dno);
+}
+function obris(k, dno) {
+	var el = document.createElement('div');
+	el.className = 'obris';
+	return postavi(el, k, dno);
+}
+
+document.querySelectorAll('section.slide').forEach(function (s) {
+	s.insertAdjacentHTML('afterbegin', '<div class="pod"></div>');
+	var kraj = 'kraj' in s.dataset;
+	var broj = 'mobitel' in s.dataset ? 0 : Number(s.dataset.knjiga || 0);
+	var dno = POD;
+	if (!kraj) {
+		gomila.forEach(function (k, i) {
+			s.appendChild(i < broj ? knjiga(k, dno) : obris(k, dno));
+			dno -= k.h;
+		});
+	}
+	if ('mobitel' in s.dataset) {
+		s.insertAdjacentHTML('beforeend', '<div class="mobitel" style="left:' + (LIJEVO + 190) + 'px;top:' + (POD - VISINA) + 'px;width:' + Math.round(VISINA * .49) + 'px;height:' + VISINA + 'px"><div class="ekran"></div></div>');
+	}
+	if (kraj) {
+		/* Ista knjiga kao na dnu gomile, samo uspravljena, uz desnu ivicu. */
+		var k = gomila[0], el = knjiga(k, POD);
+		el.classList.add('stoji');
+		el.style.cssText = 'left:' + (1080 - LIJEVO - k.h) + 'px;top:' + (POD - k.d) + 'px;width:' + k.h + 'px;height:' + k.d + 'px';
+		s.appendChild(el);
+	}
+	s.insertAdjacentHTML('beforeend', '<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">');
+});
+</script>
+</body>
+</html>
