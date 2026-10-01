@@ -1,9 +1,7 @@
 # Opis za Instagram
 
-Iz arhive: tekst Lejle Bučo objavljen je u decembru 2024. godine.
+Iz arhive, decembar 2024.
 
-Lamija je počela čitati u prodavnici. Mama ju je kroz igru slala da pronađe kesicu supe i šećer. Ishak (16) čita o historiji jer ga zanima, a Iman (15) kaže da je mnogo više čitala prije gimnazije i kao jedan od razloga navodi previše gradiva.
+Lamija je počela čitati u prodavnici, dok je s mamom tražila kesicu supe i šećer. Ishak (16) čita o historiji jer ga zanima. Iman (15) je mnogo više čitala prije gimnazije, dok gradiva nije bilo ovoliko.
 
-Lejla u tekstu piše i o lektirama, o tome koliko vremena djeca provode na telefonu i o dnevniku čitanja kao mogućem rješenju.
-
-Pročitajte cijeli tekst na drugaperspektiva.org.
+Šta im je zajedničko i šta bi pomoglo da se čita više, Lejla Bučo objašnjava u svom tekstu. Pročitajte ga na drugaperspektiva.org.
