@@ -43,6 +43,8 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 /* Polica: panorama preko svih slajdova. */
 .polica { position: absolute; left: 0; top: 0; width: 5400px; height: 1440px; }
 .pod { position: absolute; left: 0; right: 0; top: 1196px; height: 3px; background: rgba(255, 255, 255, .3); }
+/* Ispod police: puna, malo tamnija podloga (donji dio regala), da dno ne ostane prazno. */
+.baza { position: absolute; left: 0; right: 0; top: 1199px; bottom: 0; background: rgba(0, 0, 0, .2); }
 .k { position: absolute; border-radius: 6px; background: #fff; overflow: hidden; }
 .k i { position: absolute; left: 0; right: 0; background: rgba(20, 20, 20, .13); }
 .k.svijetla { background: var(--svijetla); }
@@ -62,6 +64,9 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 
 /* 2. Sažetak */
 .sazetak .tekst { margin-top: 36px; }
+
+/* 5. Kraj */
+.kraj .tekst { margin-top: 28px; }
 
 /* 3–4. Citati */
 .citat { border-left: 12px solid var(--narandza); padding-left: 44px; }
@@ -110,9 +115,10 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 </section>
 
 <!-- 5. Kraj -->
-<section class="slide post">
+<section class="slide post kraj">
 	<div class="gore">
-		<p class="uvod">Cijeli tekst je objavljen 29.&nbsp;decembra&nbsp;2024. na&nbsp;drugaperspektiva.org</p>
+		<p class="uvod">Cijeli tekst je objavljen na Drugoj perspektivi</p>
+		<p class="tekst">Na stranici drugaperspektiva.org, u&nbsp;rubrici&nbsp;Mišljenje.</p>
 	</div>
 </section>
 
@@ -192,7 +198,7 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 
 	var polica = document.createElement('div');
 	polica.className = 'polica';
-	polica.innerHTML = '<div class="pod"></div>';
+	polica.innerHTML = '<div class="baza"></div><div class="pod"></div>';
 	knjige.forEach(function (k) { polica.appendChild(hrbat(k)); });
 
 	document.querySelectorAll('section.slide').forEach(function (s, i) {
