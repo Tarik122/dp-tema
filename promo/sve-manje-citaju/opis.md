@@ -1,6 +1,6 @@
 # Opis za Instagram
 
-Iz arhive: tekst Lejle Bučo objavljen je u decembru 2024. godine, ali nije izgubio na aktuelnosti.
+Iz arhive: tekst Lejle Bučo objavljen je u decembru 2024. godine.
 
 Lamija je počela čitati u prodavnici. Mama ju je kroz igru slala da pronađe kesicu supe i šećer. Ishak (16) čita o historiji jer ga zanima, a Iman (15) kaže da je mnogo više čitala prije gimnazije i kao jedan od razloga navodi previše gradiva.
 
