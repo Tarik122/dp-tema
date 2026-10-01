@@ -11,8 +11,12 @@ const chrome = process.env.CHROME || ['/opt/pw-browsers'].flatMap((b) => {
 	try { return fs.readdirSync(b).filter((d) => /^chromium-\d+$/.test(d)).map((d) => path.join(b, d, 'chrome-linux/chrome')); } catch { return []; }
 }).find((p) => fs.existsSync(p));
 
+// SKALA=4 node ... izvozi u četverostrukoj rezoluciji u podfolder 4x/ (zadano: 2x, pored HTML-a).
+const skala = Number(process.env.SKALA || 2);
+const izlaz = skala === 2 ? dir : path.join(dir, skala + 'x');
+fs.mkdirSync(izlaz, { recursive: true });
 const browser = await chromium.launch(chrome ? { executablePath: chrome } : {});
-const page = await browser.newPage({ viewport: { width: 2000, height: 2200 }, deviceScaleFactor: 2 });
+const page = await browser.newPage({ viewport: { width: 2000, height: 2200 }, deviceScaleFactor: skala });
 await page.goto(pathToFileURL(path.join(dir, 'dizajn.html')).href, { waitUntil: 'networkidle' });
 await page.evaluate(async () => {
 	await document.fonts.ready;
@@ -23,7 +27,7 @@ const broken = await page.evaluate(() => [...document.images].filter((i) => !i.n
 const slides = page.locator('section.slide');
 const n = await slides.count();
 for (let i = 0; i < n; i++) {
-	const f = path.join(dir, `${name}-${i + 1}.png`);
+	const f = path.join(izlaz, `${name}-${i + 1}.png`);
 	await slides.nth(i).screenshot({ path: f });
 	console.log(path.relative(process.cwd(), f));
 }
