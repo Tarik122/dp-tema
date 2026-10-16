@@ -74,25 +74,23 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 }
 
 
-.prijave { --m: 96px; }
-.prijave .vrh { position: absolute; left: var(--m); right: var(--m); top: 250px; }
-.prijave .naslov { font-size: 102px; margin-top: 30px; }
-.prijave .tekst { margin-top: 40px; }
+.prijave { --m: 96px; background: var(--plava); }
+.prijave .vrh { position: absolute; left: var(--m); right: 64px; top: 360px; }
+.prijave .izjava { font-size: 212px; line-height: .96; letter-spacing: -0.03em; text-wrap: wrap; }
+.prijave .nastavak { margin-top: 36px; font-size: 60px; font-weight: 700; line-height: 1.12; letter-spacing: -0.015em; max-width: 860px; text-wrap: balance; }
 .prijave .dno { position: absolute; left: var(--m); right: 200px; bottom: 300px; }
-.prijave .napomena { font-size: 30px; line-height: 1.3; color: rgba(255,255,255,.86); }
+.prijave .napomena { font-size: 36px; line-height: 1.3; color: #fff; }
 </style>
 </head>
 <body>
 
 <section class="slide story prijave">
 	<div class="vrh">
-		<span class="oznaka narandza">Danas je zadnji dan za prijave</span>
-		<h1 class="naslov">Druga perspektiva traži nove članove redakcije</h1>
-		<p class="tekst">Pišemo vijesti iz škole i Sarajeva, mišljenja, recenzije, o nauci i sportu.</p>
-		<p class="tekst" style="margin-top:24px">Rad u novinama upisuje se kao SA ili CAS sati.</p>
+		<h1 class="izjava">Danas je zadnji dan</h1>
+		<p class="nastavak">za prijave u redakciju Druge perspektive.</p>
 	</div>
 	<div class="dno">
-		<p class="napomena">drugaperspektiva.org</p>
+		<p class="napomena">Rad u novinama upisuje se kao SA ili CAS sati.</p>
 	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
