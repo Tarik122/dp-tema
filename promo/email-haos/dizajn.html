@@ -6,7 +6,7 @@
 <!--
 	Animirani cover u stilu naslovnica rubrike Mišljenje (ljubičasta pozadina, oznaka i naslov gore,
 	ravna ilustracija na liniji dolje). Ilustracija su mailovi: svaki novi iskoči u sredini i odgurne
-	ostale, sve brže, dok se prostor ne prenatrpa. Fizika: matter-js. render.mjs pravi MP4 i PNG.
+	ostale, sve brže, dok se prostor ne prenatrpa. Fizika: vlastita, meka (kartice se blago odguruju, bez tvrdih sudara). render.mjs pravi MP4 i PNG.
 	Ime autora: upiši ga u AUTOR ispod (prazno = podnaslov umjesto "Piše:").
 -->
 <style>
@@ -38,13 +38,12 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
-<script src="matter.min.js"></script>
 <script>
 (function () {
 	var AUTOR = ''; // npr. 'Ime Prezime'
 	document.getElementById('pise').innerHTML = AUTOR ? 'Piše: <b>' + AUTOR + '</b>' : 'Treba li nam bolja organizacija e-mailova?';
 
-	var W = 1080, H = 1440, FPS = 30, FLOOR = 1198, CEIL = 560;
+	var W = 1080, H = 1440, FPS = 30, FLOOR = 1198, CEIL = 610;
 	var dpr = window.devicePixelRatio || 1;
 	var cv = document.getElementById('c'), ctx = cv.getContext('2d');
 	cv.width = W * dpr; cv.height = H * dpr;
@@ -71,86 +70,81 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 		['Classroom', 'Novi komentar na zadaću']
 	];
 
-	// Boje kao na ilustracijama rubrike Mišljenje: bijela, dvije lila, tinta i jedna narandžasta.
-	var SKIN = {
-		w: { bg: '#ffffff', ink: '#141414', soft: 'rgba(20,20,20,.62)', dot: '#402f65' },
-		l: { bg: '#dcd8e6', ink: '#141414', soft: 'rgba(20,20,20,.62)', dot: '#402f65' },
-		m: { bg: '#b3acc6', ink: '#141414', soft: 'rgba(20,20,20,.66)', dot: '#402f65' },
-		t: { bg: '#141414', ink: '#ffffff', soft: 'rgba(255,255,255,.7)', dot: '#ffffff' },
-		o: { bg: '#ee8031', ink: '#ffffff', soft: 'rgba(255,255,255,.88)', dot: '#ffffff' }
-	};
-	var ORDER = 'wlwmwtwlowmwlwtwmwlwowtwmwlw';
+	// ---- Meka fizika ----
+	// Kartice su pravougaonici koji se blago odguruju oprugom kad se približe (bez tvrdih sudara).
+	// Sudari ih samo guraju, ne okreću: svaka ima svoj mali nagib i lagano se njiše dok se kreće.
+	var CW = 600, CH = 98, R = 14, CX = W / 2, CY = 880;
+	var GAP = 14;            // razmak koji kartice pokušavaju održati
+	var K = 150, CD = 7;     // krutost i prigušenje odgurivanja
+	var GRAV = 22;           // vrlo slaba gravitacija (px/s²)
+	var DRAG = 1.7;          // otpor "zraka": zbog njega sve pluta
 
-	var M = Matter, engine = M.Engine.create({ positionIterations: 20, velocityIterations: 14 });
-	engine.gravity.y = 1.3;
-	var st = { isStatic: true, friction: 0.9, restitution: 0.02 };
-	M.Composite.add(engine.world, [
-		M.Bodies.rectangle(W / 2, FLOOR + 1000, W * 6, 2000, st),  // linija (pod)
-		M.Bodies.rectangle(W / 2, CEIL - 1000, W * 6, 2000, st)    // nevidljiva granica ispod naslova
-	]);
+	var spawns = [], t = 0.3, gap = 0.74;
+	while (t < 8.4) { spawns.push(t); t += gap; gap = Math.max(0.13, gap * 0.87); }
 
-	// Raspored: prvi mailovi stižu mirno, onda sve brže.
-	var spawns = [], t = 0.3, gap = 0.72;
-	while (t < 7.3) { spawns.push(t); t += gap; gap = Math.max(0.13, gap * 0.87); }
-
-	var CW = 600, CH = 98, R = 14, CX = W / 2;
-	var NEAT = 4; // toliko prvih mailova slaže se uredno
 	var cards = [], made = 0, frame = 0, minute = 7 * 60 + 2;
-
-	// Najviša tačka gomile oko zadanog x.
-	function topAt(x) {
-		var top = FLOOR;
-		cards.forEach(function (b) {
-			if (!b.gone && Math.abs(b.position.x - x) < CW * 0.55) top = Math.min(top, b.bounds.min.y);
-		});
-		return top;
-	}
 
 	function spawn() {
 		var m = MAILS[made % MAILS.length];
-		// nered: 0 dok se slažu uredno, pa raste do 1
-		var mess = Math.pow(Math.min(1, Math.max(0, (made - NEAT + 1) / 6)), 1.3);
-		var x = CX + (rnd() - 0.5) * 2 * (4 + 330 * mess);
-		// kad je gomila na tom mjestu već previsoka, pošta pada tamo gdje je najniža
-		for (var tries = 0; tries < 10 && topAt(x) - CH * 1.6 < CEIL + CH; tries++) {
-			var x2 = -150 + rnd() * (W + 300);
-			if (topAt(x2) > topAt(x)) x = x2;
-		}
-		var y = Math.max(CEIL + CH * 0.8, topAt(x) - CH * (0.75 + 0.5 * mess));
-		// u haosu nova pošta odgurne komšije
-		if (mess > 0.15) cards.forEach(function (b) {
-			var dx = b.position.x - x, dy = b.position.y - y, d = Math.hypot(dx, dy) || 1;
-			if (b.gone || d > 420) return;
-			var f = 8 * mess * (1 - d / 420);
-			M.Body.setVelocity(b, { x: b.velocity.x + dx / d * f, y: b.velocity.y + dy / d * f * 0.5 });
-			M.Body.setAngularVelocity(b, b.angularVelocity + (rnd() - 0.5) * f * 0.01);
-		});
-		var b = M.Bodies.rectangle(x, y, CW, CH, { chamfer: { radius: R }, restitution: 0.04, friction: 0.8, frictionAir: 0.012, density: 0.002 });
-		M.Body.setAngle(b, (rnd() - 0.5) * (0.006 + 0.85 * mess));
-		M.Body.setAngularVelocity(b, (rnd() - 0.5) * 0.07 * mess);
-		M.Body.setVelocity(b, { x: (rnd() - 0.5) * 7 * mess, y: 1 });
-		b.born = frame;
-		b.skin = SKIN[ORDER.charAt(made % ORDER.length)];
-		minute += 1 + Math.floor(rnd() * (mess > 0.3 ? 3 : 9));
+		minute += 1 + Math.floor(rnd() * (made > 8 ? 3 : 9));
 		var hh = Math.floor(minute / 60) % 24, mm = minute % 60;
-		b.mail = { from: m[0], subj: m[1], time: (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm };
-		M.Composite.add(engine.world, b);
-		cards.push(b);
+		var mess = Math.min(1, made / 16); // što ih je više, to su nakrivljeniji
+		cards.push({
+			x: CX + (rnd() - 0.5) * 160, y: CY + (rnd() - 0.5) * 120,
+			vx: (rnd() - 0.5) * 60, vy: -20 - rnd() * 30,
+			tilt: made === 0 ? 0 : (rnd() - 0.5) * (0.08 + 0.3 * mess), a: 0,
+			ph: rnd() * 6.28, age: 0, s: 0.02,
+			mail: { from: m[0], subj: m[1], time: (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm }
+		});
 		made++;
 	}
 
-	// Pojava: brzo naraste s malim preskokom.
-	function pop(age) {
-		var n = 8;
+	// Rast nove kartice: iz tačke do pune veličine, s malim preskokom.
+	function grow(age) {
+		var n = 0.45;
 		if (age >= n) return 1;
-		var x = age / n, c = 2.0;
-		return 0.5 + 0.5 * (1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2));
+		var x = age / n, c = 1.5;
+		return Math.max(0.02, 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2));
 	}
 
-	function cull() {
-		cards.forEach(function (b) {
-			if (!b.gone && Math.abs(b.position.x - CX) > 1400) { M.Composite.remove(engine.world, b); b.gone = true; }
-		});
+	function sub(dt, time) {
+		var n = cards.length, i, j;
+		for (i = 0; i < n; i++) {
+			var c = cards[i];
+			c.age += dt; c.s = grow(c.age);
+			c.fx = (CX - c.x) * 0.1 - DRAG * c.vx;
+			c.fy = GRAV - DRAG * c.vy;
+			var hh2 = CH / 2 * c.s;
+			var pen = c.y + hh2 - FLOOR; if (pen > 0) c.fy -= K * 2 * pen;
+			var top = CEIL - (c.y - hh2); if (top > 0) c.fy += K * 8 * top;
+		}
+		for (i = 0; i < n; i++) for (j = i + 1; j < n; j++) {
+			var A = cards[i], B = cards[j];
+			var dx = B.x - A.x, dy = B.y - A.y;
+			var ox = (CW / 2) * (A.s + B.s) + GAP - Math.abs(dx);
+			var oy = (CH / 2) * (A.s + B.s) + GAP - Math.abs(dy);
+			if (ox <= 0 || oy <= 0) continue;
+			var w = Math.min(A.s, B.s);
+			var sx = dx >= 0 ? 1 : -1, sy = dy >= 0 ? 1 : -1;
+			if (oy < ox) {
+				// razdvajanje gore-dolje, uz malo istiskivanje u stranu (da gužva "curi" iz kadra)
+				var f = (K * oy - CD * (B.vy - A.vy) * sy) * w; if (f < 0) f = 0;
+				A.fy -= f * sy; B.fy += f * sy;
+				var q = K * 0.35 * oy * w;
+				A.fx -= q * sx; B.fx += q * sx;
+			} else {
+				var g = (K * ox - CD * (B.vx - A.vx) * sx) * w; if (g < 0) g = 0;
+				A.fx -= g * sx; B.fx += g * sx;
+			}
+		}
+		for (i = 0; i < n; i++) {
+			var c2 = cards[i];
+			c2.vx += c2.fx * dt; c2.vy += c2.fy * dt;
+			c2.x += c2.vx * dt; c2.y += c2.vy * dt;
+			// nagib: vlastiti + naginjanje u smjeru kretanja + lagano njihanje
+			var target = c2.tilt + c2.vx * 0.0004 + Math.sin(time * 1.3 + c2.ph) * 0.025;
+			c2.a += (target - c2.a) * Math.min(1, dt * 5);
+		}
 	}
 
 	function shown(n) {
@@ -180,22 +174,24 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 	}
 
 	function drawCard(b) {
-		var g = pop(frame - b.born), s = b.skin, L = -CW / 2, T = -CH / 2;
+		var L = -CW / 2, T = -CH / 2;
 		ctx.save();
-		ctx.translate(b.position.x, b.position.y);
-		ctx.rotate(b.angle);
-		ctx.scale(g, g);
+		ctx.translate(b.x, b.y);
+		ctx.rotate(b.a);
+		ctx.scale(b.s, b.s);
 		rr(ctx, L, T, CW, CH, R);
-		ctx.fillStyle = s.bg; ctx.fill();
-		ctx.fillStyle = s.dot;
+		ctx.fillStyle = '#ffffff'; ctx.fill();
+		// tanak obrub u boji pozadine razdvaja kartice kad se dodirnu
+		ctx.lineWidth = 5; ctx.strokeStyle = '#402f65'; ctx.stroke();
+		ctx.fillStyle = '#ee8031';
 		ctx.beginPath(); ctx.arc(L + 34, T + 37, 7, 0, Math.PI * 2); ctx.fill();
 		ctx.textBaseline = 'alphabetic';
-		ctx.fillStyle = s.soft; ctx.font = '400 22px Lato'; ctx.textAlign = 'right';
+		ctx.fillStyle = 'rgba(20,20,20,.55)'; ctx.font = '400 22px Lato'; ctx.textAlign = 'right';
 		ctx.fillText(b.mail.time, CW / 2 - 28, T + 44);
 		ctx.textAlign = 'left';
-		ctx.fillStyle = s.ink; ctx.font = '700 30px Lato';
+		ctx.fillStyle = '#141414'; ctx.font = '700 30px Lato';
 		ctx.fillText(fit(b.mail.from, CW - 190), L + 58, T + 47);
-		ctx.fillStyle = s.soft; ctx.font = '400 25px Lato';
+		ctx.fillStyle = 'rgba(20,20,20,.64)'; ctx.font = '400 25px Lato';
 		ctx.fillText(fit(b.mail.subj, CW - 90), L + 58, T + 81);
 		ctx.restore();
 	}
@@ -204,8 +200,7 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 		ctx.fillStyle = '#402f65';
 		ctx.fillRect(0, 0, W, H);
-		cards.forEach(function (b) { if (!b.gone) drawCard(b); });
-		// Ispod linije malo tamnije, kao na ostalim naslovnicama rubrike.
+		cards.forEach(drawCard);
 		ctx.fillStyle = '#35275a';
 		ctx.fillRect(0, FLOOR, W, H - FLOOR);
 		ctx.fillStyle = 'rgba(255,255,255,.34)';
@@ -215,8 +210,8 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 	function step() {
 		var time = frame / FPS;
 		while (made < spawns.length && spawns[made] <= time) spawn();
-		for (var k = 0; k < 4; k++) M.Engine.update(engine, 1000 / 120);
-		cull();
+		for (var k = 0; k < 8; k++) sub(1 / (FPS * 8), time + k / (FPS * 8));
+		cards = cards.filter(function (c) { return Math.abs(c.x - CX) < 1500; });
 		frame++;
 		document.getElementById('brojac').textContent = label(shown(made));
 		draw();
