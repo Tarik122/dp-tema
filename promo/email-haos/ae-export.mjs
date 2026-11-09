@@ -36,8 +36,15 @@ for (let i = 0; i < track.length; i++) {
 }
 
 // Panel bez brojača (brojač i narandžastu oznaku pravi skripta, da se mogu mijenjati u AE).
-await page.evaluate(() => { document.getElementById('brojac').style.visibility = 'hidden'; });
-await page.locator('.panel').screenshot({ path: path.join(out, 'panel.png') });
+// Panel (naslov, podnaslov, logo) s providnom pozadinom; ljubičastu pozadinu pravi skripta.
+await page.evaluate(() => {
+	document.getElementById('brojac').style.visibility = 'hidden';
+	document.getElementById('c').style.visibility = 'hidden';
+	document.body.style.background = 'transparent';
+	document.getElementById('slide').style.background = 'transparent';
+});
+const box = await page.locator('.panel').boundingBox();
+await page.locator('.panel').screenshot({ path: path.join(out, 'panel.png'), omitBackground: true });
 await browser.close();
 
 // Podaci za skriptu. Sličica f u simulaciji = vrijeme (f - 1) / 30 u AE.
@@ -49,7 +56,7 @@ const cards = track.map((t, i) => ({
 }));
 const counter = labels.map(([f, l]) => [+((f - 1) / FPS).toFixed(4), l]);
 const ascii = (s) => s.replace(/[\u0080-￿]/g, (c) => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'));
-const DATA = ascii(JSON.stringify({ duration: frames / FPS, cards, counter }));
+const DATA = ascii(JSON.stringify({ duration: frames / FPS, cards, counter, panel: [box.x + box.width / 2, box.y + box.height / 2], chipTop: box.y }));
 
 const jsx = `// Druga perspektiva: „Digitalni haos u školskim klupama“, animirani cover.
 // U After Effectsu: File > Scripts > Run Script File... i odaberi ovaj fajl.
@@ -79,9 +86,9 @@ const jsx = `// Druga perspektiva: „Digitalni haos u školskim klupama“, ani
 	var comp = proj.items.addComp("Digitalni haos", 1080, 1440, 1, D.duration, 30);
 	comp.parentFolder = folder;
 	comp.motionBlur = true;
-	comp.bgColor = [235 / 255, 235 / 255, 238 / 255];
+	comp.bgColor = [64 / 255, 47 / 255, 101 / 255];
 
-	var bg = comp.layers.addSolid([235 / 255, 235 / 255, 238 / 255], "Pozadina", 1080, 1440, 1, D.duration);
+	var bg = comp.layers.addSolid([64 / 255, 47 / 255, 101 / 255], "Pozadina", 1080, 1440, 1, D.duration);
 	bg.locked = true;
 
 	for (var i = 0; i < D.cards.length; i++) {
@@ -105,7 +112,7 @@ const jsx = `// Druga perspektiva: „Digitalni haos u školskim klupama“, ani
 
 	var panel = comp.layers.add(imp("panel.png", folder));
 	panel.name = "Panel (naslov i logo)";
-	panel.property("ADBE Transform Group").property("ADBE Position").setValue([540, 900 + 270]);
+	panel.property("ADBE Transform Group").property("ADBE Position").setValue(D.panel);
 	panel.property("ADBE Transform Group").property("ADBE Scale").setValue([50, 50]);
 
 	// Narandžasta oznaka iza brojača; širina prati tekst.
@@ -117,7 +124,7 @@ const jsx = `// Druga perspektiva: „Digitalni haos u školskim klupama“, ani
 	rect.property("ADBE Vector Rect Size").expression =
 		'var r = thisComp.layer("Brojač").sourceRectAtTime(time, false);\\n[r.width + 34.2, 55.1]';
 	rect.property("ADBE Vector Rect Position").expression =
-		'var r = thisComp.layer("Brojač").sourceRectAtTime(time, false);\\n[64 + (r.width + 34.2) / 2, 972 + 27.55]';
+		'var r = thisComp.layer("Brojač").sourceRectAtTime(time, false);\\n[64 + (r.width + 34.2) / 2, ' + (D.chipTop + 27.55) + ']';
 	var fill = cont.addProperty("ADBE Vector Graphic - Fill");
 	fill.property("ADBE Vector Fill Color").setValue([238 / 255, 128 / 255, 49 / 255]);
 	sh.property("ADBE Transform Group").property("ADBE Position").setValue([0, 0]);
@@ -138,7 +145,7 @@ const jsx = `// Druga perspektiva: „Digitalni haos u školskim klupama“, ani
 		td.text = D.counter[n][1];
 		src.setValueAtTime(D.counter[n][0], td);
 	}
-	tl.property("ADBE Transform Group").property("ADBE Position").setValue([81.1, 1012.5]);
+	tl.property("ADBE Transform Group").property("ADBE Position").setValue([81.1, D.chipTop + 40.5]);
 
 	comp.openInViewer();
 	app.endUndoGroup();
