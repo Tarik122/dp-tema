@@ -31,7 +31,7 @@ const frames = await (await open(1)).evaluate(() => window.dp.frames);
 if (preview) {
 	const page = await open(1);
 	let done = 0;
-	for (const f of [30, 75, 120, 160, 200, frames - 1]) {
+	for (const f of [228, 240, 250, 262, frames - 1]) {
 		await page.evaluate((n) => window.dp.step(n), f - done); done = f;
 		const out = path.join(dir, `pregled-${String(f).padStart(3, '0')}.png`);
 		await page.locator('#slide').screenshot({ path: out });
@@ -56,7 +56,7 @@ console.log(path.relative(process.cwd(), mp4));
 
 // Slika zadnje sličice u dvostrukoj rezoluciji (naslovna slika članka, ili cover u Instagramu).
 const still = await open(2);
-await still.evaluate((n) => window.dp.step(n), frames);
+await still.evaluate(() => window.dp.step(window.dp.cover || window.dp.frames));
 const png = path.join(dir, `${name}.png`);
 await still.locator('#slide').screenshot({ path: png });
 console.log(path.relative(process.cwd(), png));

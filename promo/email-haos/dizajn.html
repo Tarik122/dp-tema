@@ -82,7 +82,7 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 	var DRAG = 2.6;          // otpor "zraka": zbog njega sve pluta
 
 	var spawns = [], t = 0.3, gap = 0.74;
-	while (t < 8.4) { spawns.push(t); t += gap; gap = Math.max(0.065, gap * 0.87); }
+	while (t < 7.3) { spawns.push(t); t += gap; gap = Math.max(0.065, gap * 0.87); }
 
 	var cards = [], made = 0, frame = 0, minute = 7 * 60 + 2;
 
@@ -220,18 +220,57 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 		ctx.fillRect(0, FLOOR - 1, W, 2);
 	}
 
+	// ---- Kraj: svaki mail nađe svoje mjesto ----
+	// Ankete i ostalo odu iz kadra, a četiri važna maila se poslažu u uredan stupac.
+	var T0 = 7.75, sorted = false;
+	var KEEP = ['Test se pomjera za četvrtak', 'Promjena rasporeda časova', 'Rok za predaju: 23:59', 'Nova zadaća: Hemija'];
+	function ease(u) { return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; }
+	function clamp(u) { return Math.max(0, Math.min(1, u)); }
+
+	function sortOut() {
+		sorted = true;
+		var top = (CEIL + FLOOR) / 2 + 10 - (KEEP.length * PH + (KEEP.length - 1) * 20) / 2 + PH / 2;
+		KEEP.forEach(function (subj, slot) {
+			for (var i = cards.length - 1; i >= 0; i--) if (cards[i].mail.subj === subj) { cards[i].keep = slot + 1; cards[i].ty = top + slot * (PH + 20); break; }
+		});
+		cards.forEach(function (c) {
+			c.x0 = c.x; c.y0 = c.y; c.a0 = c.a; c.s = 1;
+			if (c.keep) { c.tx = CX; c.d = 0.3 + c.keep * 0.07; c.dur = 0.8; }
+			else { c.dir = c.x >= CX ? 1 : -1; c.tx = c.x + c.dir * 1500; c.ty = c.y + (rnd() - 0.5) * 160; c.d = rnd() * 0.4; c.dur = 0.55; }
+		});
+		cards.sort(function (a, b) { return (a.keep || 0) - (b.keep || 0); }); // važni se crtaju na vrhu
+	}
+
+	function sortStep(time) {
+		cards.forEach(function (c) {
+			var u = clamp((time - T0 - c.d) / c.dur);
+			if (c.keep) { var e = ease(u); c.x = c.x0 + (c.tx - c.x0) * e; c.y = c.y0 + (c.ty - c.y0) * e; c.a = c.a0 * (1 - e); }
+			else { var g = u * u * u; c.x = c.x0 + (c.tx - c.x0) * g; c.y = c.y0 + (c.ty - c.y0) * g; c.a = c.a0 + c.dir * 0.25 * g; }
+		});
+	}
+
 	function step() {
-		var time = frame / FPS;
-		while (made < spawns.length && spawns[made] <= time) spawn();
-		for (var k = 0; k < 8; k++) sub(1 / (FPS * 8), time + k / (FPS * 8));
-		cards = cards.filter(function (c) { return Math.abs(c.x - CX) < 1500; });
+		var time = frame / FPS, lab;
+		if (time < T0) {
+			while (made < spawns.length && spawns[made] <= time) spawn();
+			for (var k = 0; k < 8; k++) sub(1 / (FPS * 8), time + k / (FPS * 8));
+			cards = cards.filter(function (c) { return Math.abs(c.x - CX) < 1500; });
+			lab = label(shown(made));
+		} else {
+			if (!sorted) sortOut();
+			sortStep(time);
+			// brojač se spušta s 999+ na broj važnih mailova
+			var u = clamp((time - T0 - 0.25) / 1.0), e = 1 - Math.pow(1 - u, 3);
+			lab = label(Math.round(1100 - (1100 - KEEP.length) * e));
+		}
 		frame++;
-		document.getElementById('brojac').textContent = label(shown(made));
+		document.getElementById('brojac').textContent = lab;
 		draw();
 	}
 
 	window.dp = {
-		frames: Math.round(8.8 * FPS),
+		frames: Math.round(10.4 * FPS),
+		cover: Math.round(7.7 * FPS), // sličica za naslovnu sliku (vrhunac haosa)
 		step: function (n) { for (var i = 0; i < (n || 1); i++) step(); }
 	};
 	document.getElementById('brojac').textContent = label(0);
