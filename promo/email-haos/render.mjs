@@ -31,7 +31,7 @@ const frames = await (await open(1)).evaluate(() => window.dp.frames);
 if (preview) {
 	const page = await open(1);
 	let done = 0;
-	for (const f of [228, 240, 250, 262, frames - 1]) {
+	for (const f of [222, 240, 262, 290, frames - 1]) {
 		await page.evaluate((n) => window.dp.step(n), f - done); done = f;
 		const out = path.join(dir, `pregled-${String(f).padStart(3, '0')}.png`);
 		await page.locator('#slide').screenshot({ path: out });
