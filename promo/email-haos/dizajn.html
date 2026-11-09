@@ -79,46 +79,59 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 		t: { bg: '#141414', ink: '#ffffff', soft: 'rgba(255,255,255,.7)', dot: '#ffffff' },
 		o: { bg: '#ee8031', ink: '#ffffff', soft: 'rgba(255,255,255,.88)', dot: '#ffffff' }
 	};
-	var ORDER = 'wwlwtwomwlwwtmwlwwtowmwlwtw';
+	var ORDER = 'wlwmwtwlowmwlwtwmwlwowtwmwlw';
 
 	var M = Matter, engine = M.Engine.create({ positionIterations: 20, velocityIterations: 14 });
-	engine.gravity.y = 0;
+	engine.gravity.y = 1.3;
+	var st = { isStatic: true, friction: 0.9, restitution: 0.02 };
 	M.Composite.add(engine.world, [
-		M.Bodies.rectangle(W / 2, FLOOR + 1000, W * 4, 2000, { isStatic: true, restitution: 0.35 }), // linija (pod)
-		M.Bodies.rectangle(W / 2, CEIL - 1000, W * 4, 2000, { isStatic: true, restitution: 0.2 })    // nevidljiva granica ispod naslova
+		M.Bodies.rectangle(W / 2, FLOOR + 1000, W * 6, 2000, st),  // linija (pod)
+		M.Bodies.rectangle(W / 2, CEIL - 1000, W * 6, 2000, st)    // nevidljiva granica ispod naslova
 	]);
 
-	var spawns = [], t = 0.35, gap = 0.85;
-	while (t < 7.2) { spawns.push(t); t += gap; gap = Math.max(0.12, gap * 0.86); }
+	// Raspored: prvi mailovi stižu mirno, onda sve brže.
+	var spawns = [], t = 0.3, gap = 0.72;
+	while (t < 7.3) { spawns.push(t); t += gap; gap = Math.max(0.13, gap * 0.87); }
 
-	var CW = 700, CH = 146, R = 16, CX = W / 2, CY = 880, LEAD = 4;
-	var cards = [], made = 0, blasts = 0, frame = 0, minute = 7 * 60 + 2;
+	var CW = 600, CH = 98, R = 14, CX = W / 2;
+	var NEAT = 4; // toliko prvih mailova slaže se uredno
+	var cards = [], made = 0, frame = 0, minute = 7 * 60 + 2;
 
-	// Udarac iz sredine: postojeće kartice odlete u stranu i otvore mjesto novoj.
-	function blast() {
-		var k = blasts / Math.max(1, spawns.length - 1);
-		var P = 12 + 11 * k;
+	// Najviša tačka gomile oko zadanog x.
+	function topAt(x) {
+		var top = FLOOR;
 		cards.forEach(function (b) {
-			if (b.gone) return;
-			var dx = b.position.x - CX, dy = b.position.y - CY, d = Math.hypot(dx, dy);
-			if (d < 1) { var a = rnd() * Math.PI * 2; dx = Math.cos(a); dy = Math.sin(a); d = 1; }
-			var f = P / (1 + d / 380);
-			M.Body.setVelocity(b, { x: b.velocity.x + dx / d * f * 1.2, y: b.velocity.y + dy / d * f * 0.8 });
-			M.Body.setAngularVelocity(b, b.angularVelocity + (rnd() - 0.5) * f * 0.006);
+			if (!b.gone && Math.abs(b.position.x - x) < CW * 0.55) top = Math.min(top, b.bounds.min.y);
 		});
-		blasts++;
+		return top;
 	}
 
 	function spawn() {
 		var m = MAILS[made % MAILS.length];
-		var late = made > 8;
-		var b = M.Bodies.rectangle(CX + (rnd() - 0.5) * 60, CY + (rnd() - 0.5) * 40, CW, CH, {
-			chamfer: { radius: R }, restitution: 0.45, friction: 0.1, frictionAir: 0.075, density: 0.002
+		// nered: 0 dok se slažu uredno, pa raste do 1
+		var mess = Math.pow(Math.min(1, Math.max(0, (made - NEAT + 1) / 6)), 1.3);
+		var x = CX + (rnd() - 0.5) * 2 * (4 + 330 * mess);
+		// kad je gomila na tom mjestu već previsoka, pošta pada tamo gdje je najniža
+		for (var tries = 0; tries < 10 && topAt(x) - CH * 1.6 < CEIL + CH; tries++) {
+			var x2 = -150 + rnd() * (W + 300);
+			if (topAt(x2) > topAt(x)) x = x2;
+		}
+		var y = Math.max(CEIL + CH * 0.8, topAt(x) - CH * (0.75 + 0.5 * mess));
+		// u haosu nova pošta odgurne komšije
+		if (mess > 0.15) cards.forEach(function (b) {
+			var dx = b.position.x - x, dy = b.position.y - y, d = Math.hypot(dx, dy) || 1;
+			if (b.gone || d > 420) return;
+			var f = 8 * mess * (1 - d / 420);
+			M.Body.setVelocity(b, { x: b.velocity.x + dx / d * f, y: b.velocity.y + dy / d * f * 0.5 });
+			M.Body.setAngularVelocity(b, b.angularVelocity + (rnd() - 0.5) * f * 0.01);
 		});
-		M.Body.setAngle(b, made === 0 ? 0 : (rnd() - 0.5) * (late ? 0.6 : 0.3));
+		var b = M.Bodies.rectangle(x, y, CW, CH, { chamfer: { radius: R }, restitution: 0.04, friction: 0.8, frictionAir: 0.012, density: 0.002 });
+		M.Body.setAngle(b, (rnd() - 0.5) * (0.006 + 0.85 * mess));
+		M.Body.setAngularVelocity(b, (rnd() - 0.5) * 0.07 * mess);
+		M.Body.setVelocity(b, { x: (rnd() - 0.5) * 7 * mess, y: 1 });
 		b.born = frame;
 		b.skin = SKIN[ORDER.charAt(made % ORDER.length)];
-		minute += 1 + Math.floor(rnd() * (late ? 3 : 9));
+		minute += 1 + Math.floor(rnd() * (mess > 0.3 ? 3 : 9));
 		var hh = Math.floor(minute / 60) % 24, mm = minute % 60;
 		b.mail = { from: m[0], subj: m[1], time: (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm };
 		M.Composite.add(engine.world, b);
@@ -128,23 +141,15 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 
 	// Pojava: brzo naraste s malim preskokom.
 	function pop(age) {
-		var n = 9;
+		var n = 8;
 		if (age >= n) return 1;
-		var x = age / n, c = 2.2;
-		return 0.35 + 0.65 * (1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2));
+		var x = age / n, c = 2.0;
+		return 0.5 + 0.5 * (1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2));
 	}
 
-	// Privlačenje prema dnu sredine: gomila leži na liniji i ostaje u kadru dok ne postane pretijesno.
-	function pull() {
-		cards.forEach(function (b) {
-			if (b.gone) return;
-			var k = 2.6e-6 * b.mass;
-			M.Body.applyForce(b, b.position, { x: (CX - b.position.x) * k, y: (FLOOR - 120 - b.position.y) * k * 1.6 });
-		});
-	}
 	function cull() {
 		cards.forEach(function (b) {
-			if (!b.gone && Math.abs(b.position.x - CX) > 1500) { M.Composite.remove(engine.world, b); b.gone = true; }
+			if (!b.gone && Math.abs(b.position.x - CX) > 1400) { M.Composite.remove(engine.world, b); b.gone = true; }
 		});
 	}
 
@@ -183,15 +188,15 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 		rr(ctx, L, T, CW, CH, R);
 		ctx.fillStyle = s.bg; ctx.fill();
 		ctx.fillStyle = s.dot;
-		ctx.beginPath(); ctx.arc(L + 40, T + 50, 8, 0, Math.PI * 2); ctx.fill();
+		ctx.beginPath(); ctx.arc(L + 34, T + 37, 7, 0, Math.PI * 2); ctx.fill();
 		ctx.textBaseline = 'alphabetic';
-		ctx.fillStyle = s.soft; ctx.font = '400 25px Lato'; ctx.textAlign = 'right';
-		ctx.fillText(b.mail.time, CW / 2 - 34, T + 60);
+		ctx.fillStyle = s.soft; ctx.font = '400 22px Lato'; ctx.textAlign = 'right';
+		ctx.fillText(b.mail.time, CW / 2 - 28, T + 44);
 		ctx.textAlign = 'left';
-		ctx.fillStyle = s.ink; ctx.font = '700 36px Lato';
-		ctx.fillText(fit(b.mail.from, CW - 220), L + 66, T + 62);
-		ctx.fillStyle = s.soft; ctx.font = '400 29px Lato';
-		ctx.fillText(fit(b.mail.subj, CW - 100), L + 66, T + 108);
+		ctx.fillStyle = s.ink; ctx.font = '700 30px Lato';
+		ctx.fillText(fit(b.mail.from, CW - 190), L + 58, T + 47);
+		ctx.fillStyle = s.soft; ctx.font = '400 25px Lato';
+		ctx.fillText(fit(b.mail.subj, CW - 90), L + 58, T + 81);
 		ctx.restore();
 	}
 
@@ -207,12 +212,10 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 		ctx.fillRect(0, FLOOR - 1, W, 2);
 	}
 
-	var queue = [];
 	function step() {
 		var time = frame / FPS;
-		while (blasts < spawns.length && spawns[blasts] <= time) { blast(); queue.push(frame + LEAD); }
-		while (queue.length && queue[0] <= frame) { queue.shift(); spawn(); }
-		for (var k = 0; k < 4; k++) { pull(); M.Engine.update(engine, 1000 / 120); }
+		while (made < spawns.length && spawns[made] <= time) spawn();
+		for (var k = 0; k < 4; k++) M.Engine.update(engine, 1000 / 120);
 		cull();
 		frame++;
 		document.getElementById('brojac').textContent = label(shown(made));
