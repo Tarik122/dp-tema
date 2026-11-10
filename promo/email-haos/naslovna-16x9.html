@@ -105,23 +105,18 @@ canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
 
 	function scene() {
 		var list = [], i, x, h;
-		// 1) daleki sloj: mutna gomila preko cijele širine i rijetka "kiša" mailova iznad nje
-		for (i = 0; i < 34; i++) {
-			x = -100 + rnd() * 2120; h = mound(x, 700, 1250, 900);
-			list.push({ x: x, y: H + 20 - rnd() * h, a: (rnd() - 0.5) * 0.8, s: 0.52, blur: 3, fog: 0.55, mail: next() });
+		// 1) daleki sloj: mutna gomila iza glavne (bez "magle", samo manja, mutnija i malo tamnija)
+		for (i = 0; i < 26; i++) {
+			x = 200 + rnd() * 1800; h = mound(x, 640, 1300, 760);
+			list.push({ x: x, y: H + 20 - rnd() * h, a: (rnd() - 0.5) * 0.7, s: 0.56, blur: 3, fog: 0.22, mail: next() });
 		}
-		for (i = 0; i < 16; i++) {
-			var col = i % 8, row = Math.floor(i / 8);
-			if (rnd() < 0.35) continue;
-			list.push({ x: 120 + col * 245 + (rnd() - 0.5) * 120, y: 70 + row * 230 + (rnd() - 0.5) * 120, a: (rnd() - 0.5) * 1.1, s: 0.46, blur: 3, fog: 0.62, mail: next() });
-		}
-		// 2) srednja dubina: nekoliko mailova u padu, malo mutnih
-		[[560, 260, -0.35], [1500, 120, 0.3], [260, 520, 0.22], [1880, 330, -0.25]].forEach(function (q) {
-			list.push({ x: q[0], y: q[1], a: q[2], s: 0.68, blur: 1.6, fog: 0.22, mail: next() });
+		// 2) nekoliko dalekih mailova u padu, raspoređenih uz mlaz
+		[[1180, 150, -0.3], [1880, 470, 0.28], [760, 330, 0.18]].forEach(function (q) {
+			list.push({ x: q[0], y: q[1], a: q[2], s: 0.56, blur: 3, fog: 0.18, mail: next() });
 		});
 		// 3) glavna gomila: šira i viša, popunjava donje dvije trećine
 		var mid = [];
-		for (i = 0; i < 52; i++) {
+		for (i = 0; i < 40; i++) {
 			x = -60 + rnd() * 2080; h = mound(x, 600, 1120, 760);
 			mid.push({ x: x, y: H + 40 - rnd() * h, a: (rnd() - 0.5) * 0.6, s: 0.86, mail: next() });
 		}
@@ -139,15 +134,14 @@ canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
 		list.push({ x: 1560, y: 215, a: 0.32, s: 0.86, mail: { from: 'Anketa za projekat iz geografije', subj: 'Google forma', time: '09:48' } });
 		list.push({ x: 1320, y: 330, a: -0.14, s: 0.86, mail: { from: 'Poziv na volontiranje', subj: 'Trebamo još pet volontera', time: '09:49' } });
 		// 5) prvi plan: dvije velike, jako mutne kartice uokviruju kadar
-		list.push({ x: 260, y: 1060, a: 0.16, s: 1.6, blur: 14, mail: next() });
-		list.push({ x: 140, y: 90, a: -0.42, s: 1.4, blur: 12, mail: next() });
+		list.push({ x: 180, y: 1075, a: 0.12, s: 1.4, blur: 12, mail: next() });
 		return list;
 	}
 
 	function grain() {
 		var n = 140, g = document.createElement('canvas'); g.width = g.height = n;
 		var gx = g.getContext('2d'), img = gx.createImageData(n, n);
-		for (var i = 0; i < n * n; i++) { var v = rnd() < 0.5 ? 0 : 255; img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v; img.data[i * 4 + 3] = 7; }
+		for (var i = 0; i < n * n; i++) { var v = rnd() < 0.5 ? 0 : 255; img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = v; img.data[i * 4 + 3] = 4; }
 		gx.putImageData(img, 0, 0);
 		ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.fillStyle = ctx.createPattern(g, 'repeat'); ctx.fillRect(0, 0, cv.width, cv.height);
