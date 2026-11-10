@@ -53,24 +53,24 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 
 	var MAILS = [
 		['Classroom', 'Nova zadaća: Hemija'],
-		['Google Forms', 'Anketa iz sociologije'],
+		['Anketa iz sociologije', 'Google forma'],
 		['Profesorica matematike', 'Test se pomjera za četvrtak'],
-		['Google Forms', 'Digital design anketa'],
+		['Digital design anketa', 'Google forma'],
 		['Volontiranje', 'Poziv na volontiranje'],
-		['Google Forms', 'Anketa za projekat iz geografije'],
+		['Anketa za projekat iz geografije', 'Google forma'],
 		['Classroom', 'Rok za predaju: 23:59'],
 		['Anketa', 'Upitnik za završni rad iz psihologije'],
-		['Google Forms', 'Anketa iz sociologije'],
+		['Anketa iz sociologije', 'Google forma'],
 		['Sekretarijat', 'Promjena rasporeda časova'],
-		['Google Forms', 'Digital design anketa'],
+		['Digital design anketa', 'Google forma'],
 		['Volontiranje', 'Poziv na volontiranje'],
-		['Google Forms', 'Anketa za projekat iz geografije'],
+		['Anketa za projekat iz geografije', 'Google forma'],
 		['Classroom', 'Dodatni zadaci za vikend'],
 		['Anketa', 'Podsjetnik: upitnik se zatvara danas'],
-		['Google Forms', 'Anketa iz sociologije'],
-		['Google Forms', 'Digital design anketa'],
+		['Anketa iz sociologije', 'Google forma'],
+		['Digital design anketa', 'Google forma'],
 		['Vijeće učenika', 'Molba za učešće u istraživanju'],
-		['Google Forms', 'Anketa za projekat iz geografije'],
+		['Anketa za projekat iz geografije', 'Google forma'],
 		['Volontiranje', 'Poziv na volontiranje']
 	];
 
@@ -207,7 +207,8 @@ canvas { position: absolute; left: 0; top: 0; width: 1080px; height: 1440px; }
 		ctx.fillText(b.mail.time, CW / 2 - 34, T + 61);
 		ctx.textAlign = 'left';
 		ctx.fillStyle = '#141414'; ctx.font = '700 38px Lato';
-		ctx.fillText(fit(b.mail.from, CW - 220), L + 68, T + 64);
+		if (ctx.measureText(b.mail.from).width > CW - 200) ctx.font = '700 32px Lato'; // dugi naslovi malo manjim slovima
+		ctx.fillText(fit(b.mail.from, CW - 200), L + 68, T + 64);
 		ctx.fillStyle = 'rgba(20,20,20,.68)'; ctx.font = '400 31px Lato';
 		ctx.fillText(fit(b.mail.subj, CW - 104), L + 68, T + 111);
 		ctx.restore();
