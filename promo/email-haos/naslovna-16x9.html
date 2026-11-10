@@ -50,8 +50,7 @@ canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
 	var mi = 0, minute = 9 * 60 + 47;
 	function next() {
 		var m = MAILS[mi++ % MAILS.length];
-		minute -= 1 + Math.floor(rnd() * 3);
-		return { from: m[0], subj: m[1], time: fmt(minute) };
+		return { from: m[0], subj: m[1], time: fmt(7 * 60 + 5 + Math.floor(rnd() * 150)) };
 	}
 	function fmt(n) { var h = Math.floor(n / 60), m = n % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
 
@@ -105,35 +104,43 @@ canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
 	function mound(x, peak, cx, wid) { return peak * Math.exp(-Math.pow((x - cx) / wid, 2)); }
 
 	function scene() {
-		var list = [];
-		// 1) pozadinska gomila: manja, mutna, utopljena u ljubičastu
-		for (var i = 0; i < 26; i++) {
-			var x = 300 + rnd() * 1700, h = mound(x, 520, 1350, 640);
-			list.push({ x: x, y: H - rnd() * h + 20, a: (rnd() - 0.5) * 0.7, s: 0.58, blur: 3.2, fog: 0.5, mail: next(), z: 0 });
-		}
-		// 2) glavna gomila
-		var mid = [];
+		var list = [], i, x, h;
+		// 1) daleki sloj: mutna gomila preko cijele širine i rijetka "kiša" mailova iznad nje
 		for (i = 0; i < 34; i++) {
-			x = 120 + rnd() * 1900; h = mound(x, 560, 1180, 560);
-			mid.push({ x: x, y: H + 30 - rnd() * h, a: (rnd() - 0.5) * 0.62, s: 0.86, blur: 0, fog: 0, mail: next(), z: 1 });
+			x = -100 + rnd() * 2120; h = mound(x, 700, 1250, 900);
+			list.push({ x: x, y: H + 20 - rnd() * h, a: (rnd() - 0.5) * 0.8, s: 0.52, blur: 3, fog: 0.55, mail: next() });
 		}
-		mid.sort(function (a, b) { return b.y - a.y; }); // donje prve, gornje preko njih
-		// važni mail: napola zatrpan, u donjoj trećini gomile
-		var v = { x: 860, y: 950, a: -0.06, s: 0.86, blur: 0, fog: 0, mail: { from: VAZNO[0], subj: VAZNO[1], time: '07:15' }, vazno: true, z: 1 };
+		for (i = 0; i < 16; i++) {
+			var col = i % 8, row = Math.floor(i / 8);
+			if (rnd() < 0.35) continue;
+			list.push({ x: 120 + col * 245 + (rnd() - 0.5) * 120, y: 70 + row * 230 + (rnd() - 0.5) * 120, a: (rnd() - 0.5) * 1.1, s: 0.46, blur: 3, fog: 0.62, mail: next() });
+		}
+		// 2) srednja dubina: nekoliko mailova u padu, malo mutnih
+		[[560, 260, -0.35], [1500, 120, 0.3], [260, 520, 0.22], [1880, 330, -0.25]].forEach(function (q) {
+			list.push({ x: q[0], y: q[1], a: q[2], s: 0.68, blur: 1.6, fog: 0.22, mail: next() });
+		});
+		// 3) glavna gomila: šira i viša, popunjava donje dvije trećine
+		var mid = [];
+		for (i = 0; i < 52; i++) {
+			x = -60 + rnd() * 2080; h = mound(x, 600, 1120, 760);
+			mid.push({ x: x, y: H + 40 - rnd() * h, a: (rnd() - 0.5) * 0.6, s: 0.86, mail: next() });
+		}
+		mid.sort(function (a, b) { return b.y - a.y; });
 		list = list.concat(mid);
-		list.push(v);
-		// jedna anketa pala preko njega i prekrila mu kraj
-		list.push({ x: 1330, y: 965, a: 0.07, s: 0.86, mail: { from: 'Digital design anketa', subj: 'Podsjetnik: anketa se zatvara danas', time: '09:41' }, z: 1 });
-		// vrh gomile: tri čitljive kartice
-		list.push({ x: 1265, y: 610, a: 0.12, s: 0.86, mail: { from: 'Digital design anketa', subj: 'Google forma', time: '09:44' }, z: 2 });
-		list.push({ x: 1010, y: 690, a: -0.2, s: 0.86, mail: { from: 'Poziv na volontiranje', subj: 'Prijave za akciju u subotu', time: '09:45' }, z: 2 });
-		list.push({ x: 1180, y: 520, a: -0.05, s: 0.86, mail: { from: 'Anketa iz sociologije', subj: 'Google forma', time: '09:47' }, z: 2 });
-		// mailovi koji još padaju
-		list.push({ x: 1560, y: 190, a: 0.42, s: 0.86, mail: { from: 'Anketa za projekat iz geografije', subj: 'Google forma', time: '09:48' }, z: 3 });
-		list.push({ x: 1020, y: 120, a: -0.3, s: 0.62, blur: 2.4, fog: 0.35, mail: next(), z: 3 });
-		list.push({ x: 1800, y: -10, a: -0.18, s: 0.7, blur: 1.4, fog: 0.2, mail: next(), z: 3 });
-		// prvi plan: velika, jako mutna kartica u donjem lijevom uglu
-		list.push({ x: 300, y: 1060, a: 0.16, s: 1.55, blur: 14, fog: 0, mail: next(), z: 4 });
+		// važni mail, napola zatrpan
+		list.push({ x: 820, y: 935, a: -0.06, s: 0.86, mail: { from: VAZNO[0], subj: VAZNO[1], time: '07:15' }, vazno: true });
+		list.push({ x: 1290, y: 952, a: 0.07, s: 0.86, mail: { from: 'Digital design anketa', subj: 'Podsjetnik: anketa se zatvara danas', time: '09:41' } });
+		// vrh gomile
+		list.push({ x: 1250, y: 560, a: 0.12, s: 0.86, mail: { from: 'Digital design anketa', subj: 'Google forma', time: '09:44' } });
+		list.push({ x: 960, y: 640, a: -0.2, s: 0.86, mail: { from: 'Poziv na volontiranje', subj: 'Prijave za akciju u subotu', time: '09:45' } });
+		list.push({ x: 1140, y: 470, a: -0.05, s: 0.86, mail: { from: 'Anketa iz sociologije', subj: 'Google forma', time: '09:47' } });
+		// 4) mlaz oštrih mailova koji upravo padaju na vrh gomile (gore desno prema sredini)
+		list.push({ x: 1720, y: 40, a: 0.5, s: 0.86, mail: { from: 'Istraživanje o navikama spavanja', subj: 'Google forma', time: '09:50' } });
+		list.push({ x: 1560, y: 215, a: 0.32, s: 0.86, mail: { from: 'Anketa za projekat iz geografije', subj: 'Google forma', time: '09:48' } });
+		list.push({ x: 1320, y: 330, a: -0.14, s: 0.86, mail: { from: 'Poziv na volontiranje', subj: 'Trebamo još pet volontera', time: '09:49' } });
+		// 5) prvi plan: dvije velike, jako mutne kartice uokviruju kadar
+		list.push({ x: 260, y: 1060, a: 0.16, s: 1.6, blur: 14, mail: next() });
+		list.push({ x: 140, y: 90, a: -0.42, s: 1.4, blur: 12, mail: next() });
 		return list;
 	}
 
