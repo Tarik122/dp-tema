@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<title>DP: Digitalni haos (naslovna 16:9)</title>
+<!--
+	Naslovna slika 16:9 za članak „Digitalni haos u školskim klupama“.
+	Ideja: inbox kao lista (kao DP raspored: linije, jedan istaknut red). Desetine anketa,
+	a jedini važan mail (rok za zadaću) zakopan je među njima, istaknut narandžastom trakom.
+	Slajd 1: lista u punoj veličini. Slajd 2: redovi se prema dnu sve više zbijaju (beskrajni inbox).
+-->
+<style>
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 900; src: url("../../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
+* { box-sizing: border-box; margin: 0; }
+body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 40px; display: flex; flex-direction: column; gap: 40px; }
+.slide { position: relative; overflow: hidden; width: 1920px; height: 1080px; background: #402f65; }
+
+.lista { position: absolute; left: 0; right: 0; }
+.red { position: relative; display: flex; align-items: baseline; border-top: 2px solid rgba(255,255,255,.2); padding: 0 96px; white-space: nowrap; }
+.red .tacka { position: absolute; left: 52px; border-radius: 50%; background: #fff; }
+.red .ko { font-weight: 700; flex: 0 0 auto; overflow: hidden; text-overflow: ellipsis; }
+.red .sta { color: rgba(255,255,255,.66); flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; }
+.red .kad { color: rgba(255,255,255,.55); flex: 0 0 auto; text-align: right; font-variant-numeric: tabular-nums; }
+.red.procitano .ko { font-weight: 400; color: rgba(255,255,255,.7); }
+.red.procitano .tacka { display: none; }
+.red.vazno { background: #ee8031; border-top-color: #ee8031; }
+.red.vazno + .red { border-top-color: #ee8031; }
+.red.vazno .sta, .red.vazno .kad { color: rgba(255,255,255,.92); }
+</style>
+</head>
+<body>
+
+<section class="slide" id="s1"><div class="lista"></div></section>
+<section class="slide" id="s2"><div class="lista"></div></section>
+
+<script>
+var SURVEYS = [
+	['Digital design anketa', 'Google forma'],
+	['Poziv na volontiranje', 'Prijave za akciju u subotu'],
+	['Anketa za projekat iz geografije', 'Google forma'],
+	['Anketa iz sociologije', 'Google forma'],
+	['Upitnik za završni rad iz psihologije', 'Google forma'],
+	['Digital design anketa', 'Podsjetnik: anketa se zatvara danas'],
+	['Molimo vas da odvojite pet minuta', 'Google forma'],
+	['Anketa iz sociologije', 'Još samo 20 odgovora nedostaje!'],
+	['Poziv na volontiranje', 'Trebamo još pet volontera'],
+	['Anketa za projekat iz geografije', 'Podsjetnik'],
+	['Istraživanje o navikama spavanja', 'Google forma'],
+	['Upitnik o korištenju društvenih mreža', 'Google forma']
+];
+var VAZNO = ['Classroom', 'Rok za predaju zadaće: danas do 23:59'];
+
+function time(min) { var h = Math.floor(min / 60), m = min % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
+
+// rows: niz visina; vaznoAt: indeks istaknutog reda; top: pomak prvog reda (negativan = odsječen)
+function build(slide, heights, vaznoAt, top, readEvery) {
+	var box = slide.querySelector('.lista');
+	box.style.top = top + 'px';
+	var min = 9 * 60 + 47;
+	heights.forEach(function (h, i) {
+		var m = i === vaznoAt ? VAZNO : SURVEYS[i % SURVEYS.length];
+		var fs = h * 0.4, row = document.createElement('div');
+		row.className = 'red' + (i === vaznoAt ? ' vazno' : '') + (readEvery && i % readEvery === readEvery - 1 && i !== vaznoAt ? ' procitano' : '');
+		row.style.height = h + 'px';
+		row.style.lineHeight = h + 'px';
+		row.style.fontSize = fs + 'px';
+		row.style.paddingLeft = '96px';
+		row.style.paddingRight = '96px';
+		var d = Math.max(4, fs * 0.3);
+		row.innerHTML = '<span class="tacka"></span><span class="ko"></span><span class="sta"></span><span class="kad"></span>';
+		var t = row.querySelector('.tacka');
+		t.style.width = t.style.height = d + 'px';
+		t.style.left = (96 - d) / 2 + 'px';
+		t.style.top = (h - d) / 2 + 'px';
+		if (i === vaznoAt) t.style.display = 'block';
+		row.querySelector('.ko').textContent = m[0];
+		row.querySelector('.ko').style.width = Math.min(h * 6.6, 1000) + 'px';
+		if (slide.id === 's2') { row.querySelector('.ko').style.width = '940px'; row.querySelector('.ko').style.marginRight = '0'; }
+		row.querySelector('.ko').style.marginRight = (h * 0.4) + 'px';
+		row.querySelector('.sta').textContent = m[1];
+		row.querySelector('.kad').textContent = time(min);
+		row.querySelector('.kad').style.fontSize = (fs * 0.78) + 'px';
+		row.querySelector('.kad').style.marginLeft = (h * 0.4) + 'px';
+		min -= 1;
+		box.appendChild(row);
+	});
+}
+
+// 1: jednaki redovi, krupno, odsječeni na vrhu i dnu.
+var h1 = []; for (var i = 0; i < 12; i++) h1.push(112);
+build(document.getElementById('s1'), h1, 6, -40, 5);
+
+// 2: redovi se prema dnu zbijaju, kao inbox bez kraja.
+var h2 = [], h = 150;
+while (h2.reduce(function (a, b) { return a + b; }, 0) < 1200) { h2.push(h); h = Math.max(9, h * 0.86); }
+build(document.getElementById('s2'), h2, 4, -30, 0);
+</script>
+</body>
+</html>
