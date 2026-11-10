@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<title>DP: Digitalni haos (naslovna 16:9)</title>
+<!--
+	Animirani cover u stilu naslovnica rubrike Mišljenje (ljubičasta pozadina, oznaka i naslov gore,
+	ravna ilustracija na liniji dolje). Ilustracija su mailovi: svaki novi iskoči u sredini i odgurne
+	ostale, sve brže, dok se prostor ne prenatrpa. Fizika: vlastita, meka (kartice se blago odguruju, bez tvrdih sudara). render.mjs pravi MP4 i PNG.
+	Ime autora: upiši ga u AUTOR ispod (prazno = podnaslov umjesto "Piše:").
+-->
+<style>
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+* { box-sizing: border-box; margin: 0; }
+body { background: #777; font-family: "Lato", sans-serif; color: #fff; }
+.slide { position: relative; overflow: hidden; width: 1920px; height: 1080px; background: #402f65; }
+canvas { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.gore { display: none; }
+.gore { position: absolute; left: 96px; right: 96px; top: 120px; }
+.oznaka { display: inline-block; padding: 0 0.45em; height: 1.45em; line-height: 1.45em; font-size: 38px; font-weight: 700; color: #fff; background: #141414; }
+.naslov { margin-top: 30px; font-size: 100px; font-weight: 700; line-height: 1.03; letter-spacing: -0.022em; }
+.pise { margin-top: 30px; font-size: 40px; line-height: 1.3; color: rgba(255,255,255,.72); }
+.pise b { color: #fff; font-weight: 700; }
+.brojac { position: absolute; left: 96px; bottom: 58px; font-size: 30px; color: rgba(255,255,255,.82); font-variant-numeric: tabular-nums; }
+.logo { position: absolute; right: 80px; bottom: 44px; width: 100px; }
+</style>
+</head>
+<body>
+
+<section class="slide post" id="slide">
+	<canvas id="c"></canvas>
+	<div class="gore">
+		<span class="oznaka">Mišljenje</span>
+		<h1 class="naslov">Digitalni haos u&nbsp;školskim klupama</h1>
+		<p class="pise" id="pise"></p>
+	</div>
+	<p class="brojac" id="brojac"></p>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<script>
+(function () {
+	var AUTOR = ''; // npr. 'Ime Prezime'
+	document.getElementById('pise').innerHTML = AUTOR ? 'Piše: <b>' + AUTOR + '</b>' : 'Treba li nam bolja organizacija e-mailova?';
+
+	var W = 1920, H = 1080, FPS = 30, FLOOR = 900, CEIL = 70;
+	var dpr = window.devicePixelRatio || 1;
+	var cv = document.getElementById('c'), ctx = cv.getContext('2d');
+	cv.width = W * dpr; cv.height = H * dpr;
+
+	var seed = 20261109;
+	function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+
+	var MAILS = [
+		['Classroom', 'Nova zadaća: Hemija'],
+		['Anketa iz sociologije', 'Google forma'],
+		['Profesorica matematike', 'Test se pomjera za četvrtak'],
+		['Digital design anketa', 'Google forma'],
+		['Volontiranje', 'Poziv na volontiranje'],
+		['Anketa za projekat iz geografije', 'Google forma'],
+		['Classroom', 'Rok za predaju: 23:59'],
+		['Anketa', 'Upitnik za završni rad iz psihologije'],
+		['Anketa iz sociologije', 'Google forma'],
+		['Sekretarijat', 'Promjena rasporeda časova'],
+		['Digital design anketa', 'Google forma'],
+		['Volontiranje', 'Poziv na volontiranje'],
+		['Anketa za projekat iz geografije', 'Google forma'],
+		['Classroom', 'Dodatni zadaci za vikend'],
+		['Anketa', 'Podsjetnik: upitnik se zatvara danas'],
+		['Anketa iz sociologije', 'Google forma'],
+		['Digital design anketa', 'Google forma'],
+		['Vijeće učenika', 'Molba za učešće u istraživanju'],
+		['Anketa za projekat iz geografije', 'Google forma'],
+		['Volontiranje', 'Poziv na volontiranje']
+	];
+
+	// ---- Meka fizika ----
+	// Kartice su pravougaonici koji se blago odguruju oprugom kad se približe (bez tvrdih sudara).
+	// Sudari ih samo guraju, ne okreću: svaka ima svoj mali nagib i lagano se njiše dok se kreće.
+	var CW = 720, CH = 150, R = 18, CX = W / 2, CY = 520;
+	var SC = 0.8, PW = CW * SC, PH = CH * SC; // SC: veličina kartica (1 = 720×150)
+	var OVX = 0.56, OVY = 0.62; // koliko se kartice smiju preklopiti prije nego se počnu odgurivati
+	var GAP = 14;            // razmak koji kartice pokušavaju održati
+	var K = 150, CD = 7;     // krutost i prigušenje odgurivanja
+	var GRAV = 0;           // vrlo slaba gravitacija (px/s²)
+	var PULL = 1.1; var DRAG = 2.6;          // otpor "zraka": zbog njega sve pluta
+
+	var spawns = [], t = 0.3, gap = 0.74;
+	while (t < 7.3) { spawns.push(t); t += gap; gap = Math.max(0.045, gap * 0.87); }
+
+	var cards = [], made = 0, frame = 0, minute = 7 * 60 + 2;
+
+	function spawn() {
+		var m = MAILS[made % MAILS.length];
+		minute += 1 + Math.floor(rnd() * (made > 8 ? 3 : 9));
+		var hh = Math.floor(minute / 60) % 24, mm = minute % 60;
+		var mess = Math.min(1, made / 18); // što ih je više, to je sve nemirnije
+		var nx = CX + (rnd() - 0.5) * (260 + 1500 * mess), ny = CY + (rnd() - 0.5) * (120 + 500 * mess);
+		// trzaj: nova pošta odgurne sve oko sebe i malo ih zakrene
+		cards.forEach(function (c) {
+			var dx = c.x - nx, dy = c.y - ny, d = Math.hypot(dx, dy) || 1;
+			if (d > 560) return;
+			var P = (170 + 330 * mess) * (1 - d / 560);
+			c.vx += dx / d * P; c.vy += dy / d * P * 0.7;
+			c.tilt = Math.max(-0.5, Math.min(0.5, c.tilt + (rnd() - 0.5) * 0.22 * mess));
+		});
+		cards.push({
+			x: nx, y: ny,
+			vx: (rnd() - 0.5) * 60, vy: -20 - rnd() * 30,
+			tilt: made === 0 ? 0 : (rnd() - 0.5) * (0.1 + 0.5 * mess), a: 0,
+			ph: rnd() * 6.28, age: 0, s: 0.02,
+			mail: { from: m[0], subj: m[1], time: (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm }
+		});
+		made++;
+	}
+
+	// Rast nove kartice: iz tačke do pune veličine, s malim preskokom.
+	function grow(age) {
+		var n = 0.3;
+		if (age >= n) return 1;
+		var x = age / n, c = 2.2;
+		return Math.max(0.02, 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2));
+	}
+
+	function sub(dt, time) {
+		var n = cards.length, i, j;
+		for (i = 0; i < n; i++) {
+			var c = cards[i];
+			c.age += dt; c.s = grow(c.age);
+			c.fx = (CX - c.x) * PULL * 0.35 - DRAG * c.vx;
+			c.fy = GRAV + ((CEIL + FLOOR) / 2 + 30 - c.y) * PULL - DRAG * c.vy;
+			var hh2 = (PH / 2 + Math.abs(Math.sin(c.a || 0)) * PW / 2) * c.s; // visina s nagibom
+			var pen = c.y + hh2 - FLOOR; if (pen > 0) c.fy -= K * 2 * pen;
+			var top = CEIL - (c.y - hh2); if (top > 0) c.fy += K * 8 * top;
+		}
+		for (i = 0; i < n; i++) for (j = i + 1; j < n; j++) {
+			var A = cards[i], B = cards[j];
+			var dx = B.x - A.x, dy = B.y - A.y;
+			var ox = (PW / 2) * OVX * (A.s + B.s) - Math.abs(dx);
+			var oy = (PH / 2) * OVY * (A.s + B.s) - Math.abs(dy);
+			if (ox <= 0 || oy <= 0) continue;
+			var w = Math.min(A.s, B.s);
+			var sx = dx >= 0 ? 1 : -1, sy = dy >= 0 ? 1 : -1;
+			if (oy < ox) {
+				// razdvajanje gore-dolje, uz malo istiskivanje u stranu (da gužva "curi" iz kadra)
+				var f = (K * oy - CD * (B.vy - A.vy) * sy) * w; if (f < 0) f = 0;
+				A.fy -= f * sy; B.fy += f * sy;
+				var q = K * 0.1 * oy * w;
+				A.fx -= q * sx; B.fx += q * sx;
+			} else {
+				var g = (K * ox - CD * (B.vx - A.vx) * sx) * w; if (g < 0) g = 0;
+				A.fx -= g * sx; B.fx += g * sx;
+			}
+		}
+		for (i = 0; i < n; i++) {
+			var c2 = cards[i];
+			c2.vx += c2.fx * dt; c2.vy += c2.fy * dt;
+			c2.x += c2.vx * dt; c2.y += c2.vy * dt;
+			// nagib: vlastiti + naginjanje u smjeru kretanja + lagano njihanje
+			var target = c2.tilt + c2.vx * 0.0004 + Math.sin(time * 1.3 + c2.ph) * 0.025;
+			c2.a += (target - c2.a) * Math.min(1, dt * 5);
+		}
+	}
+
+	function shown(n) {
+		var N = spawns.length;
+		if (n < 4) return n;
+		return Math.round(n + 1100 * Math.pow((n - 4) / (N - 4), 3));
+	}
+	function label(n) {
+		if (n > 999) return '999+ nepročitanih poruka';
+		var a = n % 10, b = n % 100;
+		if (a === 1 && b !== 11) return n + ' nepročitana poruka';
+		if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return n + ' nepročitane poruke';
+		return n + ' nepročitanih poruka';
+	}
+
+	function rr(c, x, y, w, h, r) {
+		c.beginPath();
+		c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
+		c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+		c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r);
+		c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
+	}
+	function fit(text, max) {
+		if (ctx.measureText(text).width <= max) return text;
+		while (text.length && ctx.measureText(text + '…').width > max) text = text.slice(0, -1);
+		return text.replace(/\s+$/, '') + '…';
+	}
+
+	function drawCard(b) {
+		var L = -CW / 2, T = -CH / 2;
+		ctx.save();
+		ctx.translate(b.x, b.y);
+		ctx.rotate(b.a);
+		ctx.scale(b.s * SC, b.s * SC);
+		rr(ctx, L, T, CW, CH, R);
+		ctx.shadowColor = 'rgba(16, 8, 36, 0.45)';
+		ctx.shadowBlur = 40 * dpr * b.s * SC;
+		ctx.shadowOffsetY = 16 * dpr * b.s * SC;
+		ctx.fillStyle = '#ffffff'; ctx.fill();
+		ctx.shadowColor = 'transparent';
+		ctx.fillStyle = '#402f65';
+		ctx.beginPath(); ctx.arc(L + 40, T + 51, 9, 0, Math.PI * 2); ctx.fill();
+		ctx.textBaseline = 'alphabetic';
+		ctx.fillStyle = 'rgba(20,20,20,.5)'; ctx.font = '400 26px Lato'; ctx.textAlign = 'right';
+		ctx.fillText(b.mail.time, CW / 2 - 34, T + 61);
+		ctx.textAlign = 'left';
+		ctx.fillStyle = '#141414'; ctx.font = '700 38px Lato';
+		if (ctx.measureText(b.mail.from).width > CW - 200) ctx.font = '700 32px Lato'; // dugi naslovi malo manjim slovima
+		ctx.fillText(fit(b.mail.from, CW - 200), L + 68, T + 64);
+		ctx.fillStyle = 'rgba(20,20,20,.68)'; ctx.font = '400 31px Lato';
+		ctx.fillText(fit(b.mail.subj, CW - 104), L + 68, T + 111);
+		ctx.restore();
+	}
+
+	function draw() {
+		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		ctx.fillStyle = '#402f65';
+		ctx.fillRect(0, 0, W, H);
+		cards.forEach(drawCard);
+		ctx.fillStyle = '#35275a';
+		ctx.fillRect(0, FLOOR, W, H - FLOOR);
+		ctx.fillStyle = 'rgba(255,255,255,.34)';
+		ctx.fillRect(0, FLOOR - 1, W, 2);
+	}
+
+	// Kraj: nakon zadnjeg naleta gomila "izdahne": otpor i privlačenje popuste,
+	// pa mailovi još dugo lagano plutaju i polako se smiruju.
+	var LAST = spawns[spawns.length - 1];
+	function step() {
+		var time = frame / FPS;
+		while (made < spawns.length && spawns[made] <= time) spawn();
+		var calm = Math.max(0, Math.min(1, (time - LAST - 0.15) / 0.8));
+		DRAG = 2.6 - 1.75 * calm;
+		PULL = 1.1 - 0.72 * calm;
+		for (var k = 0; k < 8; k++) sub(1 / (FPS * 8), time + k / (FPS * 8));
+		cards = cards.filter(function (c) { return Math.abs(c.x - CX) < 2200; });
+		frame++;
+		document.getElementById('brojac').textContent = label(shown(made));
+		draw();
+	}
+
+	window.dp = {
+		frames: Math.round(10.6 * FPS),
+		step: function (n) { for (var i = 0; i < (n || 1); i++) step(); }
+	};
+	document.getElementById('brojac').textContent = label(0);
+	draw();
+})();
+</script>
+</body>
+</html>
