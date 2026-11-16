@@ -4,7 +4,16 @@
 @font-face { font-family: "Lato"; font-weight: 700; src: url("../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
 @font-face { font-family: "Lato"; font-weight: 900; src: url("../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
 
-@page { size: A4; margin: 22mm 24mm 24mm; }
+@page { size: A4; margin: 22mm 0 24mm; }
+body { padding: 0 24mm; }
+@page :first { margin-top: 0; }
+
+/* Naslovna traka prve stranice, kao DP naslovnice: oznaka, veliki naslov, logo dolje desno */
+.naslovna { position: relative; background: var(--ljubicasta); color: #fff; margin: 0 -24mm 10mm; padding: 24mm 24mm 12mm; }
+.naslovna .oznaka { display: inline-block; background: var(--narandza); color: #fff; font-weight: 700; font-size: 10pt; padding: 0.5mm 2.4mm; margin-bottom: 5mm; }
+.naslovna h1 { font-size: 34pt; line-height: 1.02; letter-spacing: -0.025em; font-weight: 700; color: #fff; max-width: 125mm; }
+.naslovna .podnaslov { margin-top: 4mm; font-size: 12pt; color: #d9d3e8; }
+.naslovna .logo { position: absolute; right: 24mm; bottom: 11mm; width: 19mm; }
 
 :root {
 	--ljubicasta: #402f65;
@@ -27,8 +36,7 @@ body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .zaglavlje h1 { font-size: 30pt; line-height: 1.04; letter-spacing: -0.02em; color: var(--ljubicasta); font-weight: 700; }
 .zaglavlje .podnaslov { margin-top: 3mm; font-size: 12pt; color: var(--meko); font-style: italic; }
 
-h2 { font-size: 17pt; line-height: 1.15; letter-spacing: -0.01em; color: var(--ljubicasta); font-weight: 700; margin: 9mm 0 3mm; break-after: avoid; }
-h2:first-of-type { margin-top: 0; }
+h2 { font-size: 17pt; line-height: 1.15; letter-spacing: -0.01em; color: var(--ljubicasta); font-weight: 700; margin: 8mm 0 3mm; padding-top: 2.5mm; border-top: 1pt solid var(--tinta); break-after: avoid; }
 h3 { font-size: 11pt; font-weight: 700; margin: 5mm 0 1.5mm; break-after: avoid; }
 p { margin-bottom: 2.6mm; orphans: 3; widows: 3; }
 p.uvod { font-size: 12pt; line-height: 1.45; margin-bottom: 4mm; }
@@ -89,3 +97,18 @@ html.zbijeno { font-size: 10pt; }
 .zbijeno h2 { margin-top: 7mm; }
 .zbijeno .zadatak { padding: 4mm 5mm; }
 .zbijeno .potpis { margin-top: 2mm; padding-top: 0; border-top: none; }
+
+/* Inspiracija: primjeri iz drugih novina */
+.inspo { padding: 3.5mm 0 3.8mm; border-bottom: 0.6pt solid var(--linija); break-inside: avoid; }
+.inspo .list { font-weight: 700; font-size: 11pt; }
+.inspo .gdje { color: var(--meko); font-size: 9.4pt; margin-bottom: 1.5mm; }
+.inspo p { margin-bottom: 1.5mm; }
+.inspo .nauk { font-style: italic; }
+.inspo a { color: var(--narandza-tamna); font-size: 9pt; text-decoration: none; }
+.zbijeno .naslovna { padding-top: 18mm; padding-bottom: 10mm; margin-bottom: 8mm; }
+.zbijeno .naslovna .logo { bottom: 9mm; }
+.zbijeno h2 { margin-top: 5.5mm; }
+.zbijeno p.uvod { margin-bottom: 3mm; }
+.zbijeno .zadatak { grid-template-columns: 1fr 34mm; padding: 4mm 5mm; }
+.zbijeno .zadatak .qr img { width: 28mm; height: 28mm; }
+.zbijeno .zadatak p { margin-bottom: 1.6mm; }

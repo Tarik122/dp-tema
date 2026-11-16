@@ -11,8 +11,6 @@ for (const [name, title] of docs) {
 	await page.evaluate(async () => { await document.fonts.ready; });
 	await page.pdf({
 		path: path.join(dir, `${name}.pdf`), preferCSSPageSize: true, printBackground: true,
-		displayHeaderFooter: true, headerTemplate: '<span></span>',
-		footerTemplate: '<div style="width:100%;font-size:7.5pt;color:#57516a;padding:0 24mm;display:flex;justify-content:space-between;font-family:sans-serif"><span>Druga perspektiva</span><span class="pageNumber"></span></div>',
 	});
 	console.log(`${name}.pdf`);
 }
