@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 const dir = path.dirname(fileURLToPath(import.meta.url));
-const docs = [['vodic-za-pisanje', 'DP – Kako pisati za Drugu perspektivu'], ['sa-sastanka', 'DP – Sa prvog sastanka redakcije']];
+const docs = [['prirucnik-za-redakciju', 'Priručnik za redakciju Druge perspektive']];
 const browser = await chromium.launch();
 const page = await browser.newPage();
 for (const [name, title] of docs) {

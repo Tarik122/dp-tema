@@ -142,3 +142,9 @@ tr { break-inside: avoid; }
 .inspo.tinta { border-top-color: var(--tinta); }
 .inspo-grid .inspo .vrsta { color: var(--tinta); }
 .nasi { break-before: page; margin-top: 0; }
+.nas-tekst { display: block; font-size: 8.8pt; color: var(--meko); margin-top: 0.8mm; }
+.nas-tekst::before { content: "Naš tekst: "; font-weight: 700; }
+html:not(.zbijeno) { font-size: 10.3pt; }
+h2 { margin-top: 7mm; }
+.primjer { margin-bottom: 4mm; }
+.nasi { break-before: auto; margin-top: 9mm; }
