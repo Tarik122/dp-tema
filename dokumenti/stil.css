@@ -150,3 +150,6 @@ h2 { margin-top: 7mm; }
 .nasi { break-before: auto; margin-top: 9mm; }
 .sastanak { break-before: page; }
 .sastanak h3 { font-size: 12.5pt; color: var(--ljubicasta); margin-top: 6mm; }
+.zadatak.bez-qr { display: block; }
+.zadatak a { color: var(--narandza-tamna); word-break: break-all; }
+.sastanak .chip { font-size: 8.6pt; }
