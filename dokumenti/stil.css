@@ -117,3 +117,28 @@ html.zbijeno { font-size: 10pt; }
 .inspo .vrsta { color: var(--narandza-tamna); font-size: 8.6pt; font-weight: 700; margin-bottom: 0.6mm; }
 table { break-inside: auto; }
 tr { break-inside: avoid; }
+
+/* ---- Izdvojena rečenica (pull quote) ---- */
+.izdvojeno { margin: 4.5mm 0 5mm; padding: 0.5mm 0 0.5mm 5mm; border-left: 3pt solid var(--narandza); font-size: 16pt; font-weight: 900; line-height: 1.15; letter-spacing: -0.012em; color: var(--ljubicasta); break-inside: avoid; }
+
+/* ---- Iz naše redakcije: ljubičasti blok preko cijele širine ---- */
+.nasi { background: var(--ljubicasta); color: #fff; margin: 9mm -24mm 8mm; padding: 9mm 24mm 9mm; break-inside: avoid; }
+.nasi h2 { color: #fff; border-top: none; padding-top: 0; margin-top: 0; }
+.nasi .nasi-uvod { color: #d9d3e8; margin-bottom: 5mm; }
+.nasi .clanci { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; }
+.nasi .clanak { font-size: 9.4pt; line-height: 1.42; color: #e7e3ef; }
+.nasi .clanak .chip { margin-bottom: 2.5mm; }
+.nasi .cl-naslov { font-weight: 700; font-size: 11pt; line-height: 1.25; color: #fff; margin-bottom: 1.8mm; }
+.nasi .clanak p { margin-bottom: 1.6mm; }
+.nasi .cl-nauk { font-style: italic; color: #fff; }
+.nasi a { color: #fff; font-size: 8.6pt; text-decoration: underline; text-decoration-color: var(--narandza); text-underline-offset: 0.6mm; }
+.chip.zelena { background: #1f6b4f; }
+
+/* ---- Kartice primjera: tanka linija u boji rubrike ---- */
+.inspo-grid .inspo { border-bottom: none; border-top: 2pt solid var(--linija); padding-top: 3mm; margin-bottom: 2mm; }
+.inspo.plava { border-top-color: #5271fe; }
+.inspo.narandza { border-top-color: var(--narandza); }
+.inspo.zelena { border-top-color: #1f6b4f; }
+.inspo.tinta { border-top-color: var(--tinta); }
+.inspo-grid .inspo .vrsta { color: var(--tinta); }
+.nasi { break-before: page; margin-top: 0; }
