@@ -1,0 +1,91 @@
+/* Zajednički izgled PDF dokumenata Druge perspektive (A4, štampa). */
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 400; font-style: italic; src: url("../dp-objave/assets/fonts/lato-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 900; src: url("../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
+
+@page { size: A4; margin: 22mm 24mm 24mm; }
+
+:root {
+	--ljubicasta: #402f65;
+	--narandza: #ee8031;
+	--narandza-tamna: #b85a14;
+	--tinta: #141414;
+	--siva: #ebebee;
+	--meko: #57516a;
+	--linija: #d6d2e0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-family: "Lato", sans-serif; font-size: 10.6pt; color: var(--tinta); line-height: 1.5; }
+body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* Zaglavlje prve stranice */
+.zaglavlje { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 9mm; border-bottom: 1.5pt solid var(--ljubicasta); margin-bottom: 9mm; }
+.zaglavlje img { width: 18mm; }
+.zaglavlje .oznaka { display: inline-block; background: var(--ljubicasta); color: #fff; font-weight: 700; font-size: 9pt; padding: 0.5mm 2.2mm; margin-bottom: 4mm; }
+.zaglavlje h1 { font-size: 30pt; line-height: 1.04; letter-spacing: -0.02em; color: var(--ljubicasta); font-weight: 700; }
+.zaglavlje .podnaslov { margin-top: 3mm; font-size: 12pt; color: var(--meko); font-style: italic; }
+
+h2 { font-size: 17pt; line-height: 1.15; letter-spacing: -0.01em; color: var(--ljubicasta); font-weight: 700; margin: 9mm 0 3mm; break-after: avoid; }
+h2:first-of-type { margin-top: 0; }
+h3 { font-size: 11pt; font-weight: 700; margin: 5mm 0 1.5mm; break-after: avoid; }
+p { margin-bottom: 2.6mm; orphans: 3; widows: 3; }
+p.uvod { font-size: 12pt; line-height: 1.45; margin-bottom: 4mm; }
+ul { margin: 0 0 3mm 5mm; break-inside: avoid; }
+li { margin-bottom: 1.2mm; padding-left: 1mm; }
+li::marker { color: var(--narandza); }
+b { font-weight: 700; }
+.meko { color: var(--meko); }
+
+/* Primjeri: slabije / bolje */
+.primjer { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin: 3mm 0 4.5mm; break-inside: avoid; }
+.primjer > div { padding: 3mm 4mm 3.2mm; font-size: 10pt; line-height: 1.45; }
+.primjer .slabije { background: var(--siva); }
+.primjer .bolje { background: #fff; border-left: 3pt solid var(--narandza); padding-left: 4mm; box-shadow: inset 0 0 0 0.6pt var(--linija); }
+.primjer .natpis { display: block; font-size: 8.4pt; font-weight: 700; margin-bottom: 1mm; }
+.primjer .slabije .natpis { color: var(--meko); }
+.primjer .bolje .natpis { color: var(--narandza-tamna); }
+
+/* Tabela tema */
+table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 10pt; break-inside: avoid; }
+th { text-align: left; font-size: 8.6pt; font-weight: 700; color: var(--meko); padding: 0 3mm 1.5mm 0; border-bottom: 1pt solid var(--tinta); }
+td { padding: 2mm 3mm 2mm 0; border-bottom: 0.6pt solid var(--linija); vertical-align: top; }
+td:first-child { width: 34%; color: var(--meko); }
+
+/* Okvir za napomenu */
+.okvir { background: var(--siva); padding: 4mm 5mm; margin: 3mm 0 4.5mm; break-inside: avoid; }
+.okvir p:last-child { margin-bottom: 0; }
+.okvir h3 { margin-top: 0; }
+
+/* Lista za provjeru */
+.provjera { list-style: none; margin-left: 0; }
+.provjera li { padding-left: 6mm; position: relative; }
+.provjera li::before { content: ""; position: absolute; left: 0; top: 1.3mm; width: 2.6mm; height: 2.6mm; border: 0.8pt solid var(--ljubicasta); }
+
+.drzi { break-inside: avoid; }
+.potpis { margin-top: 8mm; padding-top: 4mm; border-top: 0.6pt solid var(--linija); font-size: 9.6pt; color: var(--meko); }
+
+/* Koraci (redoslijed) */
+.koraci { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin: 2mm 0 4.5mm; break-inside: avoid; }
+.koraci > div { background: var(--siva); padding: 3.5mm 3.5mm 4mm; font-size: 9.8pt; line-height: 1.4; }
+.koraci .broj { display: block; font-size: 20pt; font-weight: 700; line-height: 1; color: var(--ljubicasta); margin-bottom: 2mm; }
+.koraci b { display: block; margin-bottom: 0.8mm; }
+
+/* Oznake rubrika */
+.chip { display: inline-block; color: #fff; font-weight: 700; font-size: 9pt; padding: 0.3mm 2mm; white-space: nowrap; }
+.chip.plava { background: #5271fe; } .chip.narandza { background: var(--narandza); } .chip.tinta { background: var(--tinta); }
+td.rubrika { width: 30%; }
+
+/* QR i zadatak */
+.zadatak { display: grid; grid-template-columns: 1fr 42mm; gap: 7mm; align-items: center; background: var(--siva); padding: 5mm 6mm; margin: 3mm 0 4mm; break-inside: avoid; }
+.zadatak .veliko { font-size: 15pt; font-weight: 700; line-height: 1.2; color: var(--ljubicasta); margin-bottom: 2mm; }
+.zadatak .qr { background: #fff; padding: 3mm; text-align: center; font-size: 8.4pt; font-weight: 700; }
+.zadatak .qr img { width: 36mm; height: 36mm; display: block; margin: 0 auto 1.5mm; }
+.mali { font-size: 8.6pt; color: var(--meko); word-break: break-all; }
+
+/* Kraći dokument: malo zbijeniji, da stane na dvije stranice */
+html.zbijeno { font-size: 10pt; }
+.zbijeno h2 { margin-top: 7mm; }
+.zbijeno .zadatak { padding: 4mm 5mm; }
+.zbijeno .potpis { margin-top: 2mm; padding-top: 0; border-top: none; }
