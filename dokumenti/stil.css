@@ -148,3 +148,5 @@ html:not(.zbijeno) { font-size: 10.3pt; }
 h2 { margin-top: 7mm; }
 .primjer { margin-bottom: 4mm; }
 .nasi { break-before: auto; margin-top: 9mm; }
+.sastanak { break-before: page; }
+.sastanak h3 { font-size: 12.5pt; color: var(--ljubicasta); margin-top: 6mm; }
