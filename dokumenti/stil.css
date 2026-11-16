@@ -115,3 +115,5 @@ html.zbijeno { font-size: 10pt; }
 .inspo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 7mm; }
 .inspo-grid .inspo { font-size: 9.6pt; line-height: 1.42; }
 .inspo .vrsta { color: var(--narandza-tamna); font-size: 8.6pt; font-weight: 700; margin-bottom: 0.6mm; }
+table { break-inside: auto; }
+tr { break-inside: avoid; }
