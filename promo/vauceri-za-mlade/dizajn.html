@@ -84,12 +84,12 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 .c .izjava { font-size: 150px; }
 .c .tekst { margin-top: 28px; font-size: 36px; color: rgba(255,255,255,.9); }
 
-/* Slajd 3: plakat s imenima */
-.a { padding: 110px 80px 0 96px; }
+/* Slajd 3: plakat, svako ime razvučeno preko cijele širine (JS ispod) */
+.a { padding: 104px 96px 0; }
 .a .uvod { font-size: 40px; font-weight: 700; letter-spacing: -0.01em; }
-.a .imena { margin-top: 44px; font-size: 86px; font-weight: 900; line-height: .98; letter-spacing: -0.03em; }
-.a .imena span { white-space: nowrap; }
-.a .imena span:nth-child(even) { color: rgba(255,255,255,.42); }
+.a .imena { position: absolute; left: 96px; right: 96px; top: 190px; bottom: 190px; display: flex; flex-direction: column; justify-content: space-between; }
+.a .imena span { display: block; white-space: nowrap; font-weight: 900; line-height: .8; letter-spacing: -0.035em; width: max-content; }
+.a .imena .muzej { color: var(--narandza); }
 .a .dno { position: absolute; left: 96px; right: 200px; bottom: 76px; font-size: 34px; line-height: 1.3; color: rgba(255,255,255,.9); }
 .a .dno b { border-left: 12px solid var(--narandza); padding-left: 24px; display: block; }
 
@@ -117,23 +117,35 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 
 <section class="slide post a">
 	<p class="uvod">Ulaznice vrijede za:</p>
-	<p class="imena"><span>Narodno pozorište</span> <span>Pozorište mladih</span> <span>SARTR</span> <span>Kamerni teatar&nbsp;55</span> <span>Zemaljski muzej</span> <span>Historijski muzej</span> <span>Muzej Sarajeva</span> <span>Muzej ratnog djetinjstva</span> <span>Planet Sarajevo</span></p>
+	<div class="imena"><span>Narodno pozorište</span><span>Pozorište mladih</span><span>SARTR</span><span>Kamerni teatar&nbsp;55</span><span class="muzej">Zemaljski muzej</span><span class="muzej">Historijski muzej</span><span class="muzej">Muzej Sarajeva</span><span class="muzej">Muzej ratnog djetinjstva</span><span class="muzej">Planet Sarajevo</span></div>
 	<p class="dno"><b>Iskoristiš svih devet? Čeka te posebna nagrada.</b></p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
 <section class="slide post k">
 	<p class="uvod">Kako do vaučera:</p>
-	<p class="veliko">Prijavi se.</p>
+	<p class="veliko">Prijavi se</p>
 	<p class="detalj blijedo">mon.ks.gov.ba/form/<br>vauceri-za-mlade-2026</p>
-	<p class="veliko">Preuzmi ih.</p>
+	<p class="veliko">Ponesi ličnu</p>
+	<p class="detalj blijedo">Ili drugi lični dokument s&nbsp;datumom&nbsp;rođenja</p>
+	<p class="veliko">Preuzmi ih</p>
 	<p class="detalj blijedo">Ministarstvo za nauku, visoko obrazovanje i&nbsp;mlade KS, Branilaca Sarajeva&nbsp;21, II&nbsp;sprat, kancelarija&nbsp;201</p>
-	<p class="veliko">Ponesi ličnu.</p>
-	<p class="detalj blijedo">Ili drugi lični dokument s&nbsp;datumom&nbsp;rođenja.</p>
 	<p class="izvor">Izvor: dopis Ministarstva za nauku, visoko obrazovanje i mlade KS od 27.&nbsp;oktobra 2026.</p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
+<script>
+/* Plakat: svako ime tačno preko cijele širine; ako ne stane po visini, sve se smanji jednako. */
+document.fonts.ready.then(function () {
+	document.querySelectorAll('.imena').forEach(function (box) {
+		var W = box.clientWidth, H = box.clientHeight, spans = box.querySelectorAll('span');
+		spans.forEach(function (s) { s.style.fontSize = '100px'; s.style.fontSize = (100 * W / s.offsetWidth) + 'px'; });
+		var total = 0; spans.forEach(function (s) { total += s.offsetHeight; });
+		var gap = 14 * (spans.length - 1);
+		if (total + gap > H) { var k = (H - gap) / total; spans.forEach(function (s) { s.style.fontSize = (parseFloat(s.style.fontSize) * k) + 'px'; }); }
+	});
+});
+</script>
 <script>
 /* Bosanska tipografija za sve tekstove: „navodnici“, …, – i jednoslovne riječi vezane za sljedeću. */
 (function () {
