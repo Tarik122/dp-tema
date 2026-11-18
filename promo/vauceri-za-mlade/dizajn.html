@@ -74,65 +74,125 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 }
 
 
-/* ---- Vaučeri za mlade: tekstualni slajdovi na ljubičastoj ---- */
-.tekstualni { padding: 150px 96px 0; }
-.tekstualni .naslov { font-size: 84px; }
-.tekstualni .tekst { margin-top: 40px; }
-.naglasak { margin-top: 56px; border-left: 12px solid var(--narandza); padding-left: 36px; font-size: 48px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+/* ---- Vaučeri za mlade: motiv ulaznice ---- */
+.ulaznica { position: absolute; background: #fff; color: var(--tinta); }
+.perforacija { position: relative; height: 0; border-top: 4px dashed rgba(20,20,20,.22); margin: 0 48px; }
+.perforacija::before, .perforacija::after { content: ""; position: absolute; top: -32px; width: 60px; height: 60px; border-radius: 50%; background: var(--pozadina); }
+.perforacija::before { left: -78px; } .perforacija::after { right: -78px; }
 
-.mali-naslov { font-size: 30px; color: var(--mekano); margin-top: 52px; margin-bottom: 6px; }
-.lista { list-style: none; padding: 0; border-top: 2px solid var(--linija); }
-.lista li { display: flex; justify-content: space-between; align-items: baseline; padding: 0 0; height: 76px; line-height: 76px; border-bottom: 2px solid var(--linija); font-size: 38px; }
-.nagrada { margin: 52px -24px 0; background: var(--narandza); padding: 26px 24px; font-size: 38px; font-weight: 700; line-height: 1.25; }
-.nagrada span { font-weight: 400; }
+/* Slajd 1: hrpa ulaznica */
+.s1 { --pozadina: var(--plava); background: var(--plava); }
+.s1 .uvod { position: absolute; left: 96px; top: 118px; font-size: 40px; font-weight: 700; letter-spacing: -0.01em; }
+.s1 .ulaznica { left: 120px; top: 236px; width: 800px; height: 930px; }
+.s1 .iza1 { background: rgba(255,255,255,.22); transform: rotate(8deg); }
+.s1 .iza2 { background: rgba(255,255,255,.45); transform: rotate(3deg); }
+.s1 .prednja { transform: rotate(-3.5deg); box-shadow: 0 30px 60px rgba(20,20,40,.18); }
+.s1 .gore { padding: 52px 60px 0; height: 712px; }
+.s1 .vrsta { font-size: 30px; color: rgba(20,20,20,.6); }
+.s1 .broj { font-size: 470px; font-weight: 900; line-height: .78; letter-spacing: -0.04em; color: var(--plava); margin: 34px 0 0 -14px; }
+.s1 .opis { font-size: 66px; font-weight: 700; line-height: 1.02; letter-spacing: -0.022em; margin-top: 30px; }
+.s1 .stub { display: flex; justify-content: space-between; padding: 40px 60px 0; }
+.s1 .stub small { display: block; font-size: 26px; color: rgba(20,20,20,.6); }
+.s1 .stub b { display: block; font-size: 44px; font-weight: 900; letter-spacing: -0.02em; margin-top: 4px; }
+.s1 .stub div:last-child { text-align: right; }
+.s1 .dole { position: absolute; left: 96px; right: 240px; bottom: 68px; font-size: 36px; line-height: 1.32; color: rgba(255,255,255,.92); }
 
-.korak { margin-top: 56px; border-top: 2px solid var(--linija); padding-top: 28px; }
-.korak .oznaka-reda { font-size: 30px; color: var(--mekano); }
-.korak .vrijednost { font-size: 44px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; margin-top: 12px; overflow-wrap: anywhere; }
-.korak .tekst { margin-top: 16px; font-size: 36px; }
+/* Slajd 2: fotografija + panel */
+.s2 .slika { position: absolute; left: 0; top: 0; width: 100%; height: 560px; object-fit: cover; object-position: 50% 60%; }
+.s2 .potpis { bottom: 900px; }
+.s2 .panel { position: absolute; left: 0; right: 0; top: 560px; bottom: 0; padding: 64px 96px 0; }
+.s2 .naslov { font-size: 76px; }
+.s2 .kolone { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 44px; }
+.s2 .mali { font-size: 28px; color: var(--mekano); padding-bottom: 12px; border-bottom: 2px solid var(--linija); }
+.s2 ul { list-style: none; padding: 0; }
+.s2 li { font-size: 33px; line-height: 1.18; padding: 15px 0; border-bottom: 2px solid var(--linija); }
+.s2 .nagrada { position: absolute; left: 72px; right: 220px; bottom: 60px; background: var(--narandza); padding: 22px 24px; font-size: 34px; font-weight: 700; line-height: 1.2; }
+.s2 .nagrada span { font-weight: 400; }
+
+/* Slajd 3: ulaznica u dva dijela */
+.s3 { --pozadina: var(--ljubicasta); }
+.s3 .naslov { position: absolute; left: 96px; top: 140px; font-size: 84px; }
+.s3 .ulaznica { left: 96px; right: 96px; top: 320px; transform: rotate(-1.5deg); }
+.s3 .dio { display: grid; grid-template-columns: 110px 1fr; gap: 20px; padding: 52px 56px 56px; }
+.s3 .redni { font-size: 120px; font-weight: 900; line-height: .8; letter-spacing: -0.04em; color: var(--narandza); }
+.s3 .sta { font-size: 30px; color: rgba(20,20,20,.6); }
+.s3 .vrijednost { font-size: 42px; font-weight: 700; line-height: 1.18; letter-spacing: -0.012em; margin-top: 8px; }
+.s3 .napomena { font-size: 30px; line-height: 1.35; color: rgba(20,20,20,.72); margin-top: 14px; }
 .izvor { position: absolute; left: 96px; right: 240px; bottom: 76px; font-size: 22px; line-height: 1.4; color: rgba(255,255,255,.6); }
 </style>
 </head>
 <body>
 
-<section class="slide post tekstualni">
-	<h2 class="naslov">Svi rođeni 2008. dobijaju devet besplatnih ulaznica</h2>
-	<p class="tekst">Za 18. rođendan Kanton Sarajevo i ove godine poklanja vaučere za pozorišta i muzeje. Pravo imaju svi učenici rođeni 2008. koji žive u Kantonu Sarajevo.</p>
-	<p class="naglasak">Svaka ulaznica vrijedi za dvije osobe,<br>pa povedi društvo.</p>
+<section class="slide post s1">
+	<p class="uvod">Poklon za 18. rođendan</p>
+	<div class="ulaznica iza1"></div>
+	<div class="ulaznica iza2"></div>
+	<div class="ulaznica prednja">
+		<div class="gore">
+			<p class="vrsta">Vaučer za mlade</p>
+			<p class="broj">9</p>
+			<p class="opis">besplatnih ulaznica za pozorišta i&nbsp;muzeje</p>
+		</div>
+		<div class="perforacija"></div>
+		<div class="stub">
+			<div><small>Svaka vrijedi za</small><b>dvije osobe</b></div>
+			<div><small>Generacija</small><b>2008.</b></div>
+		</div>
+	</div>
+	<p class="dole">Za sve učenike rođene 2008. koji žive u&nbsp;Kantonu Sarajevo.</p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
-<section class="slide post tekstualni">
-	<h2 class="naslov">Gdje vrijede</h2>
-	<p class="mali-naslov">Pozorišta</p>
-	<ul class="lista">
-		<li>Narodno pozorište</li>
-		<li>Pozorište mladih</li>
-		<li>Sarajevski ratni teatar SARTR</li>
-		<li>Kamerni teatar 55</li>
-	</ul>
-	<p class="mali-naslov">Muzeji</p>
-	<ul class="lista">
-		<li>Zemaljski muzej BiH</li>
-		<li>Historijski muzej BiH</li>
-		<li>Muzej Sarajeva</li>
-		<li>Muzej ratnog djetinjstva</li>
-		<li>Muzej Planet Sarajevo</li>
-	</ul>
+<section class="slide post s2">
+	<img class="slika" src="muzej.jpg" alt="Zemaljski muzej Bosne i Hercegovine">
+	<div class="potpis">Foto: Fred Romero, CC BY 2.0</div>
+	<div class="panel">
+		<h2 class="naslov">Gdje ih možeš iskoristiti</h2>
+		<div class="kolone">
+			<div>
+				<p class="mali">Pozorišta</p>
+				<ul>
+					<li>Narodno pozorište</li>
+					<li>Pozorište mladih</li>
+					<li>Sarajevski ratni teatar SARTR</li>
+					<li>Kamerni teatar 55</li>
+				</ul>
+			</div>
+			<div>
+				<p class="mali">Muzeji</p>
+				<ul>
+					<li>Zemaljski muzej BiH</li>
+					<li>Historijski muzej BiH</li>
+					<li>Muzej Sarajeva</li>
+					<li>Muzej ratnog djetinjstva</li>
+					<li>Muzej Planet Sarajevo</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 	<p class="nagrada">Iskoristiš svih devet? <span>Čeka te posebna nagrada.</span></p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
-<section class="slide post tekstualni">
+<section class="slide post s3">
 	<h2 class="naslov">Kako do vaučera</h2>
-	<div class="korak">
-		<p class="oznaka-reda">Prvo se prijavi</p>
-		<p class="vrijednost">mon.ks.gov.ba/form/<wbr>vauceri-za-mlade-2026</p>
-	</div>
-	<div class="korak">
-		<p class="oznaka-reda">Zatim preuzmi vaučere</p>
-		<p class="vrijednost">Branilaca Sarajeva 21,<br>II sprat, kancelarija&nbsp;201</p>
-		<p class="tekst">Ministarstvo za nauku, visoko obrazovanje i mlade KS. Ponesi lični dokument s datumom rođenja.</p>
+	<div class="ulaznica">
+		<div class="dio">
+			<p class="redni">1</p>
+			<div>
+				<p class="sta">Prijavi se online</p>
+				<p class="vrijednost">mon.ks.gov.ba/form/<br>vauceri-za-mlade-2026</p>
+			</div>
+		</div>
+		<div class="perforacija"></div>
+		<div class="dio">
+			<p class="redni">2</p>
+			<div>
+				<p class="sta">Preuzmi vaučere</p>
+				<p class="vrijednost">Branilaca Sarajeva 21, II&nbsp;sprat, kancelarija&nbsp;201</p>
+				<p class="napomena">Ministarstvo za nauku, visoko obrazovanje i mlade KS. Ponesi lični dokument s&nbsp;datumom rođenja.</p>
+			</div>
+		</div>
 	</div>
 	<p class="izvor">Izvor: dopis Ministarstva za nauku, visoko obrazovanje i mlade KS od 27.&nbsp;oktobra 2026.</p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
