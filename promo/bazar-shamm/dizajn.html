@@ -81,22 +81,35 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 .napomena { position: absolute; left: var(--mt); right: 220px; bottom: 72px; font-size: 28px; line-height: 1.4; color: rgba(255,255,255,.72); }
 .napomena b { color: #fff; font-weight: 700; }
 
-/* 3. Kada i gdje: velike činjenice. */
-.cinjenice { position: absolute; left: var(--mt); right: var(--mt); top: 360px; }
-.cinjenica { padding: 34px 0 38px; border-top: 2px solid var(--linija); }
-.cinjenica:last-child { border-bottom: 2px solid var(--linija); }
-.cinjenica span { display: block; font-size: 30px; color: rgba(255,255,255,.66); }
-.cinjenica b { display: block; margin-top: 8px; font-size: 72px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+/* 1. Fotografija gore, panel dolje. */
+.foto-panel .gornja { position: absolute; left: 0; right: 0; top: 0; height: 780px; width: 100%; object-fit: cover; object-position: 50% 20%; }
+.foto-panel .panel { position: absolute; left: 0; right: 0; bottom: 0; top: 780px; background: var(--ljubicasta); }
+.foto-panel .dno { position: absolute; left: var(--mt); right: var(--mt); top: 850px; }
+.foto-panel .dno .tekst { margin-right: 140px; }
+.foto-panel .naslov { font-size: 76px; }
+.foto-panel .potpis { bottom: 680px; color: rgba(255,255,255,.8); text-shadow: 0 0 8px rgba(0,0,0,.4); }
 
-/* 4. Razredi. */
-.razredi { position: absolute; left: var(--mt); right: var(--mt); top: 380px; }
-.razred { display: grid; grid-template-columns: 200px 1fr; column-gap: 24px; padding: 30px 0 32px; border-top: 2px solid var(--linija); }
-.razred:last-child { border-bottom: 2px solid var(--linija); }
-.razred .r { font-size: 34px; color: rgba(255,255,255,.66); padding-top: 6px; }
-.razred b { font-size: 44px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.1; }
-.razred p { grid-column: 2; margin-top: 10px; font-size: 28px; line-height: 1.4; color: rgba(255,255,255,.72); text-wrap: pretty; }
+/* 2. Datum ogroman na svijetloj. */
+.datum { background: var(--svijetla); color: var(--tinta); }
+.datum .gore { top: 150px; }
+.datum .mali { font-size: 40px; font-weight: 700; }
+.datum .veliki { margin-top: 10px; font-size: 460px; font-weight: 900; letter-spacing: -0.05em; line-height: .86; margin-left: -14px; }
+.datum .mjesec { font-size: 190px; font-weight: 900; letter-spacing: -0.03em; line-height: .95; }
+.datum .crta { width: 160px; height: 12px; background: var(--narandza); margin-bottom: 36px; }
+.datum .dno { position: absolute; left: var(--mt); right: 220px; bottom: 72px; }
+.datum .info { font-size: 44px; line-height: 1.35; font-weight: 700; }
+.datum .info span { font-weight: 400; color: rgba(20,20,20,.66); }
 
-/* 5. Termini. */
+/* 3. Razredi s velikim rimskim brojevima. */
+.razredi2 { position: absolute; left: var(--mt); right: var(--mt); top: 360px; }
+.r2 { display: grid; grid-template-columns: 230px 1fr; align-items: start; padding: 26px 0 30px; border-top: 2px solid var(--linija); }
+.r2:last-child { border-bottom: 2px solid var(--linija); }
+.r2 .broj { font-size: 120px; font-weight: 900; line-height: .85; letter-spacing: -0.02em; }
+.r2 b { display: block; font-size: 46px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.1; margin-top: 4px; }
+.r2 p { margin-top: 10px; font-size: 28px; line-height: 1.4; color: rgba(255,255,255,.72); text-wrap: pretty; }
+
+/* 4. Termini na tinti. */
+.tinta-bg { background: var(--tinta); }
 .termini { position: absolute; left: var(--mt); right: var(--mt); top: 380px; }
 .termin { display: flex; justify-content: space-between; align-items: baseline; gap: 30px; padding: 48px 0 50px; border-top: 2px solid var(--linija); }
 .termin:last-child { border-bottom: 2px solid var(--linija); }
@@ -104,14 +117,13 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 .termin .sta { text-align: right; font-size: 30px; line-height: 1.35; color: rgba(255,255,255,.72); }
 .termin .sta b { display: block; font-size: 38px; color: #fff; font-weight: 700; }
 .termin.jako { background: var(--narandza); margin: 0 -28px; padding-left: 28px; padding-right: 28px; border-top-color: transparent; }
-.termin.jako + .termin, .termin.jako:last-child { border-top-color: transparent; }
 .termin.jako .sta { color: #fff; }
 
-/* 6. Kraj na plavoj. */
+/* 5. Kraj na plavoj. */
 .kraj { background: var(--plava); }
-.kraj .izjava { font-size: 150px; }
+.kraj .izjava { font-size: 170px; }
 .kraj .koraci { position: absolute; left: var(--mt); right: 220px; bottom: 72px; }
-.kraj .koraci p { font-size: 34px; line-height: 1.4; color: #fff; }
+.kraj .koraci p { font-size: 36px; line-height: 1.4; color: #fff; }
 .kraj .koraci p + p { margin-top: 24px; }
 .kraj .koraci b { font-weight: 700; }
 </style>
@@ -120,45 +132,42 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 
 <!-- 1. naslovna dolazi iz WordPressa (DP objave) -->
 
-<section class="slide post">
-	<div class="gore">
-		<h2 class="naslov srednji">Shamm ima tri godine. Liječi se u Italiji, a njen otac je ostao u Gazi.</h2>
-		<p class="tekst">I ove godine organizujemo humanitarni bazar u školi. Novac koji prikupimo ide trogodišnjoj Shamm Qudeih iz Gaze, koja je na liječenju s majkom i sestrom.</p>
-		<p class="tekst">Pozivamo sve učenike i profesore da se uključe: pripremom proizvoda, donacijama, idejama ili volontiranjem. Svako prema svojim mogućnostima.</p>
+<section class="slide post foto-panel">
+	<img class="gornja" src="foto.jpg" alt="">
+	<div class="panel"></div>
+	<div class="dno">
+		<h2 class="naslov">Shamm ima tri godine. Liječi se u Italiji, a otac joj je ostao u Gazi.</h2>
+		<p class="tekst" style="margin-top:36px">Novac s ovogodišnjeg školskog bazara ide njoj, njenoj majci i sestri.</p>
 	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+	<div class="potpis">Plakat: DGS for Palestine</div>
 </section>
 
-<section class="slide post">
+<section class="slide post datum">
 	<div class="gore">
-		<h2 class="naslov">Dođite na bazar</h2>
-	</div>
-	<div class="cinjenice">
-		<div class="cinjenica"><span>Kada</span><b>Petak, 27. novembar</b></div>
-		<div class="cinjenica"><span>U koliko sati</span><b>17:30 – 19:30</b></div>
-		<div class="cinjenica"><span>Gdje</span><b>Druga gimnazija Sarajevo</b></div>
-	</div>
-	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+		<p class="mali">Bazar je u petak</p>
+		<p class="veliki">27.</p>
+		<p class="mjesec">novembra</p>
+		</div>
+	<div class="dno"><div class="crta"></div>
+		<p class="info">17:30 – 19:30<br><span>Druga gimnazija Sarajevo</span></p></div>
+	<img class="logo" src="../../dp-objave/assets/logo-crni.png" alt="">
 </section>
 
 <section class="slide post">
 	<div class="gore">
 		<h2 class="naslov srednji">Šta donosi koji razred</h2>
 	</div>
-	<div class="razredi">
-		<div class="razred"><span class="r">I razredi</span><b>Hrana i piće</b>
-			<p>Mafini, palačinke, brownies, kolači, keksi, kiflice, domaći sokovi, limunade, ledeni čaj</p></div>
-		<div class="razred"><span class="r">II razredi</span><b>Nakit i handmade</b>
-			<p>Narukvice, ogrlice, minđuše, privjesci, ukosnice, bookmarkeri, čestitke, mali pokloni</p></div>
-		<div class="razred"><span class="r">III razredi</span><b>Sitnice i igračke</b>
-			<p>Očuvane igračke, plišanci, društvene igre, slagalice, dječije knjige, školski pribor</p></div>
-		<div class="razred"><span class="r">IV razredi</span><b>Book Market</b>
-			<p>Polovne knjige, romani, lektire, stripovi, časopisi, slikovnice, enciklopedije</p></div>
+	<div class="razredi2">
+		<div class="r2"><span class="broj">I</span><div><b>Hrana i piće</b><p>Mafini, palačinke, brownies, kolači, kiflice, domaći sokovi, limunade</p></div></div>
+		<div class="r2"><span class="broj">II</span><div><b>Nakit i handmade</b><p>Narukvice, ogrlice, minđuše, privjesci, bookmarkeri, čestitke</p></div></div>
+		<div class="r2"><span class="broj">III</span><div><b>Igračke i sitnice</b><p>Plišanci, društvene igre, slagalice, dječije knjige, školski pribor</p></div></div>
+		<div class="r2"><span class="broj">IV</span><div><b>Book Market</b><p>Polovne knjige, romani, lektire, stripovi, časopisi, slikovnice</p></div></div>
 	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
-<section class="slide post">
+<section class="slide post tinta-bg">
 	<div class="gore">
 		<h2 class="naslov srednji">Kada donijeti stvari u školu</h2>
 	</div>
@@ -176,7 +185,7 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 		<p class="izjava">Svaki doprinos znači mnogo.</p>
 	</div>
 	<div class="koraci">
-		<p>Upišite se u dokument svog razreda: ime, prezime i šta planirate donijeti. Link je u opisu objave.</p>
+		<p>Upišite se u dokument svog razreda: ime, prezime i šta donosite. Link je u opisu.</p>
 		<p>Za svaki doprinos dobijate <b>DKU, SA i CAS sate.</b></p>
 	</div>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
