@@ -85,20 +85,21 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 /* Slajd 2: tamni tekst na nebu, zgrada nosi donji dio */
 .c .foto { height: 1660px; bottom: auto; object-position: 50% 0%; }
 .c .folio { color: rgba(20,20,20,.7); }
-.c .izjava { position: absolute; left: 96px; right: 96px; top: 118px; font-size: 104px; color: var(--tinta); }
-.c .prelaz { height: 30%; }
+.c .objasnjenje { position: absolute; left: 96px; right: 96px; top: 92px; font-size: 48px; font-weight: 700; line-height: 1.14; letter-spacing: -0.018em; color: var(--tinta); text-wrap: pretty; }
+.c .prelaz { height: 22%; }
+.c .potpis { color: rgba(255,255,255,.85); text-shadow: 0 0 6px rgba(0,0,0,.6); }
 .c .dno { position: absolute; left: 96px; right: 260px; bottom: 76px; font-size: 32px; line-height: 1.3; color: rgba(255,255,255,.92); }
 
 /* Slajd 3: dvije trake, pozorišta i muzeji */
 .a .traka { position: absolute; left: 96px; right: 96px; }
-.a .t1 { top: 150px; } .a .t2 { top: 630px; }
+.a .t1 { top: 110px; } .a .t2 { top: 600px; }
 .a .imena { padding-top: 34px; }
 .a .imena span { display: block; white-space: nowrap; font-size: 84px; font-weight: 900; line-height: 1.04; letter-spacing: -0.032em; }
 .a .t2 .imena span { color: var(--narandza); }
 .a .dno { position: absolute; left: 96px; right: 260px; bottom: 76px; font-size: 32px; line-height: 1.3; color: rgba(255,255,255,.92); }
 
 /* Slajd 4: tri trake jednake visine */
-.k .koraci { position: absolute; left: 96px; right: 96px; top: 150px; bottom: 210px; display: grid; grid-template-rows: 1fr 1fr 1fr; }
+.k .koraci { position: absolute; left: 96px; right: 96px; top: 110px; bottom: 170px; display: grid; grid-template-rows: 1fr 1fr 1fr; }
 .k .veliko { padding-top: 30px; font-size: 112px; font-weight: 900; line-height: .95; letter-spacing: -0.035em; }
 .k .detalj { margin-top: 18px; font-size: 34px; line-height: 1.3; color: rgba(255,255,255,.72); max-width: 700px; }
 .izvor { position: absolute; left: 96px; right: 260px; bottom: 76px; font-size: 22px; line-height: 1.4; color: rgba(255,255,255,.6); }
@@ -109,15 +110,12 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 <section class="slide post c">
 	<img class="foto" src="muzej.jpg" alt="Historijski muzej Bosne i Hercegovine 1963. godine">
 	<div class="prelaz"></div>
-	<div class="folio"><span>Vaučeri za mlade</span><span>2</span></div>
-	<p class="izjava">Devet ulaznica. Svaka za&nbsp;dvoje.</p>
-	<p class="dno">Poklon za 18. rođendan svima rođenim 2008. koji žive u&nbsp;Kantonu Sarajevo.</p>
+	<p class="objasnjenje">Za punoljetstvo, svi rođeni 2008. koji žive u&nbsp;Kantonu Sarajevo dobijaju devet besplatnih ulaznica za pozorišta i&nbsp;muzeje. Svaka vrijedi za dvoje.</p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 	<div class="potpis">Foto: Boris Magaš, CC BY-SA 4.0</div>
 </section>
 
 <section class="slide post a">
-	<div class="folio"><span>Vaučeri za mlade</span><span>3</span></div>
 	<div class="traka t1"><span class="oznaka-trake">Pozorišta</span>
 		<div class="imena"><span>Narodno pozorište</span><span>Pozorište mladih</span><span>SARTR</span><span>Kamerni teatar&nbsp;55</span></div>
 	</div>
@@ -129,7 +127,6 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 </section>
 
 <section class="slide post k">
-	<div class="folio"><span>Vaučeri za mlade</span><span>4</span></div>
 	<div class="koraci">
 		<div class="traka"><span class="oznaka-trake">Prvo</span>
 			<p class="veliko">Prijavi se</p>
@@ -144,7 +141,6 @@ body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 
 			<p class="detalj">Ministarstvo za nauku, visoko obrazovanje i&nbsp;mlade KS, Branilaca Sarajeva&nbsp;21, II&nbsp;sprat, kancelarija&nbsp;201</p>
 		</div>
 	</div>
-	<p class="izvor">Izvor: dopis Ministarstva za nauku, visoko obrazovanje i mlade KS od 27.&nbsp;oktobra 2026.</p>
 	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
 </section>
 
