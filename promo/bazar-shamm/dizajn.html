@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<title>DP dizajn</title>
+<!--
+	Početna tačka za novi DP moderni dizajn. Kopira se u promo/<naziv>/ i tamo mijenja.
+	Svaki <section class="slide"> postaje jedna PNG slika (render.mjs, 2x rezolucija).
+	Veličine: post 1080×1440 (klasa "post"), story 1080×1920 ("story"), ekran 1920×1080 ("ekran").
+-->
+<style>
+@font-face { font-family: "Lato"; font-weight: 400; src: url("../../dp-objave/assets/fonts/lato-400.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 400; font-style: italic; src: url("../../dp-objave/assets/fonts/lato-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 700; src: url("../../dp-objave/assets/fonts/lato-700.woff2") format("woff2"); }
+@font-face { font-family: "Lato"; font-weight: 900; src: url("../../dp-objave/assets/fonts/lato-900.woff2") format("woff2"); }
+
+:root {
+	/* Boje DP moderni (tačne vrijednosti, ne mijenjati). */
+	--plava: #5271fe;       /* oznaka: vijesti */
+	--plava-igre: #3b57e8;  /* samo za igre (pogođeno slovo) */
+	--narandza: #ee8031;    /* oznaka: kultura, sport; naglasak */
+	--zelena: #1f6b4f;      /* oznaka: nauka */
+	--tinta: #141414;       /* oznaka: mišljenje; tamne površine */
+	--ljubicasta: #402f65;  /* glavna pozadina bez fotografije */
+	--svijetla: #ebebee;    /* svijetla pozadina */
+	--mekano: rgba(255, 255, 255, 0.72);
+	--linija: rgba(255, 255, 255, 0.24);
+
+	--m: 64px;              /* margina na slajdu s fotografijom (96px na tekstu) */
+}
+
+* { box-sizing: border-box; margin: 0; }
+body { background: #777; font-family: "Lato", sans-serif; color: #fff; padding: 40px; display: flex; flex-direction: column; gap: 40px; }
+
+.slide { position: relative; overflow: hidden; background: var(--ljubicasta); }
+.post { width: 1080px; height: 1440px; }
+.story { width: 1080px; height: 1920px; }
+.ekran { width: 1920px; height: 1080px; }
+
+/* Fotografija preko cijelog slajda + crni prelaz odozdo (jedini dozvoljeni gradijent). */
+.foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.prelaz {
+	position: absolute; left: 0; right: 0; bottom: 0; height: 62%;
+	background: linear-gradient(to bottom,
+		rgba(0,0,0,0) 0%, rgba(0,0,0,.02) 8%, rgba(0,0,0,.08) 17%, rgba(0,0,0,.17) 25%,
+		rgba(0,0,0,.29) 33%, rgba(0,0,0,.42) 42%, rgba(0,0,0,.55) 50%, rgba(0,0,0,.66) 58%,
+		rgba(0,0,0,.74) 67%, rgba(0,0,0,.79) 75%, rgba(0,0,0,.8) 100%);
+}
+
+/* Oznaka (chip): puna boja, oštri uglovi, bijeli tekst. */
+.oznaka {
+	display: inline-block; padding: 0 0.45em; height: 1.45em; line-height: 1.45em;
+	font-size: 38px; font-weight: 700; color: #fff; background: var(--plava); white-space: nowrap;
+}
+.oznaka.narandza { background: var(--narandza); }
+.oznaka.zelena { background: var(--zelena); }
+.oznaka.tinta { background: var(--tinta); }
+
+/* Naslov: Lato Bold, zbijen. */
+.naslov { font-size: 90px; font-weight: 700; line-height: 1.03; letter-spacing: -0.022em; text-wrap: balance; }
+.izjava { font-size: 150px; font-weight: 900; line-height: 1; letter-spacing: -0.025em; text-wrap: balance; }
+.tekst { font-size: 40px; line-height: 1.38; color: rgba(255, 255, 255, .84); text-wrap: pretty; }
+.autor { font-size: 28px; color: rgba(255, 255, 255, .86); }
+
+/* Logo dolje desno (bijeli na tamnom, crni na svijetlom). */
+.logo { position: absolute; right: 64px; bottom: 72px; width: 100px; }
+.story .logo { bottom: 300px; }
+
+/* Potpis fotografije uspravno uz desnu ivicu. */
+.potpis {
+	position: absolute; right: 26px; bottom: 200px;
+	writing-mode: vertical-rl; transform: rotate(180deg);
+	font-size: 20px; color: rgba(255, 255, 255, .66); white-space: nowrap;
+}
+
+
+.post { --mt: 96px; }
+.gore { position: absolute; left: var(--mt); right: var(--mt); top: 150px; }
+.naslov.srednji { font-size: 80px; }
+.gore .tekst { margin-top: 44px; }
+.napomena { position: absolute; left: var(--mt); right: 220px; bottom: 72px; font-size: 28px; line-height: 1.4; color: rgba(255,255,255,.72); }
+.napomena b { color: #fff; font-weight: 700; }
+
+/* 3. Kada i gdje: velike činjenice. */
+.cinjenice { position: absolute; left: var(--mt); right: var(--mt); top: 360px; }
+.cinjenica { padding: 34px 0 38px; border-top: 2px solid var(--linija); }
+.cinjenica:last-child { border-bottom: 2px solid var(--linija); }
+.cinjenica span { display: block; font-size: 30px; color: rgba(255,255,255,.66); }
+.cinjenica b { display: block; margin-top: 8px; font-size: 72px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+
+/* 4. Razredi. */
+.razredi { position: absolute; left: var(--mt); right: var(--mt); top: 380px; }
+.razred { display: grid; grid-template-columns: 200px 1fr; column-gap: 24px; padding: 30px 0 32px; border-top: 2px solid var(--linija); }
+.razred:last-child { border-bottom: 2px solid var(--linija); }
+.razred .r { font-size: 34px; color: rgba(255,255,255,.66); padding-top: 6px; }
+.razred b { font-size: 44px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.1; }
+.razred p { grid-column: 2; margin-top: 10px; font-size: 28px; line-height: 1.4; color: rgba(255,255,255,.72); text-wrap: pretty; }
+
+/* 5. Termini. */
+.termini { position: absolute; left: var(--mt); right: var(--mt); top: 380px; }
+.termin { display: flex; justify-content: space-between; align-items: baseline; gap: 30px; padding: 48px 0 50px; border-top: 2px solid var(--linija); }
+.termin:last-child { border-bottom: 2px solid var(--linija); }
+.termin .dan { font-size: 56px; font-weight: 700; letter-spacing: -0.015em; }
+.termin .sta { text-align: right; font-size: 30px; line-height: 1.35; color: rgba(255,255,255,.72); }
+.termin .sta b { display: block; font-size: 38px; color: #fff; font-weight: 700; }
+.termin.jako { background: var(--narandza); margin: 0 -28px; padding-left: 28px; padding-right: 28px; border-top-color: transparent; }
+.termin.jako + .termin, .termin.jako:last-child { border-top-color: transparent; }
+.termin.jako .sta { color: #fff; }
+
+/* 6. Kraj na plavoj. */
+.kraj { background: var(--plava); }
+.kraj .izjava { font-size: 150px; }
+.kraj .koraci { position: absolute; left: var(--mt); right: 220px; bottom: 72px; }
+.kraj .koraci p { font-size: 34px; line-height: 1.4; color: #fff; }
+.kraj .koraci p + p { margin-top: 24px; }
+.kraj .koraci b { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- 1. naslovna dolazi iz WordPressa (DP objave) -->
+
+<section class="slide post">
+	<div class="gore">
+		<h2 class="naslov srednji">Shamm ima tri godine. Liječi se u Italiji, a njen otac je ostao u Gazi.</h2>
+		<p class="tekst">I ove godine organizujemo humanitarni bazar u školi. Novac koji prikupimo ide trogodišnjoj Shamm Qudeih iz Gaze, koja je na liječenju s majkom i sestrom.</p>
+		<p class="tekst">Pozivamo sve učenike i profesore da se uključe: pripremom proizvoda, donacijama, idejama ili volontiranjem. Svako prema svojim mogućnostima.</p>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<section class="slide post">
+	<div class="gore">
+		<h2 class="naslov">Dođite na bazar</h2>
+	</div>
+	<div class="cinjenice">
+		<div class="cinjenica"><span>Kada</span><b>Petak, 27. novembar</b></div>
+		<div class="cinjenica"><span>U koliko sati</span><b>17:30 – 19:30</b></div>
+		<div class="cinjenica"><span>Gdje</span><b>Druga gimnazija Sarajevo</b></div>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<section class="slide post">
+	<div class="gore">
+		<h2 class="naslov srednji">Šta donosi koji razred</h2>
+	</div>
+	<div class="razredi">
+		<div class="razred"><span class="r">I razredi</span><b>Hrana i piće</b>
+			<p>Mafini, palačinke, brownies, kolači, keksi, kiflice, domaći sokovi, limunade, ledeni čaj</p></div>
+		<div class="razred"><span class="r">II razredi</span><b>Nakit i handmade</b>
+			<p>Narukvice, ogrlice, minđuše, privjesci, ukosnice, bookmarkeri, čestitke, mali pokloni</p></div>
+		<div class="razred"><span class="r">III razredi</span><b>Sitnice i igračke</b>
+			<p>Očuvane igračke, plišanci, društvene igre, slagalice, dječije knjige, školski pribor</p></div>
+		<div class="razred"><span class="r">IV razredi</span><b>Book Market</b>
+			<p>Polovne knjige, romani, lektire, stripovi, časopisi, slikovnice, enciklopedije</p></div>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<section class="slide post">
+	<div class="gore">
+		<h2 class="naslov srednji">Kada donijeti stvari u školu</h2>
+	</div>
+	<div class="termini">
+		<div class="termin"><span class="dan">Utorak</span><span class="sta"><b>Igračke, knjige i ostalo</b>veliki odmor, obje smjene</span></div>
+		<div class="termin"><span class="dan">Četvrtak</span><span class="sta"><b>Igračke, knjige i ostalo</b>veliki odmor, obje smjene</span></div>
+		<div class="termin jako"><span class="dan">Petak</span><span class="sta"><b>Hrana i piće</b>najkasnije do 10 sati</span></div>
+	</div>
+	<p class="napomena">Imate nešto vrijednije, umjetnički rad ili posebnu rukotvorinu? Donesite i to, <b>ide na humanitarnu aukciju.</b></p>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<section class="slide post kraj">
+	<div class="gore">
+		<p class="izjava">Svaki doprinos znači mnogo.</p>
+	</div>
+	<div class="koraci">
+		<p>Upišite se u dokument svog razreda: ime, prezime i šta planirate donijeti. Link je u opisu objave.</p>
+		<p>Za svaki doprinos dobijate <b>DKU, SA i CAS sate.</b></p>
+	</div>
+	<img class="logo" src="../../dp-objave/assets/logo-bijeli.png" alt="">
+</section>
+
+<script>
+/* Bosanska tipografija za sve tekstove: „navodnici“, …, – i jednoslovne riječi vezane za sljedeću. */
+(function () {
+	var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+	var n;
+	while ((n = walker.nextNode())) {
+		if (n.parentNode.closest('script, style')) continue;
+		n.nodeValue = n.nodeValue
+			.replace(/\.\.\./g, '…')
+			.replace(/(^|[\s(\[ ])["“”″˝]/g, '$1„')
+			.replace(/["“”″˝]/g, '“')
+			.replace(/ - /g, ' – ')
+			.replace(/(?<=^|[\s („])([aiouskvzAIOUSKVZ]) +/g, '$1 ');
+	}
+})();
+</script>
+</body>
+</html>
