@@ -20,6 +20,15 @@ Instagram posts and stories in the Druga perspektiva style, made inside WordPres
   - the author line and the DP logo sit on one line at the bottom of the cover, and the photo credit runs up the right edge;
   - Bosnian typography is applied automatically when drawing: „…“ quotes, …, –, and one-letter words (i, u, s, k, a, o…) are kept with the next word;
   - text that would get too small to read shows a warning with a "Podijeli na dva slajda" button that splits it at a sentence.
+- **Customising (1.8):** more freedom, but always inside the DP style:
+  - **Highlighting in text:** select words and click **B** (bold) or **Istakni bojom** (DP orange; black on blue and orange backgrounds, darker orange on light ones). Works in cover headlines, text slides and quotes. In the field it shows as `**bold**` and `==highlight==`.
+  - **Bold lead-in:** on a Tekst slide, "Naslov kao podebljani početak teksta" puts the bold line at the start of the same paragraph instead of above it.
+  - **Position:** text and quotes can sit at the top, middle or bottom; the cover headline can go to the top (the gradient then comes from the top).
+  - **Text size** on Tekst and Citat slides (a little smaller or bigger; text still shrinks by itself if it doesn't fit).
+  - **Photo behind a Tekst or Citat slide**, covered by the background colour (adjustable, never so weak that the text is hard to read).
+  - **Photo brightness, contrast and colour** (left = black and white), per photo, with "Vrati na original". Works in older Safari too.
+  - **Big statements** no longer end up with one word per line; long sentences get balanced lines.
+  - **Poništi / Vrati** (undo / redo) buttons, also Ctrl+Z and Ctrl+Shift+Z.
 - **Download:** "Preuzmi ovaj slajd" or "Preuzmi sve" saves PNG files in exactly Instagram's size, with the site's fonts (Lato) and the DP logo.
 - **Saved:** every design is kept under Objave za mreže, so it can be opened and changed later. They never appear on the public site.
 

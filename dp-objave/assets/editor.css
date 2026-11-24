@@ -142,3 +142,15 @@
 .dpo-over .button { margin-top: 6px; }
 
 .dpo-two { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+
+/* Isticanje u tekstu (B / Istakni bojom) */
+.dpo-rich { display: flex; flex-direction: column; gap: 4px; }
+.dpo-rich-bar { display: flex; gap: 6px; }
+.dpo-rich-bar .dpo-b { font-weight: 700; min-width: 32px; }
+.dpo-rich-bar .dpo-a { border-left: 4px solid #ee8031; }
+
+/* Svjetlina, kontrast i boje fotografije */
+.dpo-photo { align-items: start; }
+.dpo-photo-ctl input[type="range"] { width: 100%; }
+
+.dpo-top .button:disabled { opacity: 0.5; }

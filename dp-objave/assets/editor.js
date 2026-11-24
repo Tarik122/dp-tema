@@ -113,6 +113,117 @@
 		return lines;
 	}
 
+	/* ---------- Isticanje u tekstu: **podebljano** i ==istaknuto bojom== ---------- */
+
+	function stripRich(t) { return String(t || '').replace(/\*\*|==/g, ''); }
+
+	/** Rastavlja tekst na pasuse i riječi; svaka riječ je niz dijelova { t, b (podebljano), a (istaknuto) }. */
+	function richWords(text) {
+		var paras = [], words = [], word = [], b = false, a = false, buf = '', s = String(text || '');
+		function flush() { if (buf) { word.push({ t: buf, b: b, a: a }); buf = ''; } }
+		function endWord() { flush(); if (word.length) { words.push(word); word = []; } }
+		for (var i = 0; i < s.length; i++) {
+			var two = s.substr(i, 2);
+			if (two === '**') { flush(); b = !b; i++; continue; }
+			if (two === '==') { flush(); a = !a; i++; continue; }
+			var ch = s.charAt(i);
+			if (ch === '\n') { endWord(); paras.push(words); words = []; continue; }
+			if (ch === ' ' || ch === '\t') { endWord(); continue; }
+			buf += ch;
+		}
+		endWord();
+		paras.push(words);
+		return paras;
+	}
+
+	// o: { size, weight, bold (debljina za **), trackPx, italic, color, boldColor, accent, justify, maxW }
+	function segFont(o, seg) { return font(SANS, seg.b ? o.bold : o.weight, o.size, o.italic); }
+
+	function richWrap(ctx, text, maxW, o) {
+		track(ctx, o.trackPx || 0);
+		ctx.font = font(SANS, o.weight, o.size, o.italic);
+		var space = ctx.measureText(' ').width, lines = [];
+		richWords(text).forEach(function (words) {
+			var line = [], width = 0;
+			if (!words.length) { lines.push({ words: [], w: 0, end: true }); return; }
+			words.forEach(function (segs) {
+				var ww = 0;
+				segs.forEach(function (seg) { ctx.font = segFont(o, seg); seg.w = ctx.measureText(seg.t).width; ww += seg.w; });
+				var add = (line.length ? space : 0) + ww;
+				if (line.length && width + add > maxW) { lines.push({ words: line, w: width, end: false }); line = []; width = 0; add = ww; }
+				line.push({ segs: segs, w: ww }); width += add;
+			});
+			lines.push({ words: line, w: width, end: true });
+		});
+		track(ctx, 0);
+		lines.space = space;
+		return lines;
+	}
+
+	/** Kao richWrap, ali redovi su podjednako dugi. */
+	function richBalanced(ctx, text, maxW, o) {
+		var lines = richWrap(ctx, text, maxW, o), n = lines.length;
+		if (n < 2) return lines;
+		var lo = maxW * 0.5, hi = maxW;
+		for (var i = 0; i < 14; i++) {
+			var mid = (lo + hi) / 2;
+			if (richWrap(ctx, text, mid, o).length <= n) hi = mid; else lo = mid;
+		}
+		return richWrap(ctx, text, hi, o);
+	}
+
+	function richLine(ctx, line, x, y, o, space) {
+		var gap = space;
+		if (o.justify && !line.end && line.words.length > 1) {
+			gap = (o.maxW - line.words.reduce(function (a, w) { return a + w.w; }, 0)) / (line.words.length - 1);
+		}
+		track(ctx, o.trackPx || 0);
+		line.words.forEach(function (w) {
+			w.segs.forEach(function (seg) {
+				ctx.font = segFont(o, seg);
+				ctx.fillStyle = seg.a ? o.accent : (seg.b && o.boldColor ? o.boldColor : o.color);
+				ctx.fillText(seg.t, x, y);
+				x += seg.w;
+			});
+			x += gap;
+		});
+		track(ctx, 0);
+	}
+
+	/** Blok teksta s isticanjem; isti oblik kao textBlock ({ h, gap, draw }), plus širina zadnjeg reda. */
+	function richBlock(ctx, o, lh, text, maxW, gap, align, W) {
+		o.maxW = maxW;
+		var lines = o.balanced ? richBalanced(ctx, text, maxW, o) : richWrap(ctx, text, maxW, o), space = lines.space;
+		var last = lines[lines.length - 1];
+		return {
+			h: (lines.length - 1) * lh + o.size, gap: gap, lines: lines, lastW: last ? last.w : 0,
+			draw: function (top) {
+				lines.forEach(function (l, i) {
+					var x = align === 'center' ? (W - l.w) / 2 : align;
+					richLine(ctx, l, x, top + o.size * 0.8 + i * lh, o, space);
+				});
+			}
+		};
+	}
+
+	/**
+	 * Boja za ==istaknuto==: narandžasta (DP naglasak). Na svijetloj pozadini tamnija narandžasta,
+	 * a na plavoj i narandžastoj, gdje se narandžasta ne bi vidjela, crna.
+	 */
+	function accentFor(bg, dark) {
+		var b = String(bg).toLowerCase();
+		if (b === '#ee8031' || b === '#5271fe') return '#141414';
+		return dark ? '#b85a14' : '#ee8031';
+	}
+
+	/** Gdje počinje blok teksta visine h: gore, u sredini ili dolje (iznad logotipa). */
+	function placeY(pos, h, H, format) {
+		var story = format === 'story';
+		if (pos === 'top') return story ? 260 : 140;
+		if (pos === 'bottom') return H - (story ? 330 : 200) - h;
+		return (H - h) / 2 - H * 0.02;
+	}
+
 	function drawRunsLine(ctx, line, x, y) {
 		line.parts.forEach(function (w, i) {
 			if (i) x += w.space;
@@ -164,6 +275,45 @@
 		ctx.fillRect(0, top, W, H - top);
 	}
 
+	/** Isti prelaz, ali odozgo (kad je naslov na vrhu naslovne). */
+	function scrimTop(ctx, W, bottom, strength) {
+		var g = ctx.createLinearGradient(0, bottom, 0, 0);
+		for (var i = 0; i <= 12; i++) {
+			var t = i / 12, e = Math.min(1, t / 0.75);
+			g.addColorStop(t, 'rgba(0,0,0,' + (strength * e * e * (3 - 2 * e)).toFixed(3) + ')');
+		}
+		ctx.fillStyle = g;
+		ctx.fillRect(0, 0, W, bottom);
+	}
+
+	// Da li preglednik podržava filtere na canvasu (stariji Safari ne podržava; tada svjetlinu i boje računamo sami).
+	var FILTER_OK = (function () {
+		try {
+			if (window.DPO_NOFILTER) return false;
+			var c = document.createElement('canvas').getContext('2d');
+			if (!('filter' in c)) return false;
+			c.filter = 'brightness(0.5)';
+			return c.filter === 'brightness(0.5)';
+		} catch (e) { return false; }
+	})();
+
+	function photoAdjusted(p) {
+		return (p.bri != null && p.bri !== 1) || (p.con != null && p.con !== 1) || (p.sat != null && p.sat !== 1);
+	}
+
+	/** Svjetlina, kontrast i zasićenost bez canvas filtera (piksel po piksel, samo u okviru fotografije). */
+	function pixelAdjust(ctx, sl, p) {
+		var x = Math.round(sl.x * SC), y = Math.round(sl.y * SC), w = Math.round(sl.w * SC), hh = Math.round(sl.h * SC), id;
+		try { id = ctx.getImageData(x, y, w, hh); } catch (e) { return; }
+		var d = id.data, br = p.bri == null ? 1 : p.bri, co = p.con == null ? 1 : p.con, sa = p.sat == null ? 1 : p.sat;
+		for (var i = 0; i < d.length; i += 4) {
+			var r = (d[i] * br - 128) * co + 128, g = (d[i + 1] * br - 128) * co + 128, b = (d[i + 2] * br - 128) * co + 128;
+			var l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+			d[i] = l + (r - l) * sa; d[i + 1] = l + (g - l) * sa; d[i + 2] = l + (b - l) * sa;
+		}
+		ctx.putImageData(id, x, y);
+	}
+
 	/** DP znak dolje desno. Vraća njegovu gornju ivicu, da tekst ne ide preko. */
 	function drawLogo(ctx, s, W, H, format, dark, opt) {
 		var story = format === 'story';
@@ -206,12 +356,17 @@
 			var img = images[p.url];
 			if (!img || !img.complete || !img.naturalWidth) return;
 			any = true;
-			var b = photoBox(img, sl[i], p);
+			var b = photoBox(img, sl[i], p), f = [];
 			ctx.save();
 			ctx.beginPath(); ctx.rect(sl[i].x, sl[i].y, sl[i].w, sl[i].h); ctx.clip();
-			if (s.blur > 0) ctx.filter = 'blur(' + (s.blur * SC) + 'px)';
+			if (FILTER_OK && photoAdjusted(p)) {
+				f.push('brightness(' + (p.bri == null ? 1 : p.bri) + ')', 'contrast(' + (p.con == null ? 1 : p.con) + ')', 'saturate(' + (p.sat == null ? 1 : p.sat) + ')');
+			}
+			if (s.blur > 0) f.push('blur(' + (s.blur * SC) + 'px)');
+			if (f.length) ctx.filter = f.join(' ');
 			ctx.drawImage(img, b.x, b.y, b.w, b.h);
 			ctx.restore();
+			if (!FILTER_OK && photoAdjusted(p)) pixelAdjust(ctx, sl[i], p);
 		});
 		return any;
 	}
@@ -229,6 +384,13 @@
 			y = b.top - (i > 0 ? b.gap : 0);
 		}
 		return blocks.length ? blocks[0].top : bottom;
+	}
+
+	/** Isto, ali odozgo prema dolje. Vraća donju ivicu cijelog teksta. */
+	function stackDown(blocks, top) {
+		var y = top;
+		blocks.forEach(function (b, i) { if (i) y += b.gap; b.top = y; y += b.h; });
+		return y;
 	}
 
 	/** Blok teksta: redovi s visinom reda lh; osnovna linija prvog reda je top + size*0.8. */
@@ -252,6 +414,7 @@
 	/** Naslov koji se sam smanji dok ne stane u najviše maxLines redova. */
 	function fitTitle(ctx, family, weight, size, min, maxLines, text, maxW, trackEm) {
 		var lines;
+		text = stripRich(text);
 		do {
 			ctx.font = font(family, weight, size); track(ctx, size * trackEm);
 			lines = wrap(ctx, text, maxW);
@@ -283,7 +446,8 @@
 		var any = drawPhotos(ctx, s, W, H);
 		var dark = !any && isLight(s.bg);
 		var ink = dark ? '#141414' : '#ffffff', soft = dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.86)';
-		var k = s.size || 1, blocks = [], M, bottom, hs;
+		var acc = accentFor(any ? '' : s.bg, dark);
+		var k = s.size || 1, blocks = [], M, bottom, hs, onTop = s.pos === 'top';
 
 		if (st === 'moderni') {
 			// DP moderni: manja oznaka, zbijen i jak naslov; autor i logo u istom redu na dnu.
@@ -293,30 +457,35 @@
 			var chip, head, by;
 			if (s.chip) blocks.push(chip = chipBlock(ctx, s.chip, s.chipColor || '#5271fe', story ? 42 : 38, 700, 0, M));
 			hs = fitTitle(ctx, SANS, 700, (story ? 102 : 90) * k, 50, 5, s.title, W - 2 * M, -0.022);
-			blocks.push(head = textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.03, s.title, W - 2 * M, -hs * 0.022, ink, 22, M, W));
-			if (s.byline) blocks.push(by = textBlock(ctx, font(SANS, 400, 28), 28, 34, s.byline, logo.x - M - 32, 0, soft, 26, M, W));
+			blocks.push(head = richBlock(ctx, { size: hs, weight: 700, bold: 900, trackPx: -hs * 0.022, color: ink, accent: acc, balanced: true }, hs * 1.03, s.title, W - 2 * M, 22, M, W));
+			if (s.byline) blocks.push(by = textBlock(ctx, font(SANS, 400, 28), 28, 34, s.byline, onTop ? W - 2 * M : logo.x - M - 32, 0, soft, 26, M, W));
 			bottom = by ? base + 28 * 0.2 : base + hs * 0.2;
-			// Ako bi zadnji red naslova udario u logo, podigni naslov.
-			stackUp(blocks, bottom);
-			ctx.font = font(SANS, 700, hs); track(ctx, -hs * 0.022);
-			var lastW = ctx.measureText(head.lines[head.lines.length - 1].text).width;
-			track(ctx, 0);
-			var headBottom = head.top + head.h;
-			if (s.logo && M + lastW > logo.x - 28 && headBottom > logo.y - 18) {
-				if (by) by.gap += headBottom - (logo.y - 18);
-				else bottom -= headBottom - (logo.y - 18);
+			if (!onTop) {
+				// Ako bi zadnji red naslova udario u logo, podigni naslov.
+				stackUp(blocks, bottom);
+				var headBottom = head.top + head.h;
+				if (s.logo && M + head.lastW > logo.x - 28 && headBottom > logo.y - 18) {
+					if (by) by.gap += headBottom - (logo.y - 18);
+					else bottom -= headBottom - (logo.y - 18);
+				}
 			}
 		} else {
 			// DP klasik: kao dosadašnje objave na Instagramu.
 			M = 80; bottom = H - (story ? 300 : 150);
 			if (s.chip) blocks.push(chipBlock(ctx, s.chip, s.chipColor || '#5271fe', story ? 60 : 54, 400, 0, M));
 			hs = fitTitle(ctx, SANS, 700, (story ? 94 : 86) * k, 50, 5, s.title, W - 2 * M, 0);
-			blocks.push(textBlock(ctx, font(SANS, 700, hs), hs, hs * 1.08, s.title, W - 2 * M, 0, ink, 20, M, W));
+			blocks.push(richBlock(ctx, { size: hs, weight: 700, bold: 900, color: ink, accent: acc, balanced: true }, hs * 1.08, s.title, W - 2 * M, 20, M, W));
 			if (s.byline) blocks.push(textBlock(ctx, font(SANS, 400, 30), 30, 36, s.byline, W - 2 * M, 0, soft, 24, M, W));
 		}
 
-		var textTop = stackUp(blocks, bottom);
-		if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.15, textTop - H * 0.2), s.darken);
+		if (onTop) {
+			// Naslov na vrhu (npr. kad je dolje na fotografiji nešto važno). Prelaz ide odozgo.
+			var textBottom = stackDown(blocks, story ? 250 : (st === 'moderni' ? 72 : 96));
+			if (any && s.darken > 0) scrimTop(ctx, W, Math.min(H * 0.85, textBottom + H * 0.2), s.darken);
+		} else {
+			var textTop = stackUp(blocks, bottom);
+			if (any && s.darken > 0) scrim(ctx, W, H, Math.max(H * 0.15, textTop - H * 0.2), s.darken);
+		}
 		blocks.forEach(function (b) { b.draw(b.top); });
 
 		if (st === 'moderni') {
@@ -333,25 +502,41 @@
 	}
 
 	// ---- Tekst (i velika izjava kad nema pasusa) ----
-	function drawText(ctx, s, W, H, format) {
-		var st = style(), story = format === 'story', dark = isLight(s.bg);
-		ctx.fillStyle = s.bg || STYLE_BG[st].text;
+	/**
+	 * Pozadina slajda s tekstom ili citatom: boja, a ako je dodana fotografija,
+	 * fotografija prekrivena istom bojom (dovoljno jako da se tekst čita).
+	 */
+	function backdrop(ctx, s, W, H, bg) {
+		ctx.fillStyle = bg;
 		ctx.fillRect(0, 0, W, H);
-		var modern = st === 'moderni';
+		if (!(s.photos || []).length || !drawPhotos(ctx, s, W, H)) return;
+		ctx.globalAlpha = s.tint != null ? s.tint : 0.78;
+		ctx.fillStyle = bg;
+		ctx.fillRect(0, 0, W, H);
+		ctx.globalAlpha = 1;
+	}
+
+	function drawText(ctx, s, W, H, format) {
+		var st = style(), story = format === 'story', bg = s.bg || STYLE_BG[st].text, dark = isLight(bg);
+		backdrop(ctx, s, W, H, bg);
+		var modern = st === 'moderni', k = s.size || 1;
 		var M = 96, maxW = W - 2 * M, room = H - (story ? 640 : 380);
-		var ink = dark ? '#141414' : '#ffffff';
+		var ink = dark ? '#141414' : '#ffffff', acc = accentFor(bg, dark);
 
 		if (!String(s.body || '').trim()) {
-			// Velika izjava, kao plakat.
+			// Velika izjava, kao plakat. Ne više od otprilike dvije riječi po redu, da ne ostane jedna sama.
 			var text = s.caps ? String(s.title || '').toLocaleUpperCase('bs') : s.title;
 			var wt = modern ? 900 : 700, tr = modern ? -0.025 : 0, lhk = modern ? 1.0 : 1.08;
-			var size = 176, lines;
+			var nWords = stripRich(text).split(/\s+/).filter(Boolean).length;
+			var maxLines = Math.max(2, Math.min(6, Math.ceil(nWords / 2)));
+			var size = Math.round(176 * k) + 6, o, lines;
 			do {
-				size -= 6; ctx.font = font(SANS, wt, size); track(ctx, size * tr); lines = wrap(ctx, text, maxW);
-			} while ((lines.length * size * lhk > room || lines.some(function (l) { return ctx.measureText(l.text).width > maxW; })) && size > 50);
-			track(ctx, 0);
-			var blk = textBlock(ctx, font(SANS, wt, size), size, size * lhk, text, maxW, size * tr, ink, 0, modern ? M : 'center', W);
-			blk.draw((H - blk.h) / 2 - H * 0.02);
+				size -= 6;
+				o = { size: size, weight: wt, bold: 900, trackPx: size * tr, color: ink, accent: acc, balanced: true };
+				lines = richWrap(ctx, text, maxW, o);
+			} while ((lines.length * size * lhk > room || lines.length > maxLines || lines.some(function (l) { return l.w > maxW; })) && size > 50);
+			var blk = richBlock(ctx, o, size * lhk, text, maxW, 0, modern ? M : 'center', W);
+			blk.draw(placeY(s.pos, blk.h, H, format));
 			drawLogo(ctx, s, W, H, format, dark);
 			return;
 		}
@@ -359,40 +544,40 @@
 		var T = modern
 			? { ts: 64, bs: 40, blh: 1.38, gap: 30, body: dark ? 'rgba(20,20,20,.78)' : 'rgba(255,255,255,.84)', tr: -0.02 }
 			: { ts: 58, bs: 42, blh: 1.24, gap: 18, body: dark ? 'rgba(20,20,20,.72)' : 'rgba(255,255,255,.7)', tr: 0 };
-		var ts = T.ts, bs = T.bs, t, b, total;
+		// "Podebljani početak": naslov postaje podebljani početak prvog pasusa, umjesto zasebnog reda iznad.
+		var lead = s.lead && String(s.title || '').trim();
+		var bodyText = lead ? '**' + stripRich(s.title).trim() + '** ' + s.body : s.body;
+		var ts = Math.round(T.ts * k), bs = Math.round(T.bs * k), t, b, total;
 		function measure() {
-			t = s.title ? textBlock(ctx, font(SANS, 700, ts), ts, ts * 1.06, s.title, maxW, ts * T.tr, ink, 0, M, W) : null;
-			ctx.font = font(SANS, 400, bs); track(ctx, 0);
-			b = wrap(ctx, s.body, maxW);
-			total = (t ? t.h + T.gap : 0) + (b.length - 1) * bs * T.blh + bs;
+			t = s.title && !lead ? richBlock(ctx, { size: ts, weight: 700, bold: 900, trackPx: ts * T.tr, color: ink, accent: acc, balanced: true }, ts * 1.06, s.title, maxW, 0, M, W) : null;
+			b = richBlock(ctx, { size: bs, weight: 400, bold: 700, color: T.body, boldColor: ink, accent: acc, justify: s.align === 'justify' }, bs * T.blh, bodyText, maxW, 0, M, W);
+			total = (t ? t.h + T.gap : 0) + b.h;
 		}
 		measure();
 		while (total > room && bs > 34) { ts -= 2; bs -= 1; measure(); }
 		OVER.set(ORIG, total > room);
-		var top = (H - total) / 2 - H * 0.02;
+		var top = placeY(s.pos, total, H, format);
 		if (t) { t.draw(top); top += t.h + T.gap; }
-		ctx.fillStyle = T.body;
-		ctx.font = font(SANS, 400, bs);
-		b.forEach(function (l, i) { drawLine(ctx, l, M, top + bs * 0.8 + i * bs * T.blh, maxW, s.align === 'justify'); });
+		b.draw(top);
 		drawLogo(ctx, s, W, H, format, dark);
 	}
 
 	// ---- Citat: narandžasta crta uz tekst (znak DP citata) ----
 	function drawQuote(ctx, s, W, H, format) {
-		var st = style(), story = format === 'story', dark = isLight(s.bg);
-		ctx.fillStyle = s.bg || STYLE_BG[st].quote;
-		ctx.fillRect(0, 0, W, H);
+		var st = style(), story = format === 'story', bg = s.bg || STYLE_BG[st].quote, dark = isLight(bg);
+		backdrop(ctx, s, W, H, bg);
 		var ink = dark ? '#141414' : '#ffffff', soft = dark ? 'rgba(20,20,20,.62)' : 'rgba(255,255,255,.72)';
+		var acc = accentFor(bg, dark), k = s.size || 1;
 		var q = String(s.quote || '').trim().replace(/^[„“"”»«]+|[“”"«»]+$/g, '');
 		var room = H * (story ? 0.5 : 0.56);
 
 		if (st !== 'moderni') {
 			// DP klasik: kao dosadašnji citati, ime kurzivom desno.
-			var left = 172, w2 = W - 330, qs = 76, blk;
-			do { blk = textBlock(ctx, font(SANS, 400, qs), qs, qs * 1.15, q, w2, 0, ink, 0, left, W); qs -= 2; } while (blk.h > room && qs > 28);
+			var left = 172, w2 = W - 330, qs = Math.round(76 * k), blk;
+			do { blk = richBlock(ctx, { size: qs, weight: 400, bold: 700, color: ink, accent: acc, balanced: true }, qs * 1.15, q, w2, 0, left, W); qs -= 2; } while (blk.h > room && qs > 28);
 			var ws = Math.max(30, Math.round(qs * 0.62)), who = [];
 			if (s.who) { ctx.font = font(SANS, 400, ws, true); who = wrapBalanced(ctx, '— ' + s.who + (s.whoInfo ? ', ' + s.whoInfo : ''), w2); }
-			var total = blk.h + (who.length ? 30 + who.length * ws * 1.25 : 0), top = (H - total) / 2;
+			var total = blk.h + (who.length ? 30 + who.length * ws * 1.25 : 0), top = placeY(s.pos, total, H, format);
 			ctx.fillStyle = '#ee8031'; ctx.fillRect(left - 32, top, 10, blk.h);
 			blk.draw(top);
 			ctx.font = font(SANS, 400, ws, true); ctx.fillStyle = dark ? 'rgba(20,20,20,.8)' : 'rgba(255,255,255,.9)';
@@ -402,14 +587,14 @@
 		}
 
 		// DP moderni: velik i zbijen citat, crta uz lijevu ivicu, ime podebljano pa opis.
-		var L = 124, maxW = W - L - 88, size = 124, qb;
-		do { size -= 4; qb = textBlock(ctx, font(SANS, 900, size), size, size * 1.04, q, maxW, -size * 0.02, ink, 0, L, W); } while (qb.h > room && size > 44);
+		var L = 124, maxW = W - L - 88, size = Math.round(124 * k), qb;
+		do { size -= 4; qb = richBlock(ctx, { size: size, weight: 900, bold: 900, trackPx: -size * 0.02, color: ink, accent: acc, balanced: true }, size * 1.04, q, maxW, 0, L, W); } while (qb.h > room && size > 44);
 		var as = story ? 36 : 34, runs = [];
 		if (s.who) runs.push({ text: s.who + (s.whoInfo ? ',' : ''), font: font(SANS, 700, as), color: ink });
 		if (s.whoInfo) runs.push({ text: s.whoInfo, font: font(SANS, 400, as), color: soft });
 		var att = runs.length ? wrapRuns(ctx, runs, maxW) : [];
 		var attH = att.length ? 44 + (att.length - 1) * as * 1.3 + as : 0;
-		var y0 = (H - qb.h - attH) / 2 - H * 0.02;
+		var y0 = placeY(s.pos, qb.h + attH, H, format);
 		ctx.fillStyle = '#ee8031';
 		ctx.fillRect(L - 44, y0 + size * 0.06, 12, qb.h - size * 0.12);
 		qb.draw(y0);
@@ -724,6 +909,8 @@
 			h('span', { class: 'dpo-label', text: 'Stil' }), ui.style,
 			h('span', { class: 'dpo-label', text: 'Format' }), ui.format,
 			ui.fill,
+			ui.undo = h('button', { type: 'button', class: 'button', onclick: undo, title: 'Poništi (Ctrl+Z)', text: 'Poništi' }),
+			ui.redo = h('button', { type: 'button', class: 'button', onclick: redo, title: 'Vrati (Ctrl+Shift+Z)', text: 'Vrati' }),
 			h('span', { class: 'dpo-spacer' }),
 			h('button', { type: 'button', class: 'button', onclick: downloadCurrent, text: 'Preuzmi ovaj slajd' }),
 			h('button', { type: 'button', class: 'button button-primary', onclick: downloadAll, text: 'Preuzmi sve' })
@@ -736,6 +923,7 @@
 		app.appendChild(h('p', { class: 'dpo-save-note', text: 'Kliknite "Objavi" ili "Ažuriraj" desno da spremite dizajn. Objava se ne pojavljuje na sajtu; ovdje je samo za preuzimanje.' }));
 		setupDrag();
 		render();
+		snapshot();
 	}
 
 	function render() {
@@ -843,6 +1031,69 @@
 		return h('label', { class: 'dpo-check' }, [el, ' ' + text]);
 	}
 
+	/** Polje za tekst s dugmadima za isticanje: označite riječi pa kliknite B ili "Istakni bojom". */
+	function richInput(s, key, rows) {
+		var el = textInput(s, key, true, rows);
+		function toggle(m) {
+			var a = el.selectionStart, b = el.selectionEnd, v = el.value;
+			if (v.slice(a - m.length, a) === m && v.slice(b, b + m.length) === m) {
+				// Već istaknuto: ukloni oznake.
+				el.value = v.slice(0, a - m.length) + v.slice(a, b) + v.slice(b + m.length);
+				el.setSelectionRange(a - m.length, b - m.length);
+			} else {
+				var sel = v.slice(a, b) || 'tekst';
+				el.value = v.slice(0, a) + m + sel + m + v.slice(b);
+				el.setSelectionRange(a + m.length, a + m.length + sel.length);
+			}
+			el.focus();
+			el.dispatchEvent(new Event('input'));
+		}
+		function btn(label, title, m, cls) {
+			return h('button', {
+				type: 'button', class: 'button button-small ' + cls, title: title,
+				onmousedown: function (e) { e.preventDefault(); },
+				onclick: function (e) { e.preventDefault(); toggle(m); }, text: label
+			});
+		}
+		return h('div', { class: 'dpo-rich' }, [
+			h('div', { class: 'dpo-rich-bar' }, [
+				btn('B', 'Podebljano (označite riječi pa kliknite)', '**', 'dpo-b'),
+				btn('Istakni bojom', 'Istaknuto narandžastom bojom (označite riječi pa kliknite)', '==', 'dpo-a')
+			]),
+			el
+		]);
+	}
+
+	/** Izbor jedne od nekoliko mogućnosti (npr. položaj teksta). */
+	function choice(s, key, opts, def) {
+		var box = h('div', { class: 'dpo-seg', role: 'group' }), v = s[key] || def;
+		opts.forEach(function (o) {
+			box.appendChild(h('button', {
+				type: 'button', class: 'button' + (v === o[0] ? ' is-on' : ''), 'aria-pressed': v === o[0] ? 'true' : 'false',
+				onclick: function () { s[key] = o[0]; changed(true); }, text: o[1]
+			}));
+		});
+		return box;
+	}
+
+	var POS = [['top', 'Gore'], ['center', 'Sredina'], ['bottom', 'Dolje']];
+
+	/** Veličina teksta: blago manje ili veće od zadanog; tekst se i dalje sam smanji ako ne staje. */
+	function sizeField(s) {
+		if (s.size == null) s.size = 1;
+		return field('Veličina teksta', range(s, 'size', 0.8, 1.25, 0.05), 'Ako teksta ima mnogo, slova se ionako smanje da sve stane.');
+	}
+
+	/** Fotografija u pozadini teksta ili citata, prekrivena bojom pozadine. */
+	function backdropFields(s) {
+		var out = [photoFields(s, 1, 'Fotografija u pozadini (nije obavezno)')];
+		if ((s.photos || []).length) {
+			if (s.tint == null) s.tint = 0.78;
+			out.push(field('Koliko boja prekriva fotografiju', range(s, 'tint', 0.55, 0.95, 0.05), 'Što više boje, to se tekst bolje čita.'));
+		}
+		return out;
+	}
+
 	function fields() {
 		var s = D.slides[cur], F = ui.fields, C = CFG.colors || { chip: {}, bg: {} };
 		F.innerHTML = '';
@@ -861,8 +1112,9 @@
 		if (s.t === 'cover') {
 			F.appendChild(field('Oznaka (rubrika)', textInput(s, 'chip'), 'Ostavite prazno da nema oznake.'));
 			F.appendChild(field('Boja oznake', swatches(s, 'chipColor', C.chip)));
-			F.appendChild(field('Naslov', textInput(s, 'title', true, 3), 'Enter pravi novi red, ako želite sami prelomiti naslov.'));
+			F.appendChild(field('Naslov', richInput(s, 'title', 3), 'Enter pravi novi red. "Istakni bojom" boji označene riječi narandžasto.'));
 			F.appendChild(field('Veličina naslova', range(s, 'size', 0.6, 1.3, 0.05)));
+			F.appendChild(field('Položaj naslova', choice(s, 'pos', [['bottom', 'Dolje'], ['top', 'Gore']], 'bottom'), 'Gore, kad je na dnu fotografije nešto važno (lica, rezultat).'));
 			F.appendChild(field('Autor', textInput(s, 'byline'), 'Npr. "Piše: Amina Hodžić". Prazno = bez autora.'));
 			F.appendChild(photoFields(s));
 			if ((s.photos || []).length) {
@@ -893,8 +1145,9 @@
 			if ((s.photos || []).length) F.appendChild(field('Zatamnjenje fotografije', range(s, 'darken', 0, 1, 0.05)));
 			F.appendChild(field((s.photos || []).length ? 'Pozadina (vidi se samo bez fotografije)' : 'Pozadina', swatches(s, 'bg', C.bg)));
 		} else if (s.t === 'text') {
-			F.appendChild(field('Naslov (podebljano)', textInput(s, 'title', true, 2)));
-			F.appendChild(field('Tekst', textInput(s, 'body', true, 8), 'Ako tekst ostavite prazan, naslov postaje velika izjava preko cijelog slajda.'));
+			F.appendChild(field('Naslov (podebljano)', richInput(s, 'title', 2)));
+			F.appendChild(checkbox(s, 'lead', 'Naslov kao podebljani početak teksta (u istom pasusu, ne iznad)'));
+			F.appendChild(field('Tekst', richInput(s, 'body', 8), 'Označite riječi pa kliknite B ili "Istakni bojom". Ako tekst ostavite prazan, naslov postaje velika izjava preko cijelog slajda.'));
 			ui.over = h('div', { class: 'dpo-over', hidden: 'hidden' }, [
 				h('span', { text: 'Teksta je previše za jedan slajd, pa bi slova bila premala za čitanje. ' }),
 				h('button', { type: 'button', class: 'button button-small', onclick: function () { splitText(s); }, text: 'Podijeli na dva slajda' })
@@ -905,36 +1158,50 @@
 			al.value = s.align || 'left';
 			al.addEventListener('change', function () { s.align = al.value; changed(); });
 			F.appendChild(field('Poravnanje', al));
+			F.appendChild(sizeField(s));
+			F.appendChild(field('Položaj teksta', choice(s, 'pos', POS, 'center')));
 			F.appendChild(field('Pozadina', swatches(s, 'bg', C.bg)));
+			backdropFields(s).forEach(function (el) { F.appendChild(el); });
 		} else {
-			F.appendChild(field('Citat', textInput(s, 'quote', true, 5)));
+			F.appendChild(field('Citat', richInput(s, 'quote', 5), 'Označite riječi pa kliknite "Istakni bojom" da ih obojite.'));
 			F.appendChild(field('Ime', textInput(s, 'who'), 'Podebljano ispod citata.'));
 			F.appendChild(field('Opis', textInput(s, 'whoInfo'), 'Npr. "učenica 3. razreda". Piše se sivo, poslije imena.'));
+			F.appendChild(sizeField(s));
+			F.appendChild(field('Položaj citata', choice(s, 'pos', POS, 'center')));
 			F.appendChild(field('Pozadina', swatches(s, 'bg', C.bg)));
+			backdropFields(s).forEach(function (el) { F.appendChild(el); });
 		}
 		F.appendChild(checkbox(s, 'logo', 'DP logo u uglu'));
 	}
 
-	function photoFields(s) {
+	function photoFields(s, max, title) {
 		s.photos = s.photos || [];
-		var box = h('div', { class: 'dpo-photos' }, [h('span', { class: 'dpo-label', text: s.photos.length > 1 ? 'Fotografije (kolaž, jedna ispod druge)' : 'Fotografija' })]);
+		max = max || 3;
+		var box = h('div', { class: 'dpo-photos' }, [h('span', { class: 'dpo-label', text: title || (s.photos.length > 1 ? 'Fotografije (kolaž, jedna ispod druge)' : 'Fotografija') })]);
 		s.photos.forEach(function (p, i) {
+			['bri', 'con', 'sat'].forEach(function (k) { if (p[k] == null) p[k] = 1; });
 			box.appendChild(h('div', { class: 'dpo-photo' }, [
 				h('img', { src: p.url, alt: '' }),
 				h('div', { class: 'dpo-photo-ctl' }, [
 					h('span', { class: 'dpo-note', text: 'Uvećanje' }),
 					range(p, 'zoom', 1, 4, 0.05, p),
+					h('span', { class: 'dpo-note', text: 'Svjetlina' }),
+					range(p, 'bri', 0.6, 1.5, 0.02, p),
+					h('span', { class: 'dpo-note', text: 'Kontrast' }),
+					range(p, 'con', 0.6, 1.6, 0.02, p),
+					h('span', { class: 'dpo-note', text: 'Boje (lijevo = crno-bijelo)' }),
+					range(p, 'sat', 0, 1.8, 0.05, p),
 					h('div', {}, [
 						h('button', { type: 'button', class: 'button button-small', onclick: function () { pick(function (a) { s.photos[i] = photo(a); creditFrom(s, a); changed(true); }); }, text: 'Promijeni' }),
 						' ',
-						h('button', { type: 'button', class: 'button button-small', onclick: function () { p.zoom = 1; p.ox = 0; p.oy = 0; changed(true); }, text: 'Poravnaj' }),
+						h('button', { type: 'button', class: 'button button-small', onclick: function () { p.zoom = 1; p.ox = 0; p.oy = 0; p.bri = 1; p.con = 1; p.sat = 1; changed(true); }, text: 'Vrati na original' }),
 						' ',
 						h('button', { type: 'button', class: 'button button-small dpo-danger', onclick: function () { s.photos.splice(i, 1); changed(true); }, text: 'Ukloni' })
 					])
 				])
 			]));
 		});
-		if (s.photos.length < 3) {
+		if (s.photos.length < max) {
 			box.appendChild(h('button', { type: 'button', class: 'button', onclick: function () {
 				pick(function (a) { s.photos.push(photo(a)); creditFrom(s, a); changed(true); });
 			}, text: s.photos.length ? '+ Kolaž: dodaj još jednu fotografiju' : '+ Dodaj fotografiju' }));
@@ -1013,8 +1280,60 @@
 		if (ui.over) ui.over.hidden = !OVER.get(D.slides[cur]);
 	}
 
+	/* ---------- Poništi / Vrati ---------- */
+
+	var hist = [], hpos = -1, histTimer;
+
+	function snapshot() {
+		clearTimeout(histTimer); histTimer = null;
+		var j = JSON.stringify(D);
+		if (hist[hpos] === j) return;
+		hist = hist.slice(0, hpos + 1);
+		hist.push(j);
+		if (hist.length > 100) hist.shift();
+		hpos = hist.length - 1;
+		undoState();
+	}
+
+	function undoState() {
+		if (!ui.undo) return;
+		ui.undo.disabled = hpos <= 0;
+		ui.redo.disabled = hpos >= hist.length - 1;
+	}
+
+	function restore(j) {
+		D = JSON.parse(j);
+		cur = Math.min(cur, D.slides.length - 1);
+		input.value = j;
+		loadAll();
+		render();
+		overNote();
+		undoState();
+	}
+
+	function undo() {
+		if (histTimer) snapshot(); // spremi upravo otkucano prije vraćanja
+		if (hpos > 0) restore(hist[--hpos]);
+	}
+
+	function redo() {
+		if (hpos < hist.length - 1) restore(hist[++hpos]);
+	}
+
+	document.addEventListener('keydown', function (e) {
+		if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+		var tag = (e.target && e.target.tagName) || '';
+		if (/^(INPUT|TEXTAREA|SELECT)$/.test(tag) || (e.target && e.target.isContentEditable)) return; // tamo radi obično poništavanje teksta
+		if (!app.contains(e.target) && e.target !== document.body) return;
+		var key = String(e.key).toLowerCase();
+		if (key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+		else if ((key === 'z' && e.shiftKey) || key === 'y') { e.preventDefault(); redo(); }
+	});
+
 	function changed(full) {
 		input.value = JSON.stringify(D);
+		if (full) snapshot();
+		else { clearTimeout(histTimer); histTimer = setTimeout(snapshot, 700); }
 		if (full) { render(); overNote(); return; }
 		draw(ui.canvas, D.slides[cur]);
 		overNote();
